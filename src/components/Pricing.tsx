@@ -1,126 +1,152 @@
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Check, Star } from "lucide-react";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Check } from "lucide-react";
+import { useState } from "react";
 
 const Pricing = () => {
+  const [isAnnual, setIsAnnual] = useState(true);
+
   const plans = [
     {
-      name: "Starter",
-      price: "$29",
-      period: "/month",
-      description: "Perfect for individuals and small creators",
+      name: "Free",
+      subtitle: "Begin with the essentials",
+      price: 0,
+      billingText: "per month, billed annually",
       features: [
-        "3 social media accounts",
-        "Basic analytics dashboard",
-        "Weekly automated reports",
-        "Email support",
-        "1GB data storage",
+        "Up to 2 seats",
+        "10,000 Logs writes/mo",
+        "100 Continuous Evaluations runs/mo",
+        "1,000 Deployments reads/mo"
       ],
-      cta: "Start Free Trial",
+      cta: "START FOR FREE",
+      ctaVariant: "outline" as const,
       popular: false,
+      cardStyle: "border-border bg-card/50"
     },
     {
-      name: "Professional",
-      price: "$79",
-      period: "/month",
-      description: "Ideal for growing businesses and agencies",
+      name: "Grow",
+      subtitle: "Unlock advanced capabilities",
+      price: isAnnual ? 375 : 450,
+      billingText: "per month, billed annually",
       features: [
-        "10 social media accounts",
-        "Advanced AI analytics",
-        "Daily automated reports",
-        "Sentiment analysis",
-        "Priority support",
-        "10GB data storage",
-        "Competitor benchmarking",
-        "Custom dashboards",
+        "Up to 5 seats",
+        "100,000 Logs writes/mo",
+        "5,000 Continuous Evaluations runs/mo",
+        "100,000 Deployments reads/mo",
+        "Pair Prompting",
+        "Custom Providers"
       ],
-      cta: "Get Started",
+      cta: "START FOR FREE",
+      ctaVariant: "default" as const,
       popular: true,
+      cardStyle: "border-primary bg-primary/5 relative"
     },
     {
-      name: "Enterprise",
-      price: "$199",
-      period: "/month",
-      description: "For large organizations with custom needs",
+      name: "Scale",
+      subtitle: "Tailored solutions for enterprises",
+      price: null,
+      billingText: "Custom pricing",
       features: [
-        "Unlimited social accounts",
-        "Full AI-powered suite",
-        "Real-time alerts",
-        "Advanced sentiment analysis",
-        "24/7 dedicated support",
-        "Unlimited data storage",
-        "White-label reporting",
-        "API access",
-        "Custom integrations",
-        "Team collaboration tools",
+        "Pair Prompting",
+        "Custom Providers",
+        "Dedicated Deployed Engineer",
+        "SSO + SAML",
+        "SOC 2 + HIPAA",
+        "On-prem deployment"
       ],
-      cta: "Contact Sales",
+      cta: "CONTACT US",
+      ctaVariant: "outline" as const,
       popular: false,
-    },
+      cardStyle: "border-border bg-card/50"
+    }
   ];
 
+
   return (
-    <section id="pricing" className="py-20 px-4 sm:px-6 lg:px-8 bg-secondary/20">
+    <section id="pricing" className="py-20 px-4 sm:px-6 lg:px-8 bg-background">
       <div className="container mx-auto">
-        <div className="max-w-3xl mx-auto text-center mb-16">
-          <h2 className="text-3xl sm:text-4xl font-bold mb-6">
-            Simple{" "}
-            <span className="bg-hero-gradient bg-clip-text text-transparent">
-              Transparent
-            </span>{" "}
-            Pricing
-          </h2>
-          <p className="text-xl text-muted-foreground">
-            Choose the perfect plan for your social media analytics needs. 
-            All plans include a 14-day free trial.
-          </p>
+
+        {/* Billing Toggle */}
+        <div className="flex justify-center mb-12">
+          <div className="flex items-center space-x-4 bg-muted/30 rounded-full p-1">
+            <button
+              onClick={() => setIsAnnual(true)}
+              className={`px-6 py-2 text-sm font-medium rounded-full transition-all duration-200 ${
+                isAnnual 
+                  ? 'bg-background text-foreground shadow-sm' 
+                  : 'text-muted-foreground hover:text-foreground'
+              }`}
+            >
+              Annually
+            </button>
+            <button
+              onClick={() => setIsAnnual(false)}
+              className={`px-6 py-2 text-sm font-medium rounded-full transition-all duration-200 ${
+                !isAnnual 
+                  ? 'bg-background text-foreground shadow-sm' 
+                  : 'text-muted-foreground hover:text-foreground'
+              }`}
+            >
+              Monthly
+            </button>
+          </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-7xl mx-auto">
+        {/* Pricing Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto">
           {plans.map((plan, index) => (
             <Card 
               key={index}
-              className={`relative bg-card-gradient border-border hover:shadow-glow transition-all duration-300 ${
-                plan.popular 
-                  ? 'border-primary shadow-glow scale-105' 
-                  : 'hover:border-primary/30'
-              }`}
+              className={`relative transition-all duration-300 hover:shadow-lg ${plan.cardStyle}`}
             >
               {plan.popular && (
-                <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
-                  <div className="bg-hero-gradient px-4 py-2 rounded-full flex items-center text-background text-sm font-medium">
-                    <Star className="w-4 h-4 mr-1" />
-                    Most Popular
+                <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
+                  <div className="bg-green-600 text-white px-3 py-1 rounded-full text-xs font-medium">
+                    Popular
                   </div>
                 </div>
               )}
               
-              <CardHeader className="text-center pb-6">
-                <CardTitle className="text-2xl font-bold">{plan.name}</CardTitle>
-                <CardDescription className="text-muted-foreground mb-4">
-                  {plan.description}
-                </CardDescription>
-                <div className="flex items-baseline justify-center">
-                  <span className="text-4xl font-bold">{plan.price}</span>
-                  <span className="text-muted-foreground ml-1">{plan.period}</span>
+              <CardHeader className="pb-8">
+                <div className="space-y-4">
+                  <h3 className="text-2xl font-bold">{plan.name}</h3>
+                  <p className="text-muted-foreground text-sm">{plan.subtitle}</p>
+                  
+                  <div className="space-y-2">
+                    <div className="flex items-baseline space-x-1">
+                      <span className="text-4xl font-bold">
+                        ${plan.price === null ? "" : plan.price}
+                      </span>
+                      {plan.price === null && (
+                        <span className="text-2xl font-bold text-muted-foreground">
+                          Custom pricing
+                        </span>
+                      )}
+                    </div>
+                    <p className="text-sm text-muted-foreground">{plan.billingText}</p>
+                  </div>
                 </div>
               </CardHeader>
               
               <CardContent className="space-y-6">
                 <ul className="space-y-3">
                   {plan.features.map((feature, featureIndex) => (
-                    <li key={featureIndex} className="flex items-center">
-                      <Check className="w-5 h-5 text-primary mr-3 flex-shrink-0" />
-                      <span className="text-sm">{feature}</span>
+                    <li key={featureIndex} className="flex items-start">
+                      <Check className="w-5 h-5 text-green-500 mr-3 flex-shrink-0 mt-0.5" />
+                      <span className="text-sm text-foreground">{feature}</span>
                     </li>
                   ))}
                 </ul>
                 
                 <div className="pt-4">
                   <Button 
-                    variant={plan.popular ? "hero" : "outline"} 
+                    variant={plan.ctaVariant}
                     size="lg" 
-                    className="w-full"
+                    className={`w-full font-medium ${
+                      plan.popular 
+                        ? 'bg-green-600 hover:bg-green-700 text-white border-green-600'
+                        : ''
+                    }`}
                   >
                     {plan.cta}
                   </Button>
@@ -128,15 +154,6 @@ const Pricing = () => {
               </CardContent>
             </Card>
           ))}
-        </div>
-
-        <div className="mt-16 text-center">
-          <p className="text-muted-foreground mb-4">
-            Need a custom solution? We'd love to help.
-          </p>
-          <Button variant="ghost">
-            Contact our sales team
-          </Button>
         </div>
       </div>
     </section>
