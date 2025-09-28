@@ -5,7 +5,7 @@ const NewsletterSection: React.FC = () => {
     <section className="bg-gray-50 py-24 px-8">
       <div className="max-w-7xl mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-          <style jsx>{`
+          <style>{`
             @keyframes fadeInLeft {
               from {
                 opacity: 0;
@@ -53,6 +53,18 @@ const NewsletterSection: React.FC = () => {
             .animate-slideInUp {
               animation: slideInUp 0.6s ease-out forwards;
             }
+            .animate-slideInUp[data-animation-delay="0.2s"] {
+              animation-delay: 0.2s;
+            }
+            .animate-slideInUp[data-animation-delay="0.3s"] {
+              animation-delay: 0.3s;
+            }
+            .animate-slideInUp[data-animation-delay="0.4s"] {
+              animation-delay: 0.4s;
+            }
+            .animate-float[data-animation-delay="1s"] {
+              animation-delay: 1s;
+            }
             .animate-float {
               animation: float 3s ease-in-out infinite;
             }
@@ -70,7 +82,7 @@ const NewsletterSection: React.FC = () => {
               <h2 className="text-5xl font-bold text-gray-900 mb-8 leading-tight transition-colors duration-300 hover:text-gray-700">
                 Newsletters built-in.
               </h2>
-              <p className="text-xl text-gray-600 leading-relaxed animate-slideInUp" style={{animationDelay: '0.3s'}}>
+              <p className="text-xl text-gray-600 leading-relaxed animate-slideInUp" data-animation-delay="0.3s">
                 Deliver posts by email newsletter to your audience, so they'll be in 
                 the loop whenever something new goes live. Segment your audience 
                 and send multiple different newsletters based on preference.
@@ -82,7 +94,7 @@ const NewsletterSection: React.FC = () => {
           <div className="relative animate-fadeInRight">
             <div className="space-y-6">
               {/* Top Newsletter Card */}
-              <div className="bg-white rounded-2xl p-6 shadow-lg relative hover-lift animate-slideInUp" style={{animationDelay: '0.2s'}}>
+              <div className="bg-white rounded-2xl p-6 shadow-lg relative hover-lift animate-slideInUp" data-animation-delay="0.2s">
                 <div className="flex items-center justify-between mb-4">
                   <div className="w-3 h-3 bg-red-500 rounded-full animate-float"></div>
                 </div>
@@ -106,7 +118,7 @@ const NewsletterSection: React.FC = () => {
               </div>
 
               {/* Bottom Newsletter Interface */}
-              <div className="bg-white rounded-2xl p-6 shadow-lg hover-lift animate-slideInUp relative" style={{animationDelay: '0.4s'}}>
+              <div className="bg-white rounded-2xl p-6 shadow-lg hover-lift animate-slideInUp relative" data-animation-delay="0.4s">
                 <div className="flex items-center justify-between mb-6">
                   <div className="flex items-center space-x-3">
                     <div className="h-3 bg-gray-300 rounded-full w-32 transition-all duration-300 hover:bg-gray-400"></div>
@@ -116,7 +128,7 @@ const NewsletterSection: React.FC = () => {
                       </svg>
                     </div>
                   </div>
-                  <div className="w-12 h-12 bg-gray-800 rounded-full flex items-center justify-center hover:bg-gray-700 transition-all duration-300 hover:scale-110 cursor-pointer animate-float" style={{animationDelay: '1s'}}>
+                  <div className="w-12 h-12 bg-gray-800 rounded-full flex items-center justify-center hover:bg-gray-700 transition-all duration-300 hover:scale-110 cursor-pointer animate-float" data-animation-delay="1s">
                     <svg className="w-6 h-6 text-white transition-transform duration-300 hover:scale-110" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
                     </svg>

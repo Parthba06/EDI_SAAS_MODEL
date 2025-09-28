@@ -24,6 +24,30 @@ const AgenticHireSection: React.FC = () => {
 
   return (
     <section className="bg-black py-20 px-8 relative overflow-hidden">
+      <style>{`
+        .dotted-pattern-container {
+          left: 50%;
+          transform: translateX(-50%);
+          width: 150vw;
+          max-width: none;
+        }
+        .interactive-dot {
+          background-color: #9CA3AF;
+          opacity: 0.5;
+          transform: scale(1) translateY(0);
+          z-index: 1;
+        }
+        .dot-hovered {
+          background-color: rgba(255, 255, 255, calc(0.3 + var(--intensity) * 0.7));
+          opacity: 1;
+          transform: scale(calc(1 + var(--intensity) * 1.5)) translateY(calc(-1 * var(--intensity) * 6px));
+          box-shadow: 0 calc(4 + var(--intensity) * 8px) calc(15 + var(--intensity) * 15px) rgba(255, 255, 255, calc(var(--intensity) * 0.4));
+          z-index: 10;
+        }
+        .dot-center {
+          z-index: 20;
+        }
+      `}</style>
       <div className="max-w-7xl mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-start">
           {/* Left Content */}
@@ -103,13 +127,7 @@ const AgenticHireSection: React.FC = () => {
             {/* Interactive Dotted Pattern - Full Page Width */}
             <div className="mt-16 relative overflow-visible">
               <div 
-                className="absolute h-64"
-                style={{
-                  left: '50%',
-                  transform: 'translateX(-50%)',
-                  width: '150vw',
-                  maxWidth: 'none'
-                }}
+                className="absolute h-64 dotted-pattern-container"
               >
                 {/* Generate interactive dots */}
                 {Array.from({ length: 24 }).map((_, rowIndex) =>
@@ -121,23 +139,16 @@ const AgenticHireSection: React.FC = () => {
                     return (
                       <div
                         key={`${rowIndex}-${colIndex}`}
-                        className="absolute w-1 h-1 rounded-full transition-all duration-200 ease-out cursor-pointer"
+                        className={`absolute w-1 h-1 rounded-full transition-all duration-200 ease-out cursor-pointer interactive-dot ${
+                          isInHoverArea ? 'dot-hovered' : ''
+                        } ${isCenter ? 'dot-center' : ''}`}
                         style={{
+                          '--row': rowIndex,
+                          '--col': colIndex,
+                          '--intensity': intensity,
                           left: `${colIndex * 16}px`,
                           top: `${rowIndex * 16}px`,
-                          transformOrigin: 'center',
-                          backgroundColor: isInHoverArea 
-                            ? `rgba(255, 255, 255, ${0.3 + intensity * 0.7})` 
-                            : '#9CA3AF',
-                          opacity: isInHoverArea ? 1 : 0.5,
-                          transform: isInHoverArea 
-                            ? `scale(${1 + intensity * 1.5}) translateY(-${intensity * 6}px)` 
-                            : 'scale(1) translateY(0)',
-                          boxShadow: isInHoverArea 
-                            ? `0 ${4 + intensity * 8}px ${15 + intensity * 15}px rgba(255, 255, 255, ${intensity * 0.4})` 
-                            : 'none',
-                          zIndex: isCenter ? 20 : isInHoverArea ? 10 : 1
-                        }}
+                        } as React.CSSProperties}
                         onMouseEnter={() => {
                           setHoveredDot({ row: rowIndex, col: colIndex });
                         }}

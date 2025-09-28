@@ -3,6 +3,11 @@ import React from 'react';
 const BusinessSection = () => {
   return (
     <section className="bg-white py-20 px-4 sm:px-6 lg:px-8">
+      <style>{`
+        .bar-chart-item {
+          width: 6px;
+        }
+      `}</style>
       <div className="container mx-auto">
         {/* Main Heading */}
         <div className="text-center mb-16">
@@ -204,11 +209,12 @@ const BusinessSection = () => {
                       {[...Array(12)].map((_, i) => (
                         <div
                           key={i}
-                          className="bg-blue-500 rounded-sm"
+                          className="bg-blue-500 rounded-sm bar-chart-item"
                           style={{
+                            '--height': `${Math.random() * 80 + 20}%`,
                             height: `${Math.random() * 80 + 20}%`,
                             width: '6px'
-                          }}
+                          } as React.CSSProperties}
                         />
                       ))}
                     </div>
