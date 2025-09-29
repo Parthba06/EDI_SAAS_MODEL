@@ -1,0 +1,40 @@
+.dotted-pattern-container {
+  left: 50%;
+  transform: translateX(-50%);
+  width: 150vw;
+  max-width: none;
+}
+
+.interactive-dot {
+  background-color: #9CA3AF;
+  opacity: 0.5;
+  transform: scale(1) translateY(0);
+  z-index: 1;
+}
+
+.dot-hovered {
+  background-color: rgba(255, 255, 255, calc(0.3 + var(--intensity) * 0.7));
+  opacity: 1;
+  transform: scale(calc(1 + var(--intensity) * 1.5)) translateY(calc(-1 * var(--intensity) * 6px));
+  box-shadow: 0 calc(4 + var(--intensity) * 8px) calc(15 + var(--intensity) * 15px) rgba(255, 255, 255, calc(var(--intensity) * 0.4));
+  z-index: 10;
+}
+
+.dot-center {
+  z-index: 20;
+}
+
+.interactive-dot {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  transition: all 200ms ease-out;
+  cursor: pointer;
+  background-color: #9CA3AF;
+  opacity: 0.5;
+  transform: scale(1) translateY(0);
+  z-index: 1;
+  left: calc(var(--col, 0) * 16px);
+  top: calc(var(--row, 0) * 16px);
+}

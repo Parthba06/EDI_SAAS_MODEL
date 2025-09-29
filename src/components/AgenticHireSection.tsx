@@ -1,4 +1,12 @@
 import React, { useState } from 'react';
+import './AgenticHireSection.css';
+
+// Utility function to generate dynamic styles
+const getDotStyles = (rowIndex: number, colIndex: number, intensity: number) => ({
+  '--row': rowIndex,
+  '--col': colIndex,
+  '--intensity': intensity,
+} as React.CSSProperties);
 
 const AgenticHireSection: React.FC = () => {
   const [hoveredDot, setHoveredDot] = useState<{row: number, col: number} | null>(null);
@@ -24,30 +32,6 @@ const AgenticHireSection: React.FC = () => {
 
   return (
     <section className="bg-black py-20 px-8 relative overflow-hidden">
-      <style>{`
-        .dotted-pattern-container {
-          left: 50%;
-          transform: translateX(-50%);
-          width: 150vw;
-          max-width: none;
-        }
-        .interactive-dot {
-          background-color: #9CA3AF;
-          opacity: 0.5;
-          transform: scale(1) translateY(0);
-          z-index: 1;
-        }
-        .dot-hovered {
-          background-color: rgba(255, 255, 255, calc(0.3 + var(--intensity) * 0.7));
-          opacity: 1;
-          transform: scale(calc(1 + var(--intensity) * 1.5)) translateY(calc(-1 * var(--intensity) * 6px));
-          box-shadow: 0 calc(4 + var(--intensity) * 8px) calc(15 + var(--intensity) * 15px) rgba(255, 255, 255, calc(var(--intensity) * 0.4));
-          z-index: 10;
-        }
-        .dot-center {
-          z-index: 20;
-        }
-      `}</style>
       <div className="max-w-7xl mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-start">
           {/* Left Content */}
@@ -142,13 +126,7 @@ const AgenticHireSection: React.FC = () => {
                         className={`absolute w-1 h-1 rounded-full transition-all duration-200 ease-out cursor-pointer interactive-dot ${
                           isInHoverArea ? 'dot-hovered' : ''
                         } ${isCenter ? 'dot-center' : ''}`}
-                        style={{
-                          '--row': rowIndex,
-                          '--col': colIndex,
-                          '--intensity': intensity,
-                          left: `${colIndex * 16}px`,
-                          top: `${rowIndex * 16}px`,
-                        } as React.CSSProperties}
+                        style={getDotStyles(rowIndex, colIndex, intensity)}
                         onMouseEnter={() => {
                           setHoveredDot({ row: rowIndex, col: colIndex });
                         }}

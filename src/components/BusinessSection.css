@@ -1,0 +1,6 @@
+.bar-chart-item {
+  width: 6px;
+  height: var(--height, 50%);
+  background-color: #3b82f6;
+  border-radius: 2px;
+}

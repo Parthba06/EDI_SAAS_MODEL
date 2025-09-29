@@ -1,13 +1,14 @@
 import React from 'react';
+import './BusinessSection.css';
+
+// Utility function to generate random bar height
+const getBarStyles = () => ({
+  '--height': `${Math.random() * 80 + 20}%`,
+} as React.CSSProperties);
 
 const BusinessSection = () => {
   return (
     <section className="bg-white py-20 px-4 sm:px-6 lg:px-8">
-      <style>{`
-        .bar-chart-item {
-          width: 6px;
-        }
-      `}</style>
       <div className="container mx-auto">
         {/* Main Heading */}
         <div className="text-center mb-16">
@@ -210,11 +211,7 @@ const BusinessSection = () => {
                         <div
                           key={i}
                           className="bg-blue-500 rounded-sm bar-chart-item"
-                          style={{
-                            '--height': `${Math.random() * 80 + 20}%`,
-                            height: `${Math.random() * 80 + 20}%`,
-                            width: '6px'
-                          } as React.CSSProperties}
+                          style={getBarStyles()}
                         />
                       ))}
                     </div>
