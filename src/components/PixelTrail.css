@@ -1,0 +1,14 @@
+.pixel-canvas {
+  width: 100% !important;
+  height: 100% !important;
+  display: block;
+}
+
+/* Hide the SVG used only for filter defs */
+.goo-filter-container {
+  position: absolute;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
