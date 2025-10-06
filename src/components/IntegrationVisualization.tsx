@@ -1,7 +1,6 @@
-import React, { useEffect, useRef } from 'react';
+import React from 'react';
 import { 
   BarChart3, 
-  Brain, 
   Instagram, 
   Youtube, 
   Twitter, 
@@ -17,239 +16,316 @@ import {
 } from 'lucide-react';
 
 const IntegrationVisualization = () => {
-  const svgRef = useRef<SVGSVGElement>(null);
-
-  useEffect(() => {
-    // Animate dots along paths
-    const dots = document.querySelectorAll('.moving-dot');
-    dots.forEach((dot, index) => {
-      const element = dot as HTMLElement;
-      element.style.animationDelay = `${index * 0.5}s`;
-    });
-  }, []);
-
-  const platforms = [
+  const integrationCategories = [
     {
       name: 'Instagram',
       icons: [
-        { name: 'Instagram', icon: Instagram, color: 'text-pink-500' },
-        { name: 'Text', icon: Type, color: 'text-gray-500' },
-        { name: 'Bolt', icon: Zap, color: 'text-gray-500' },
-        { name: 'Chart', icon: BarChart3, color: 'text-gray-500' }
+        { icon: Instagram, color: 'text-pink-500' },
+        { icon: Type, color: 'text-gray-400' },
+        { icon: Zap, color: 'text-gray-400' },
+        { icon: BarChart3, color: 'text-gray-400' }
       ]
     },
     {
       name: 'TikTok',
       icons: [
-        { name: 'TikTok', icon: Activity, color: 'text-black' },
-        { name: 'Text', icon: Type, color: 'text-gray-500' },
-        { name: 'Bolt', icon: Zap, color: 'text-gray-500' },
-        { name: 'Chart', icon: TrendingUp, color: 'text-gray-500' }
+        { icon: Activity, color: 'text-black' },
+        { icon: Type, color: 'text-gray-400' },
+        { icon: Zap, color: 'text-gray-400' },
+        { icon: TrendingUp, color: 'text-gray-400' }
       ]
     },
     {
       name: 'YouTube',
       icons: [
-        { name: 'YouTube', icon: Youtube, color: 'text-red-500' },
-        { name: 'Text', icon: Type, color: 'text-gray-500' },
-        { name: 'Users', icon: Users, color: 'text-gray-500' },
-        { name: 'Chart', icon: BarChart3, color: 'text-gray-500' }
+        { icon: Youtube, color: 'text-red-500' },
+        { icon: Type, color: 'text-gray-400' },
+        { icon: Users, color: 'text-gray-400' },
+        { icon: BarChart3, color: 'text-gray-400' }
       ]
     },
     {
       name: 'Twitter/X',
       icons: [
-        { name: 'Twitter', icon: Twitter, color: 'text-black' },
-        { name: 'Bolt', icon: Zap, color: 'text-gray-500' },
-        { name: 'Users', icon: Users, color: 'text-gray-500' },
-        { name: 'Chart', icon: BarChart3, color: 'text-gray-500' }
+        { icon: Twitter, color: 'text-black' },
+        { icon: Zap, color: 'text-gray-400' },
+        { icon: Users, color: 'text-gray-400' },
+        { icon: BarChart3, color: 'text-gray-400' }
       ]
     },
     {
       name: 'LinkedIn',
       icons: [
-        { name: 'LinkedIn', icon: Linkedin, color: 'text-blue-600' },
-        { name: 'Text', icon: Type, color: 'text-gray-500' },
-        { name: 'Users', icon: Users, color: 'text-gray-500' },
-        { name: 'Chart', icon: BarChart3, color: 'text-gray-500' }
+        { icon: Linkedin, color: 'text-blue-600' },
+        { icon: Type, color: 'text-gray-400' },
+        { icon: Users, color: 'text-gray-400' },
+        { icon: BarChart3, color: 'text-gray-400' }
       ]
     },
     {
       name: 'Twitch',
       icons: [
-        { name: 'Twitch', icon: MessageSquare, color: 'text-purple-500' },
-        { name: 'Bolt', icon: Zap, color: 'text-gray-500' },
-        { name: 'Users', icon: Users, color: 'text-gray-500' },
-        { name: 'Chart', icon: BarChart3, color: 'text-gray-500' }
+        { icon: MessageSquare, color: 'text-purple-500' },
+        { icon: Zap, color: 'text-gray-400' },
+        { icon: Users, color: 'text-gray-400' },
+        { icon: BarChart3, color: 'text-gray-400' }
       ]
     },
     {
       name: 'Pinterest',
       icons: [
-        { name: 'Pinterest', icon: Image, color: 'text-red-500' },
-        { name: 'Text', icon: Type, color: 'text-gray-500' },
-        { name: 'Trend', icon: TrendingUp, color: 'text-gray-500' },
-        { name: 'Chart', icon: BarChart3, color: 'text-gray-500' }
+        { icon: Image, color: 'text-red-500' },
+        { icon: Type, color: 'text-gray-400' },
+        { icon: TrendingUp, color: 'text-gray-400' },
+        { icon: BarChart3, color: 'text-gray-400' }
       ]
     }
   ];
 
   return (
-    <section className="py-16 px-4 sm:px-6 lg:px-8 bg-gray-50 min-h-screen">
-      <div className="max-w-7xl mx-auto">
-        {/* Main Integration Dashboard */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start h-screen">
+    <div className="w-full min-h-screen py-12 md:py-16 lg:py-20 px-4 md:px-6 lg:px-8" style={{ backgroundColor: '#EAEAEA' }}>
+      <div className="max-w-[1400px] mx-auto">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 xl:gap-16 items-center">
           
-          {/* Left Section - Performance Dashboard and AI Agent */}
-          <div className="space-y-8">
-            {/* Performance Card */}
-            <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-200 max-w-sm">
-              <div className="flex items-center justify-end mb-4">
-                <div className="flex space-x-1">
-                  <div className="w-2 h-2 bg-gray-400 rounded-full"></div>
-                  <div className="w-2 h-2 bg-gray-400 rounded-full"></div>
-                  <div className="w-2 h-2 bg-gray-400 rounded-full"></div>
-                </div>
-              </div>
-              <h3 className="text-sm font-medium text-gray-500 mb-6">Performance</h3>
-              
-              {/* Engagement Metric */}
-              <div className="mb-6">
-                <div className="flex items-center justify-between mb-2">
-                  <div className="flex items-center space-x-3">
-                    <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
-                    <span className="text-sm text-gray-700">Engagement</span>
-                  </div>
-                  <div className="text-sm font-semibold text-green-600">+24%</div>
-                </div>
-                <div className="w-full bg-gray-200 rounded-full h-2.5">
-                  <div className="bg-blue-500 h-2.5 rounded-full" style={{width: '75%'}}></div>
-                </div>
-              </div>
-              
-              {/* New Followers Metric */}
-              <div className="mb-8">
-                <div className="flex items-center justify-between mb-2">
-                  <div className="flex items-center space-x-3">
-                    <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-                    <span className="text-sm text-gray-700">New followers</span>
-                  </div>
-                  <div className="text-sm font-semibold text-green-600">+18%</div>
-                </div>
-                <div className="w-full bg-gray-200 rounded-full h-2.5">
-                  <div className="bg-green-500 h-2.5 rounded-full" style={{width: '60%'}}></div>
-                </div>
-              </div>
-              
-              <div className="text-center">
-                <div className="text-sm font-semibold text-gray-900 mb-4">Your product</div>
-              </div>
-            </div>
-
-            {/* AI Agent Section */}
-            <div className="flex flex-col items-center space-y-4">
-              <div className="w-24 h-24 bg-blue-500 rounded-full flex items-center justify-center shadow-lg">
-                <Brain className="w-12 h-12 text-white" />
-              </div>
-              <div className="text-center">
-                <h3 className="text-lg font-semibold text-gray-900">Your AI Agent</h3>
-                <p className="text-sm text-gray-600">Intelligent analytics engine</p>
-              </div>
-            </div>
-          </div>
-
-          {/* Center Section - Connection Hub */}
-          <div className="relative flex flex-col items-center justify-center h-full">
-            {/* Unified Analytics Badge */}
-            <div className="bg-white rounded-full px-6 py-2 shadow-md border border-orange-200 mb-8">
-              <span className="text-sm font-medium text-gray-900">Unified Analytics</span>
-            </div>
-            
-            {/* Connection Lines and Central Node */}
-            <div className="relative mb-8">
-              {/* AI Analysis Engine Badge */}
-              <div className="bg-white rounded-full px-6 py-2 shadow-md border border-gray-300 mb-8">
-                <span className="text-sm font-medium text-gray-900">AI Analysis Engine</span>
-              </div>
-              
-              {/* Central Diamond */}
-              <div className="flex justify-center">
-                <div className="w-8 h-8 bg-gray-900 transform rotate-45 shadow-lg"></div>
-              </div>
-            </div>
-
-            {/* Connection Lines SVG */}
-            <svg
-              className="absolute inset-0 w-full h-full pointer-events-none"
-              viewBox="0 0 400 400"
-              style={{ zIndex: -1 }}
-            >
-              {/* Solid lines from left */}
-              {[...Array(7)].map((_, index) => {
-                const startY = 50 + (index * 40);
-                const centerY = 200;
-                return (
-                  <path
-                    key={`left-${index}`}
-                    d={`M 50 ${startY} Q 150 ${startY} 200 ${centerY}`}
-                    stroke="#000"
-                    strokeWidth="1"
-                    fill="none"
-                    opacity="0.6"
-                  />
-                );
-              })}
-              
-              {/* Dotted lines to right */}
-              {[...Array(7)].map((_, index) => {
-                const endY = 50 + (index * 40);
-                const centerY = 200;
-                return (
-                  <path
-                    key={`right-${index}`}
-                    d={`M 200 ${centerY} Q 250 ${endY} 350 ${endY}`}
-                    stroke="#000"
-                    strokeWidth="1"
-                    strokeDasharray="3,3"
-                    fill="none"
-                    opacity="0.6"
-                  />
-                );
-              })}
-            </svg>
-          </div>
-
-          {/* Right Section - Platform Integrations */}
-          <div className="space-y-3">
-            {platforms.map((platform, index) => (
-              <div key={platform.name} className="bg-white rounded-lg p-4 shadow-sm border border-gray-200">
-                <div className="flex items-center justify-between">
-                  <h4 className="text-sm font-medium text-gray-900 min-w-[80px]">
-                    {platform.name}
-                  </h4>
-                  <div className="flex space-x-2">
-                    {platform.icons.map((iconData, iconIndex) => (
+          {/* LEFT COLUMN - Integration Categories */}
+          <div className="lg:col-span-3 space-y-3 md:space-y-4">
+            {integrationCategories.map((category, index) => (
+              <div 
+                key={category.name}
+                className="bg-white rounded-lg p-3 md:p-3.5 shadow-[0_2px_8px_rgba(0,0,0,0.08)] hover:shadow-[0_4px_12px_rgba(0,0,0,0.12)] transition-all duration-200 cursor-pointer group"
+              >
+                <div className="flex items-center justify-between gap-3">
+                  <div className="flex items-center space-x-2 md:space-x-3">
+                    {category.icons.slice(0, 4).map((iconData, iconIndex) => (
                       <div
                         key={iconIndex}
-                        className="w-7 h-7 bg-gray-100 rounded-md flex items-center justify-center hover:bg-gray-200 transition-colors"
+                        className="w-5 h-5 md:w-6 md:h-6 flex items-center justify-center flex-shrink-0"
                       >
-                        <iconData.icon className={`w-4 h-4 ${iconData.color}`} />
+                        <iconData.icon className={`w-3.5 h-3.5 md:w-4 md:h-4 ${iconData.color}`} strokeWidth={1.5} />
                       </div>
                     ))}
                   </div>
+                  <h4 className="text-xs md:text-sm font-medium text-gray-900 whitespace-nowrap">
+                    {category.name}
+                  </h4>
                 </div>
               </div>
             ))}
+          </div>
+
+          {/* CENTER COLUMN - Merge Visualization */}
+          <div className="lg:col-span-5 relative h-[400px] md:h-[450px] lg:h-[500px] hidden lg:block">
+            <svg 
+              className="absolute inset-0 w-full h-full pointer-events-none" 
+              viewBox="0 0 600 500" 
+              preserveAspectRatio="xMidYMid meet"
+            >
+              <defs>
+                <linearGradient id="lineGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stopColor="#D1D5DB" stopOpacity="0" />
+                  <stop offset="20%" stopColor="#D1D5DB" stopOpacity="0.6" />
+                  <stop offset="50%" stopColor="#D1D5DB" stopOpacity="1" />
+                  <stop offset="80%" stopColor="#D1D5DB" stopOpacity="0.6" />
+                  <stop offset="100%" stopColor="#D1D5DB" stopOpacity="0" />
+                </linearGradient>
+              </defs>
+
+              {/* Animated lines from left categories to center */}
+              {integrationCategories.map((_, index) => {
+                const startY = 40 + (index * 65);
+                const centerY = 250;
+                const controlX1 = 120;
+                const controlY1 = startY + (centerY - startY) * 0.2;
+                const controlX2 = 220;
+                const controlY2 = startY + (centerY - startY) * 0.7;
+                
+                return (
+                  <g key={`line-left-${index}`}>
+                    <path
+                      d={`M 0 ${startY} C ${controlX1} ${controlY1}, ${controlX2} ${controlY2}, 280 ${centerY}`}
+                      stroke="url(#lineGradient)"
+                      strokeWidth="1.5"
+                      strokeDasharray="4 4"
+                      fill="none"
+                      opacity="0.5"
+                    />
+                    
+                    {/* Animated dot */}
+                    <circle r="3.5" fill="#FF6E06">
+                      <animateMotion
+                        dur={`${4 + index * 0.4}s`}
+                        repeatCount="indefinite"
+                        path={`M 0 ${startY} C ${controlX1} ${controlY1}, ${controlX2} ${controlY2}, 280 ${centerY}`}
+                      />
+                      <animate
+                        attributeName="opacity"
+                        values="0;1;1;1;0"
+                        dur={`${4 + index * 0.4}s`}
+                        repeatCount="indefinite"
+                      />
+                    </circle>
+                  </g>
+                );
+              })}
+
+              {/* Animated line from center to right */}
+              <g>
+                <path
+                  d="M 320 250 L 600 250"
+                  stroke="url(#lineGradient)"
+                  strokeWidth="1.5"
+                  strokeDasharray="4 4"
+                  fill="none"
+                  opacity="0.5"
+                />
+                
+                {/* Animated dot to right */}
+                <circle r="3.5" fill="#FF6E06">
+                  <animateMotion
+                    dur="3s"
+                    repeatCount="indefinite"
+                    path="M 320 250 L 600 250"
+                  />
+                  <animate
+                    attributeName="opacity"
+                    values="0;1;1;1;0"
+                    dur="3s"
+                    repeatCount="indefinite"
+                  />
+                </circle>
+              </g>
+            </svg>
             
-            <div className="pt-4 text-center">
-              <p className="text-xs text-gray-400">
-                and dozens more platforms
-              </p>
+            {/* Central Merge Icon */}
+            <div className="relative z-10 flex flex-col items-center justify-center h-full">
+              <div className="w-36 h-36 bg-white rounded-full flex items-center justify-center shadow-[0_8px_30px_rgba(0,0,0,0.12)]">
+                <svg 
+                  viewBox="0 0 100 100" 
+                  className="w-16 h-16"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  {/* Merge icon - three lines converging to one */}
+                  <path 
+                    d="M 15 15 L 50 50" 
+                    stroke="#1F2937" 
+                    strokeWidth="5" 
+                    strokeLinecap="round"
+                  />
+                  <path 
+                    d="M 15 50 L 50 50" 
+                    stroke="#1F2937" 
+                    strokeWidth="5" 
+                    strokeLinecap="round"
+                  />
+                  <path 
+                    d="M 15 85 L 50 50" 
+                    stroke="#1F2937" 
+                    strokeWidth="5" 
+                    strokeLinecap="round"
+                  />
+                  <path 
+                    d="M 50 50 L 85 50" 
+                    stroke="#1F2937" 
+                    strokeWidth="5" 
+                    strokeLinecap="round"
+                  />
+                  <circle cx="50" cy="50" r="6" fill="#1F2937" />
+                </svg>
+              </div>
+              <div className="mt-6 text-center">
+                <h3 className="text-xl font-bold text-gray-900">Merge</h3>
+              </div>
             </div>
           </div>
+          
+          {/* RIGHT COLUMN - Dashboard Preview */}
+          <div className="lg:col-span-4">
+            <div className="bg-white rounded-xl shadow-[0_2px_20px_rgba(0,0,0,0.08)] p-5 md:p-6 relative max-w-md mx-auto lg:max-w-none">
+              {/* Three dots menu */}
+              <div className="absolute top-3 md:top-4 right-3 md:right-4 flex space-x-1">
+                <div className="w-1 h-1 bg-gray-400 rounded-full"></div>
+                <div className="w-1 h-1 bg-gray-400 rounded-full"></div>
+                <div className="w-1 h-1 bg-gray-400 rounded-full"></div>
+              </div>
+
+              {/* Dashboard Header */}
+              <div className="mb-5 md:mb-6">
+                <span className="text-xs font-medium text-gray-500">Your product</span>
+              </div>
+
+              {/* Performance Section */}
+              <div className="mb-5 md:mb-6">
+                <h4 className="text-xs font-medium text-gray-500 mb-3">Performance</h4>
+                <div className="flex items-end space-x-1 md:space-x-1.5 h-20 md:h-24">
+                  {[30, 50, 35, 65, 45, 60, 40, 55].map((height, index) => (
+                    <div 
+                      key={index}
+                      className="flex-1 bg-gray-200 rounded-t-sm"
+                      style={{ height: `${height}%` }}
+                    ></div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Pie Chart */}
+              <div className="mb-5 md:mb-6 flex justify-end">
+                <div className="relative w-14 h-14 md:w-16 md:h-16">
+                  <svg viewBox="0 0 100 100" className="transform -rotate-90">
+                    <circle
+                      cx="50"
+                      cy="50"
+                      r="35"
+                      fill="none"
+                      stroke="#E5E7EB"
+                      strokeWidth="20"
+                    />
+                    <circle
+                      cx="50"
+                      cy="50"
+                      r="35"
+                      fill="none"
+                      stroke="#FF6E06"
+                      strokeWidth="20"
+                      strokeDasharray="220"
+                      strokeDashoffset="55"
+                    />
+                  </svg>
+                </div>
+              </div>
+
+              {/* Metrics Grid */}
+              <div className="grid grid-cols-3 gap-2 md:gap-3 mb-5 md:mb-6">
+                <div className="bg-gray-50 rounded p-1.5 md:p-2">
+                  <div className="text-[9px] md:text-[10px] text-gray-500 mb-1">Business p&l</div>
+                  <div className="h-1 bg-gray-200 rounded"></div>
+                </div>
+                <div className="bg-gray-50 rounded p-1.5 md:p-2">
+                  <div className="text-[9px] md:text-[10px] text-gray-500 mb-1">New leads</div>
+                  <div className="h-1 bg-gray-200 rounded"></div>
+                </div>
+                <div className="bg-gray-50 rounded p-1.5 md:p-2">
+                  <div className="text-[9px] md:text-[10px] text-gray-500 mb-1">Accounts payable</div>
+                  <div className="h-1 bg-gray-200 rounded"></div>
+                </div>
+              </div>
+
+              {/* Customers Section */}
+              <div className="pt-4 border-t border-gray-100">
+                <h4 className="text-xs font-medium text-gray-500 mb-3">Customers</h4>
+                <div className="space-y-2">
+                  {[1, 2, 3, 4].map((item) => (
+                    <div key={item} className="h-1.5 bg-gray-100 rounded"></div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+          
         </div>
       </div>
-    </section>
+
+    </div>
   );
 };
 

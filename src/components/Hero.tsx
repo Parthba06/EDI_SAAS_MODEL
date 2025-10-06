@@ -31,10 +31,10 @@ export default function Home() {
   }, []);
 
   return (
-    <main className="relative w-full min-h-screen lg:h-screen overflow-visible lg:overflow-hidden bg-neutral-100 bg-[radial-gradient(circle_at_1px_1px,_rgba(0,0,0,0.06)_1px,_transparent_0)] bg-[length:28px_28px]">
+    <main className="relative w-full min-h-screen lg:h-screen overflow-hidden" style={{ backgroundColor: '#EAEAEA' }}>
       {/* Right flower/leaf decorative SVG */}
       <svg
-        className="pointer-events-none absolute -right-20 bottom-0 h-[130%] w-auto opacity-30 grayscale z-10"
+        className="pointer-events-none absolute -right-20 bottom-0 h-[130%] w-auto opacity-20 grayscale z-10"
         viewBox="0 0 1000 1400"
         aria-hidden="true"
       >
@@ -45,29 +45,29 @@ export default function Home() {
       </svg>
 
       {/* Logo - Top Left */}
-      <div className="absolute top-8 left-8 z-30">
+      <div className="absolute top-6 md:top-8 left-6 md:left-8 z-30">
         <div className="flex items-center space-x-2">
           <div className="w-8 h-8 bg-black rounded-lg flex items-center justify-center">
             <BarChart3 className="w-5 h-5 text-white" />
           </div>
-          <span className="text-xl font-bold text-black">
+          <span className="text-lg md:text-xl font-bold text-black">
             KAIROZ
           </span>
         </div>
       </div>
 
       {/* Get Started Button - Top Right */}
-      <div className="absolute top-8 right-8 z-30">
+      <div className="absolute top-6 md:top-8 right-6 md:right-8 z-30">
         <Button
           variant="default"
-          className="px-6 py-2 bg-white text-black hover:bg-gray-100 font-semibold rounded-lg transition-all duration-300 hover:scale-105"
+          className="px-4 md:px-6 py-2 bg-white text-black hover:bg-gray-100 font-semibold rounded-lg transition-all duration-300 hover:scale-105 text-sm md:text-base"
         >
           Get Started
         </Button>
       </div>
 
       {/* Text Content */}
-      <div className="relative mt-24 md:mt-0 md:absolute md:left-0 md:top-28 lg:top-32 p-6 md:p-10 lg:p-16 max-w-[1500px] z-30">
+      <div className="relative pt-24 md:pt-32 lg:pt-40 px-6 md:px-10 lg:px-16 max-w-[1400px] z-30">
         {/* Agency pill */}
         <div ref={eyebrowRef} className="eyebrow-seq inline-flex items-center gap-2 text-black text-xl md:text-1xl font-hero-sans font-semibold mb-6">
           <span className="inline-block h-2 w-3 bg-emerald-500 rounded-[3px] rotate-45" />
