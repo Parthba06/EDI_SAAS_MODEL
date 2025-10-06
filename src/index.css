@@ -30,6 +30,57 @@
   min-height: 100%;
 }
 
+/* Textured background matching the provided image */
+.textured-bg {
+  background-color: #e8e8e8;
+  background-image: 
+    radial-gradient(circle at 1px 1px, rgba(0, 0, 0, 0.08) 1px, transparent 0),
+    linear-gradient(90deg, rgba(0, 0, 0, 0.02) 50%, transparent 50%),
+    linear-gradient(rgba(0, 0, 0, 0.02) 50%, transparent 50%);
+  background-size: 4px 4px, 2px 2px, 2px 2px;
+  background-position: 0 0, 0 0, 1px 1px;
+  min-height: 100vh;
+  width: 100%;
+}
+
+/* Alternative textured background with noise effect */
+.noise-bg {
+  background-color: #e6e6e6;
+  background-image: 
+    url('data:image/svg+xml;utf8,<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><filter id="noiseFilter"><feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%25" height="100%25" filter="url(%23noiseFilter)" opacity="0.1"/></svg>');
+  background-size: 200px 200px;
+  min-height: 100vh;
+  width: 100%;
+}
+
+/* Simple dotted texture background */
+.dotted-bg {
+  background-color: #e7e7e7;
+  background-image: radial-gradient(circle, rgba(0, 0, 0, 0.05) 1px, transparent 1px);
+  background-size: 8px 8px;
+  min-height: 100vh;
+  width: 100%;
+}
+
+/* Minimal, seamless "premium paper" texture (opt-in, no UI change by default)
+   - Clean white/very light gray base comes from the element's own background color (we don't set it here)
+   - Subtle organic grain via SVG fractal noise with stitchTiles="stitch" (seamless)
+   - Extremely low opacity to keep it professional and modern
+*/
+.paper-bg {
+  /* We only overlay the grain so existing colors remain unchanged */
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='1.1' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/></svg>");
+  background-size: 240px 240px; /* seamless tile */
+  background-repeat: repeat;
+}
+
+/* Slightly stronger variant, still subtle */
+.paper-bg-strong {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='1.1' numOctaves='3' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.055'/></svg>");
+  background-size: 240px 240px;
+  background-repeat: repeat;
+}
+
 /* Eyebrow slide animation */
 .eyebrow-seq {
   opacity: 0;
