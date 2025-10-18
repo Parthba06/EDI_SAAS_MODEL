@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { BarChart3, ArrowDown } from "lucide-react";
+import ImageTrail from "./ImageTrail";
 
 export default function Home() {
   const titleRef = useRef<HTMLHeadingElement | null>(null);
@@ -32,6 +33,27 @@ export default function Home() {
 
   return (
     <main className="relative w-full min-h-screen lg:h-screen overflow-hidden" style={{ backgroundColor: '#EAEAEA' }}>
+      {/* ImageTrail Effect */}
+      <div className="absolute inset-0 z-20">
+        <ImageTrail
+          items={[
+            'https://picsum.photos/id/287/300/300',
+            'https://picsum.photos/id/1001/300/300',
+            'https://picsum.photos/id/1025/300/300',
+            'https://picsum.photos/id/1026/300/300',
+            'https://picsum.photos/id/1027/300/300',
+            'https://picsum.photos/id/1028/300/300',
+            'https://picsum.photos/id/1029/300/300',
+            'https://picsum.photos/id/1030/300/300',
+            'https://picsum.photos/id/1031/300/300',
+            'https://picsum.photos/id/1032/300/300',
+            'https://picsum.photos/id/1033/300/300',
+            'https://picsum.photos/id/1035/300/300'
+          ]}
+          variant={1}
+        />
+      </div>
+
       {/* Right flower/leaf decorative SVG */}
       <svg
         className="pointer-events-none absolute -right-20 bottom-0 h-[130%] w-auto opacity-20 grayscale z-10"
@@ -45,7 +67,7 @@ export default function Home() {
       </svg>
 
       {/* Logo - Top Left */}
-      <div className="absolute top-6 md:top-8 left-6 md:left-8 z-30">
+      <div className="absolute top-6 md:top-8 left-6 md:left-8 z-50">
         <div className="flex items-center space-x-2">
           <div className="w-8 h-8 bg-black rounded-lg flex items-center justify-center">
             <BarChart3 className="w-5 h-5 text-white" />
@@ -57,7 +79,7 @@ export default function Home() {
       </div>
 
       {/* Get Started Button - Top Right */}
-      <div className="absolute top-6 md:top-8 right-6 md:right-8 z-30">
+      <div className="absolute top-6 md:top-8 right-6 md:right-8 z-50">
         <Button
           variant="default"
           className="px-4 md:px-6 py-2 bg-white text-black hover:bg-gray-100 font-semibold rounded-lg transition-all duration-300 hover:scale-105 text-sm md:text-base"
@@ -67,7 +89,7 @@ export default function Home() {
       </div>
 
       {/* Text Content */}
-      <div className="relative pt-24 md:pt-32 lg:pt-40 px-6 md:px-10 lg:px-16 max-w-[1400px] z-30">
+      <div className="relative pt-24 md:pt-32 lg:pt-40 px-6 md:px-10 lg:px-16 max-w-[1400px] z-50 pointer-events-none">
         {/* Agency pill */}
         <div ref={eyebrowRef} className="eyebrow-seq inline-flex items-center gap-2 text-black text-xl md:text-1xl font-hero-sans font-semibold mb-6">
           <span className="inline-block h-2 w-3 bg-emerald-500 rounded-[3px] rotate-45" />
@@ -90,8 +112,8 @@ export default function Home() {
         </p>
 
         {/* Discover more CTA */}
-        <div className="mt-6 flex items-center gap-2 text-base md:text-lg text-black font-hero-sans font-semibold">
-          <a href="#" className="underline-offset-4 hover:underline">Discover more</a>
+        <div className="mt-6 flex items-center gap-2 text-base md:text-lg text-black font-hero-sans font-semibold pointer-events-auto">
+          <a href="#" className="underline-offset-4 hover:underline pointer-events-auto">Discover more</a>
           <span className="inline-flex h-6 w-6 items-center justify-center rounded-md bg-green-300">
             <ArrowDown className="h-3 w-3 text-black" />
           </span>

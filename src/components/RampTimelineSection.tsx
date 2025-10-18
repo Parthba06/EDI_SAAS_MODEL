@@ -2,7 +2,7 @@ import React from 'react';
 
 const RampTimelineSection = () => {
   return (
-    <section className="bg-white py-24 px-4 sm:px-6 lg:px-8">
+    <section className="py-24 px-4 sm:px-6 lg:px-8" style={{ backgroundColor: '#EAEAEA' }}>
       <div className="container mx-auto max-w-6xl">
         {/* Header */}
         <div className="text-center mb-20">

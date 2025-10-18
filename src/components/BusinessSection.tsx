@@ -8,7 +8,7 @@ const getBarStyles = () => ({
 
 const BusinessSection = () => {
   return (
-    <section className="bg-white py-20 px-4 sm:px-6 lg:px-8">
+    <section className="py-20 px-4 sm:px-6 lg:px-8" style={{ backgroundColor: '#EAEAEA' }}>
       <div className="container mx-auto">
         {/* Main Heading */}
         <div className="text-center mb-16">

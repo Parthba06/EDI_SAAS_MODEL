@@ -2,7 +2,7 @@ import React from 'react';
 
 const RichMediaSection: React.FC = () => {
   return (
-    <section className="bg-gray-50 py-24 px-8">
+    <section className="py-24 px-8" style={{ backgroundColor: '#EAEAEA' }}>
       <div className="max-w-7xl mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           <style jsx>{`
