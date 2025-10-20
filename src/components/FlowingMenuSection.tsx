@@ -2,10 +2,10 @@ import FlowingMenu from './FlowingMenu';
 
 const FlowingMenuSection = () => {
   const demoItems = [
-    { link: '#', text: 'Mojave', image: 'https://picsum.photos/600/400?random=1' },
-    { link: '#', text: 'Sonoma', image: 'https://picsum.photos/600/400?random=2' },
-    { link: '#', text: 'Monterey', image: 'https://picsum.photos/600/400?random=3' },
-    { link: '#', text: 'Sequoia', image: 'https://picsum.photos/600/400?random=4' }
+    { link: '#', text: 'ANALYZE', image: 'https://picsum.photos/600/400?random=1' },
+    { link: '#', text: 'OPTIMIZE', image: 'https://picsum.photos/600/400?random=2' },
+    { link: '#', text: 'AUTOMATE', image: 'https://picsum.photos/600/400?random=3' },
+    { link: '#', text: 'GROW', image: 'https://picsum.photos/600/400?random=4' }
   ];
 
   return (
