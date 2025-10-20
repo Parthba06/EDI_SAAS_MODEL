@@ -5,6 +5,7 @@ interface MenuItemProps {
   link: string;
   text: string;
   image: string;
+  idx?: number;
 }
 
 interface FlowingMenuProps {
@@ -16,7 +17,7 @@ const FlowingMenu: React.FC<FlowingMenuProps> = ({ items = [] }) => {
     <div className="w-full h-full overflow-hidden">
       <nav className="flex flex-col h-full m-0 p-0">
         {items.map((item, idx) => (
-          <MenuItem key={idx} {...item} />
+          <MenuItem key={idx} {...item} idx={idx} />
         ))}
       </nav>
     </div>
@@ -72,6 +73,11 @@ const MenuItem: React.FC<MenuItemProps> = ({ link, text, image }) => {
 
   return (
     <div className="flex-1 relative overflow-hidden text-center shadow-[0_-1px_0_0_#fff]" ref={itemRef}>
+      <style>
+        {`
+          @keyframes marqueeX { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+        `}
+      </style>
       <a
         className="flex items-center justify-center h-full relative cursor-pointer uppercase no-underline font-semibold text-white text-[4vh] hover:text-[#060010] focus:text-white focus-visible:text-[#060010]"
         href={link}
@@ -85,7 +91,11 @@ const MenuItem: React.FC<MenuItemProps> = ({ link, text, image }) => {
         ref={marqueeRef}
       >
         <div className="h-full w-[200%] flex" ref={marqueeInnerRef}>
-          <div className="flex items-center relative h-full w-[200%] will-change-transform animate-marquee">
+          {/* Two identical halves to ensure seamless loop */}
+          <div className="flex items-center h-full w-1/2 will-change-transform" style={{ animation: 'marqueeX 18s linear infinite' }}>
+            {repeatedMarqueeContent}
+          </div>
+          <div className="flex items-center h-full w-1/2 will-change-transform" style={{ animation: 'marqueeX 18s linear infinite' }}>
             {repeatedMarqueeContent}
           </div>
         </div>
