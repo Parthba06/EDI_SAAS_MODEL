@@ -13,7 +13,7 @@ Successfully updated the entire website to use a consistent light gray color sch
 - **Primary Text**: `text-gray-900` (Dark gray for headings)
 - **Secondary Text**: `text-gray-700` (Medium gray for body text)
 - **Tertiary Text**: `text-gray-600` (Light gray for labels)
-- **Accent**: Orange (#FF6E06) for interactive elements
+- **Accent**: Mint Green (#6ee7b7) for interactive elements
 
 ## Components Updated
 
@@ -140,7 +140,7 @@ Successfully updated the entire website to use a consistent light gray color sch
 --text-muted: #9CA3AF;        /* text-gray-400 */
 
 /* Accents */
---accent-orange: #FF6E06;     /* Primary accent */
+--accent-mint: #6ee7b7;       /* Primary accent */
 --accent-green: #10B981;      /* Success/CTA */
 ```
 

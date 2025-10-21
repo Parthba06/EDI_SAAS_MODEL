@@ -5,7 +5,7 @@ const RichMediaSection: React.FC = () => {
     <section className="py-24 px-8" style={{ backgroundColor: '#EAEAEA' }}>
       <div className="max-w-7xl mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-          <style jsx>{`
+          <style>{`
             @keyframes fadeInLeft {
               from {
                 opacity: 0;
@@ -100,17 +100,17 @@ const RichMediaSection: React.FC = () => {
               {/* Food rating card */}
               <div className="absolute top-4 left-4 bg-white rounded-xl p-4 shadow-lg w-48 animate-slideInUp hover-lift" style={{animationDelay: '0.4s'}}>
                 <div className="flex items-center space-x-3 mb-3">
-                  <div className="w-12 h-12 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-lg overflow-hidden">
+                  <div className="w-12 h-12 bg-gradient-to-br from-yellow-400 to-emerald-400 rounded-lg overflow-hidden">
                     {/* Food bowl image */}
-                    <div className="w-full h-full bg-gradient-to-br from-amber-200 to-orange-300 relative">
+                    <div className="w-full h-full bg-gradient-to-br from-amber-200 to-emerald-200 relative">
                       {/* Bowl */}
-                      <div className="absolute bottom-1 left-1/2 transform -translate-x-1/2 w-8 h-4 bg-orange-600 rounded-b-full"></div>
+                      <div className="absolute bottom-1 left-1/2 transform -translate-x-1/2 w-8 h-4 bg-emerald-500 rounded-b-full"></div>
                       {/* Food items */}
                       <div className="absolute top-2 left-2 w-2 h-2 bg-green-600 rounded-full"></div>
                       <div className="absolute top-3 right-2 w-1.5 h-1.5 bg-red-500 rounded-full"></div>
                       <div className="absolute top-1 right-3 w-1 h-1 bg-yellow-600 rounded-full"></div>
                       <div className="absolute bottom-3 left-3 w-1.5 h-1.5 bg-green-700 rounded-full"></div>
-                      <div className="absolute bottom-4 right-2.5 w-1 h-1 bg-orange-700 rounded-full"></div>
+                      <div className="absolute bottom-4 right-2.5 w-1 h-1 bg-emerald-600 rounded-full"></div>
                     </div>
                   </div>
                   <div className="flex-1">

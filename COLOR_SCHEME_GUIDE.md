@@ -52,9 +52,9 @@ color: #9CA3AF; /* text-gray-400 */
 
 ## 🎯 Accent Colors
 
-### Primary Accent (Orange)
+### Primary Accent (Mint Green)
 ```css
-color: #FF6E06;
+color: #6ee7b7;
 ```
 **Usage**: 
 - Animated dots in visualizations
@@ -204,7 +204,7 @@ All text combinations meet WCAG AA standards for accessibility.
 --text-body: #374151;
 --text-label: #4B5563;
 --text-muted: #9CA3AF;
---accent-primary: #FF6E06;
+--accent-primary: #6ee7b7;
 --accent-success: #10B981;
 
 /* Grays */

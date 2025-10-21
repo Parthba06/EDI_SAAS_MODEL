@@ -212,16 +212,6 @@ const IntegrationVisualization = () => {
           </style>
 
           <svg className="pointer-events-none absolute inset-0 w-full h-full z-50" preserveAspectRatio="none">
-            <defs>
-              <linearGradient id="lineGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                <stop offset="0%" stopColor="#9CA3AF" stopOpacity="0.85" />
-                <stop offset="50%" stopColor="#9CA3AF" stopOpacity="1" />
-                <stop offset="100%" stopColor="#9CA3AF" stopOpacity="0.85" />
-              </linearGradient>
-              <filter id="lineShadow" x="-20%" y="-20%" width="140%" height="140%">
-                <feDropShadow dx="0" dy="0" stdDeviation="1.4" floodColor="#000000" floodOpacity="0.25" />
-              </filter>
-            </defs>
             {lines.map((l, i) => {
               const dx = l.end.x - l.start.x;
               const dy = l.end.y - l.start.y;
@@ -231,16 +221,7 @@ const IntegrationVisualization = () => {
               const c2y = l.start.y + dy * 0.8;
               return (
                 <g key={i}>
-                  <path
-                    d={`M ${l.start.x} ${l.start.y} C ${c1x} ${c1y}, ${c2x} ${c2y}, ${l.end.x} ${l.end.y}`}
-                    stroke="url(#lineGradient)"
-                    strokeWidth="2.25"
-                    strokeDasharray="4 4"
-                    fill="none"
-                    opacity="1"
-                    filter="url(#lineShadow)"
-                  />
-                  <circle r="3.5" fill="#FF6E06">
+                  <circle r="3.5" fill="#6ee7b7">
                     <animateMotion dur={`${4 + i * 0.3}s`} repeatCount="indefinite" path={`M ${l.start.x} ${l.start.y} C ${c1x} ${c1y}, ${c2x} ${c2y}, ${l.end.x} ${l.end.y}`} />
                     <animate attributeName="opacity" values="0;1;1;1;0" dur={`${4 + i * 0.3}s`} repeatCount="indefinite" />
                   </circle>
@@ -248,42 +229,19 @@ const IntegrationVisualization = () => {
               );
             })}
             {centerToRight && (() => {
-  const { start, end } = centerToRight;
-
-  return (
-    <g>
-      {/* Matching dashed connector line */}
-      <path
-        d={`M ${start.x} ${start.y} L ${end.x} ${end.y}`}
-        stroke="#a1a6b0"          // exact tone similar to left lines (#a1a6b0 or #9ca3af)
-        strokeWidth="2"
-        strokeDasharray="5 5"     // same dash pattern
-        fill="none"
-        opacity="0.9"
-      >
-        <animate
-          attributeName="stroke-dashoffset"
-          from="0"
-          to="-60"
-          dur="2.5s"
-          repeatCount="indefinite"
-        />
-      </path>
-
-      {/* Orange moving dot for consistency */}
-      <circle r="4" fill="#ff6a00">
-        <animateMotion
-          dur="3s"
-          repeatCount="indefinite"
-          path={`M ${start.x} ${start.y} L ${end.x} ${end.y}`}
-        />
-      </circle>
-    </g>
-  );
-})()}
-
-
-
+              const { start, end } = centerToRight;
+              return (
+                <g>
+                  <circle r="4" fill="#6ee7b7">
+                    <animateMotion
+                      dur="3s"
+                      repeatCount="indefinite"
+                      path={`M ${start.x} ${start.y} L ${end.x} ${end.y}`}
+                    />
+                  </circle>
+                </g>
+              );
+            })()}
           </svg>
           
           {/* LEFT COLUMN - Integration Categories */}
@@ -416,13 +374,13 @@ const IntegrationVisualization = () => {
                   <svg viewBox="0 0 120 32" className="w-full h-10">
                     <defs>
                       <linearGradient id="sparkGrad" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="0%" stopColor="#FF6E06" stopOpacity="0.35" />
-                        <stop offset="100%" stopColor="#FF6E06" stopOpacity="0" />
+                        <stop offset="0%" stopColor="#6ee7b7" stopOpacity="0.35" />
+                        <stop offset="100%" stopColor="#6ee7b7" stopOpacity="0" />
                       </linearGradient>
                       <linearGradient id="sparkStroke" x1="0%" y1="0%" x2="100%" y2="0%" gradientUnits="objectBoundingBox">
-                        <stop offset="0%" stopColor="#FF8A2A" />
-                        <stop offset="50%" stopColor="#FF6E06" />
-                        <stop offset="100%" stopColor="#FF8A2A" />
+                        <stop offset="0%" stopColor="#86efac" />
+                        <stop offset="50%" stopColor="#6ee7b7" />
+                        <stop offset="100%" stopColor="#86efac" />
                         <animateTransform attributeName="gradientTransform" type="translate" from="-1 0" to="1 0" dur="2.5s" repeatCount="indefinite" />
                       </linearGradient>
                     </defs>
@@ -449,7 +407,7 @@ const IntegrationVisualization = () => {
                       cy="50"
                       r="35"
                       fill="none"
-                      stroke="#FF6E06"
+                      stroke="#6ee7b7"
                       strokeWidth="20"
                       strokeDasharray="220"
                       strokeDashoffset="55"
