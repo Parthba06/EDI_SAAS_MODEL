@@ -142,9 +142,9 @@ export default function Dashboard() {
 
   const dockItems = [
     { icon: <VscHome size={18} />, label: 'Home', onClick: () => navigate('/') },
-    { icon: <VscArchive size={18} />, label: 'Archive', onClick: () => navigate('/archive') },
+    { icon: <VscArchive size={18} />, label: 'Insights', onClick: () => navigate('/insights') },
     { icon: <VscAccount size={18} />, label: 'Profile', onClick: () => navigate('/profile') },
-    { icon: <VscSettingsGear size={18} />, label: 'Settings', onClick: () => navigate('/settings') },
+    { icon: <VscSettingsGear size={18} className="rotate-90" />, label: 'Settings', onClick: () => navigate('/settings') },
   ];
 
   return (
