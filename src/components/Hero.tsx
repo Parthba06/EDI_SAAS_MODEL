@@ -79,7 +79,7 @@ export default function Home() {
             <BarChart3 className="w-5 h-5 text-white" />
           </div>
           <span className="text-lg md:text-xl font-bold text-black">
-            KAIROZ
+            Social Intel
           </span>
         </div>
       </div>
