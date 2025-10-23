@@ -25,7 +25,7 @@ const Archive = () => {
   ];
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: '#EEE5DA' }}>
+    <div className="min-h-screen" style={{ backgroundColor: '#EAEAEA' }}>
       {/* Header */}
       <header className="p-6 border-b border-gray-200">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
