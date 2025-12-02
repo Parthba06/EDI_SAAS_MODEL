@@ -25,56 +25,64 @@ const sampleSeries = [
 ];
 
 const QuickMetricCard: React.FC<any> = ({ title, value, trend }) => (
-  <div className="rounded-2xl bg-[#F9F5EC]/5 p-6 hover:bg-[#F9F5EC]/10 transition transform hover:-translate-y-1 shadow-sm hover:shadow-lg border border-[#F9F5EC]/10">
-    <div className="flex justify-between text-sm text-[#F9F5EC]/70">
+  <div className="rounded-2xl bg-card/80 p-6 hover:bg-card transition transform hover:-translate-y-1 shadow-card hover:shadow-glow border border-border/60 backdrop-blur-sm">
+    <div className="flex justify-between text-sm text-muted-foreground">
       <span>{title}</span>
-      <span className={`font-semibold ${trend && trend.startsWith('+') ? 'text-[#98ff98]' : 'text-[#F9F5EC]'}`}>{trend}</span>
+      <span
+        className={`font-semibold ${trend && trend.startsWith('+') ? 'text-primary' : 'text-foreground'}`}
+      >
+        {trend}
+      </span>
     </div>
-    <h2 className="text-2xl font-semibold text-[#F9F5EC] mt-3">{value}</h2>
+    <h2 className="text-2xl font-semibold text-foreground mt-3">{value}</h2>
   </div>
 );
 
 const AISuggestion: React.FC<any> = ({ text }) => (
-  <div className="flex items-center justify-between bg-[#F9F5EC]/5 rounded-xl p-4 border border-[#F9F5EC]/10 hover:bg-[#F9F5EC]/10 transition-colors">
-    <div className="text-sm text-[#F9F5EC]/90">{text}</div>
+  <div className="flex items-center justify-between bg-muted/60 rounded-xl p-4 border border-border/60 hover:bg-muted transition-colors">
+    <div className="text-sm text-foreground/90">{text}</div>
     <div className="flex items-center gap-2">
-      <button className="text-sm px-3 py-1 rounded-md bg-[#98ff98] hover:bg-[#98ff98]/90 text-black transition-all">Apply</button>
-      <button className="text-sm px-3 py-1 rounded-md border border-[#F9F5EC]/10 text-[#F9F5EC] hover:bg-[#F9F5EC]/10 transition-colors">View</button>
+      <button className="text-sm px-3 py-1 rounded-md bg-primary hover:bg-primary/90 text-primary-foreground transition-all">
+        Apply
+      </button>
+      <button className="text-sm px-3 py-1 rounded-md border border-border/70 text-foreground hover:bg-muted/80 transition-colors">
+        View
+      </button>
     </div>
   </div>
 );
 
 const TrendingCard: React.FC<any> = ({ tag, score, timeLeft }) => (
-  <div className="rounded-xl bg-[#F9F5EC]/5 p-4 flex flex-col gap-2 border border-[#F9F5EC]/10 hover:bg-[#F9F5EC]/10 transition-colors">
+  <div className="rounded-xl bg-card/80 p-4 flex flex-col gap-2 border border-border/60 hover:bg-card transition-colors shadow-card">
     <div className="flex justify-between text-sm">
-      <span className="font-medium text-[#98ff98]">#{tag}</span>
-      <span className="text-xs text-[#F9F5EC]/50">{timeLeft}</span>
+      <span className="font-medium text-primary">#{tag}</span>
+      <span className="text-xs text-muted-foreground">{timeLeft}</span>
     </div>
-    <div className="text-[#F9F5EC] font-semibold text-lg">Virality {score}</div>
-    <button className="mt-2 self-start px-3 py-1 rounded bg-[#98ff98] hover:bg-[#98ff98]/90 text-black font-medium transition-all">
+    <div className="text-foreground font-semibold text-lg">Virality {score}</div>
+    <button className="mt-2 self-start px-3 py-1 rounded bg-primary hover:bg-primary/90 text-primary-foreground font-medium transition-all">
       Jump on trend
     </button>
   </div>
 );
 
 const RecentPostCard: React.FC<any> = ({ image, likes, comments, engagement }) => (
-  <div className="w-64 rounded-xl overflow-hidden border border-[#F9F5EC]/10 hover:border-[#98ff98]/50 transition-all transform hover:-translate-y-1 bg-[#F9F5EC]/5">
+  <div className="w-64 rounded-xl overflow-hidden border border-border/60 hover:border-primary/70 transition-all transform hover:-translate-y-1 bg-card/80 shadow-card">
     <div className="w-full h-36 bg-black relative group">
       <div style={{ backgroundImage: `url(${image})`, backgroundSize: 'cover', backgroundPosition: 'center' }} className="absolute inset-0 transition-transform duration-500 group-hover:scale-110" />
       <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
     </div>
     <div className="p-4">
-      <div className="flex justify-between text-sm text-[#F9F5EC]/70">
+      <div className="flex justify-between text-sm text-muted-foreground">
         <span className="flex items-center gap-1">
-          <span className="w-1.5 h-1.5 rounded-full bg-[#98ff98]" /> {likes}
+          <span className="w-1.5 h-1.5 rounded-full bg-primary" /> {likes}
         </span>
         <span className="flex items-center gap-1">
-          <span className="w-1.5 h-1.5 rounded-full bg-[#F9F5EC]" /> {comments}
+          <span className="w-1.5 h-1.5 rounded-full bg-secondary" /> {comments}
         </span>
       </div>
-      <div className="text-sm text-[#F9F5EC]/90 mt-2 flex items-center gap-2">
+      <div className="text-sm text-foreground/90 mt-2 flex items-center gap-2">
         Engagement: 
-        <span className="text-[#98ff98] font-medium">{engagement}%</span>
+        <span className="text-primary font-medium">{engagement}%</span>
       </div>
     </div>
   </div>
@@ -83,27 +91,27 @@ const RecentPostCard: React.FC<any> = ({ image, likes, comments, engagement }) =
 const TopBar: React.FC<any> = ({ onOpenAIAssistant }) => (
   <div className="fixed top-4 left-0 right-0 z-40">
     <div className="max-w-7xl mx-auto px-6">
-      <div className="flex items-center justify-between bg-[#F9F5EC]/5 backdrop-blur-md rounded-xl px-4 py-2 shadow-lg border border-[#F9F5EC]/10">
+      <div className="flex items-center justify-between bg-card/80 backdrop-blur-md rounded-2xl px-4 py-2 shadow-card border border-border/70">
         <div className="flex items-center gap-4">
-          <div className="text-sm font-semibold text-[#F9F5EC]">DASHBOARD</div>
+          <div className="text-sm font-semibold tracking-[0.15em] uppercase text-muted-foreground">Dashboard</div>
         </div>
         <div className="flex items-center gap-3">
           <input 
             placeholder="Search posts, hashtags, competitors..." 
-            className="px-3 py-2 rounded-lg border border-[#F9F5EC]/10 bg-black/50 text-sm w-80 text-[#F9F5EC] placeholder:text-[#F9F5EC]/50 focus:outline-none focus:ring-2 focus:ring-[#98ff98]/30" 
+            className="px-3 py-2 rounded-lg border border-border/70 bg-muted/70 text-sm w-80 text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40" 
           />
-          <button className="relative p-2 rounded-md bg-black/50 hover:bg-[#F9F5EC]/5 transition-colors border border-[#F9F5EC]/10">
-            <span className="inline-block w-2 h-2 rounded-full bg-[#98ff98] absolute top-1 right-1" />
+          <button className="relative p-2 rounded-md bg-muted/70 hover:bg-muted border border-border/70 transition-colors">
+            <span className="inline-block w-2 h-2 rounded-full bg-primary absolute top-1 right-1" />
             🔔
           </button>
           <button 
             onClick={onOpenAIAssistant} 
-            className="px-3 py-2 rounded-md bg-[#98ff98] hover:bg-[#98ff98]/90 text-black transition-all"
+            className="px-3 py-2 rounded-md bg-primary hover:bg-primary/90 text-primary-foreground transition-all shadow-card hover:shadow-glow"
           >
             AI Assistant
           </button>
           <div className="relative">
-            <button className="w-10 h-10 rounded-full bg-[#98ff98] flex items-center justify-center text-black font-medium">
+            <button className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center text-primary-foreground font-medium shadow-glow">
               A
             </button>
           </div>
@@ -148,7 +156,7 @@ export default function Dashboard() {
   ];
 
   return (
-    <div className="min-h-screen pt-28 pb-20 bg-black relative">
+    <div className="min-h-screen pt-28 pb-20 bg-background relative">
       
       <TopBar onOpenAIAssistant={() => setAiOpen(true)} />
 
@@ -157,43 +165,67 @@ export default function Dashboard() {
           {/* Left column - large area */}
           <div className="lg:col-span-2 space-y-6">
             {/* Welcome + Growth Score */}
-            <div className="rounded-2xl bg-[#F9F5EC]/5 p-6 flex items-center justify-between relative overflow-hidden border border-[#F9F5EC]/10">
+            <div className="rounded-2xl bg-card/90 p-6 flex items-center justify-between relative overflow-hidden border border-border/70 shadow-card">
               {/* Sparkline background */}
-              <svg className="absolute inset-0 opacity-10" viewBox="0 0 100 20" preserveAspectRatio="none">
+              <svg className="absolute inset-0 opacity-20" viewBox="0 0 100 20" preserveAspectRatio="none">
                 <path
                   d="M0 10 L10 8 L20 12 L30 7 L40 9 L50 15 L60 10 L70 12 L80 6 L90 8 L100 10"
-                  stroke="#98ff98"
+                  stroke="#3EDC8E"
                   strokeWidth="1"
                   fill="none"
                 />
                 <path
                   d="M0 10 L10 8 L20 12 L30 7 L40 9 L50 15 L60 10 L70 12 L80 6 L90 8 L100 10 L100 20 L0 20 Z"
-                  fill="#98ff98"
+                  fill="#7FFFB0"
                   opacity="0.1"
                 />
               </svg>
               <div className="max-w-[650px] relative z-10">
-                <div className="text-sm text-[#F9F5EC]/70">Hi, Ashish 👋</div>
-                <h3 className="text-2xl font-semibold text-[#F9F5EC] mt-2">Your Growth Score is <span className="text-[#98ff98]">{growthScore}/100</span></h3>
-                <p className="text-sm text-[#F9F5EC]/70 mt-2 flex items-center">
-                  Your engagement grew <span className="text-[#98ff98] font-semibold mx-1">24%</span> this week
-                  <span className="inline-block ml-2 text-[#98ff98]">↗</span>
+                <div className="text-sm text-muted-foreground">Hi, Ashish 👋</div>
+                <h3 className="text-2xl font-semibold text-foreground mt-2">
+                  Your Growth Score is <span className="text-primary">{growthScore}/100</span>
+                </h3>
+                <p className="text-sm text-muted-foreground mt-2 flex items-center">
+                  Your engagement grew <span className="text-primary font-semibold mx-1">24%</span> this week
+                  <span className="inline-block ml-2 text-primary">↗</span>
                 </p>
               </div>
               <div className="w-48 h-48 flex items-center justify-center relative z-10">
-                {/* Simple circular progress */}
+                {/* Simple circular progress in mint green */}
                 <svg viewBox="0 0 36 36" className="w-40 h-40">
-                  <path d="M18 2a16 16 0 1 0 0 32 16 16 0 1 0 0-32" fill="none" stroke="#F9F5EC" strokeWidth="4" opacity="0.1" />
+                  <defs>
+                    <linearGradient id="ringGradient" x1="0" y1="0" x2="1" y2="1">
+                      <stop offset="0%" stopColor="#3EDC8E" />
+                      <stop offset="50%" stopColor="#7FFFB0" />
+                      <stop offset="100%" stopColor="#B9FFD8" />
+                    </linearGradient>
+                  </defs>
+                  <path
+                    d="M18 2a16 16 0 1 0 0 32 16 16 0 1 0 0-32"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                    opacity="0.12"
+                    className="text-muted-foreground"
+                  />
                   <path
                     strokeLinecap="round"
                     d="M18 2a16 16 0 1 0 0 32 16 16 0 1 0 0-32"
                     fill="none"
-                    stroke="#98ff98"
+                    stroke="url(#ringGradient)"
                     strokeWidth="4"
                     strokeDasharray={`${growthScore},100`}
                     transform="rotate(-90 18 18)"
                   />
-                  <text x="18" y="20" textAnchor="middle" className="font-bold" style={{ fontSize: '8px', fill: '#F9F5EC' }}>{growthScore}%</text>
+                  <text
+                    x="18"
+                    y="20"
+                    textAnchor="middle"
+                    className="font-bold"
+                    style={{ fontSize: '8px', fill: 'currentColor' }}
+                  >
+                    {growthScore}%
+                  </text>
                 </svg>
               </div>
             </div>
@@ -206,10 +238,10 @@ export default function Dashboard() {
             </div>
 
             {/* AI Suggestions */}
-            <div className="rounded-2xl bg-[#F9F5EC]/5 p-6">
+            <div className="rounded-2xl bg-card/90 p-6 border border-border/70 shadow-card">
               <div className="flex items-center justify-between mb-4">
-                <h4 className="text-lg font-semibold text-[#F9F5EC]">AI Suggestions</h4>
-                <div className="text-sm text-[#F9F5EC]/70">Today</div>
+                <h4 className="text-lg font-semibold text-foreground">AI Suggestions</h4>
+                <div className="text-sm text-muted-foreground">Today</div>
               </div>
               <div className="space-y-3">
                 {suggestions.map((s, i) => <AISuggestion key={i} text={s} />)}
@@ -217,19 +249,50 @@ export default function Dashboard() {
             </div>
 
             {/* Performance Graph */}
-            <div className="rounded-2xl bg-[#F9F5EC]/5 p-6">
+            <div className="rounded-2xl bg-card/90 p-6 border border-border/70 shadow-card">
               <div className="flex items-center justify-between mb-4">
-                <h4 className="text-lg font-semibold text-[#F9F5EC]">Performance</h4>
+                <h4 className="text-lg font-semibold text-foreground">Performance</h4>
                 <div className="flex items-center gap-2">
-                  <div className="flex items-center gap-2 bg-[#F9F5EC]/5 rounded p-1">
+                  <div className="flex items-center gap-2 bg-muted/60 rounded-full p-1">
                     {(['followers','engagement','reach','impressions'] as any).map((k: any) => (
-                      <button key={k} onClick={() => setMetric(k)} className={`px-3 py-1 rounded text-sm ${metric===k ? 'bg-[#F9F5EC]/10': 'text-[#F9F5EC]/70'}`}>{k}</button>
+                      <button
+                        key={k}
+                        onClick={() => setMetric(k)}
+                        className={`px-3 py-1 rounded-full text-xs font-medium capitalize transition-colors ${
+                          metric === k
+                            ? 'bg-background text-foreground shadow-sm'
+                            : 'text-muted-foreground hover:text-foreground'
+                        }`}
+                      >
+                        {k}
+                      </button>
                     ))}
                   </div>
                   <div className="flex items-center gap-2">
-                    <button onClick={() => setRange('7D')} className={`px-3 py-1 rounded text-[#F9F5EC] ${range==='7D'?'bg-[#F9F5EC]/10':''}`}>7D</button>
-                    <button onClick={() => setRange('30D')} className={`px-3 py-1 rounded text-[#F9F5EC] ${range==='30D'?'bg-[#F9F5EC]/10':''}`}>30D</button>
-                    <button onClick={() => setRange('90D')} className={`px-3 py-1 rounded text-[#F9F5EC] ${range==='90D'?'bg-[#F9F5EC]/10':''}`}>90D</button>
+                    <button
+                      onClick={() => setRange('7D')}
+                      className={`px-3 py-1 rounded-full text-xs ${
+                        range === '7D' ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:text-foreground'
+                      }`}
+                    >
+                      7D
+                    </button>
+                    <button
+                      onClick={() => setRange('30D')}
+                      className={`px-3 py-1 rounded-full text-xs ${
+                        range === '30D' ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:text-foreground'
+                      }`}
+                    >
+                      30D
+                    </button>
+                    <button
+                      onClick={() => setRange('90D')}
+                      className={`px-3 py-1 rounded-full text-xs ${
+                        range === '90D' ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:text-foreground'
+                      }`}
+                    >
+                      90D
+                    </button>
                   </div>
                 </div>
               </div>
@@ -239,17 +302,17 @@ export default function Dashboard() {
                   <AreaChart data={sampleSeries} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
                     <defs>
                       <linearGradient id="colorMetric" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#6366f1" stopOpacity={0.8}/>
-                        <stop offset="95%" stopColor="#6366f1" stopOpacity={0}/>
+                        <stop offset="5%" stopColor="#3EDC8E" stopOpacity={0.85}/>
+                        <stop offset="95%" stopColor="#3EDC8E" stopOpacity={0}/>
                       </linearGradient>
                     </defs>
                     <CartesianGrid strokeDasharray="3 3" stroke="#111827" opacity={0.1} />
                     <XAxis dataKey="date" stroke="#9CA3AF" />
                     <YAxis stroke="#9CA3AF" />
                     <Tooltip />
-                    <Area type="monotone" dataKey={metric} stroke="#6366f1" fillOpacity={1} fill="url(#colorMetric)" />
+                    <Area type="monotone" dataKey={metric} stroke="#3EDC8E" fillOpacity={1} fill="url(#colorMetric)" />
                     {/* Predicted line (dashed) */}
-                    <Line type="monotone" dataKey={metric} stroke="#10B981" strokeDasharray="4 6" dot={false} />
+                    <Line type="monotone" dataKey={metric} stroke="#7FFFB0" strokeDasharray="4 6" dot={false} />
                   </AreaChart>
                 </ResponsiveContainer>
               </div>
@@ -259,16 +322,16 @@ export default function Dashboard() {
           {/* Right column */}
           <div className="space-y-6">
             {/* Trending Topics */}
-            <div className="rounded-2xl bg-white/5 p-6">
-              <h4 className="text-lg font-semibold text-white mb-4">Trending Topics</h4>
+            <div className="rounded-2xl bg-card/90 p-6 border border-border/70 shadow-card">
+              <h4 className="text-lg font-semibold text-foreground mb-4">Trending Topics</h4>
               <div className="grid grid-cols-1 gap-3">
                 {trending.map((t, i) => <TrendingCard key={i} {...t} />)}
               </div>
             </div>
 
             {/* Recent Posts Performance */}
-            <div className="rounded-2xl bg-white/5 p-6">
-              <h4 className="text-lg font-semibold text-white mb-4">Recent Posts</h4>
+            <div className="rounded-2xl bg-card/90 p-6 border border-border/70 shadow-card">
+              <h4 className="text-lg font-semibold text-foreground mb-4">Recent Posts</h4>
               <div className="flex gap-4 overflow-x-auto py-2">
                 <RecentPostCard image={'https://picsum.photos/300/200?random=1'} likes={120} comments={10} engagement={8.2} color={'#10B981'} />
                 <RecentPostCard image={'https://picsum.photos/300/200?random=2'} likes={42} comments={4} engagement={3.1} color={'#F59E0B'} />
@@ -283,12 +346,12 @@ export default function Dashboard() {
       {aiOpen && (
         <div className="fixed inset-0 z-50">
           <div className="absolute inset-0 bg-black/50" onClick={() => setAiOpen(false)} />
-          <div className="absolute right-0 top-0 bottom-0 w-96 bg-[#0b1220] p-6">
+          <div className="absolute right-0 top-0 bottom-0 w-96 bg-card p-6 border-l border-border shadow-glow">
             <div className="flex items-center justify-between">
-              <h3 className="text-lg font-semibold">AI Assistant</h3>
+              <h3 className="text-lg font-semibold text-foreground">AI Assistant</h3>
               <button onClick={() => setAiOpen(false)}>Close</button>
             </div>
-            <div className="mt-4 text-sm text-gray-300">Suggestions, prompts and quick actions will appear here.</div>
+            <div className="mt-4 text-sm text-muted-foreground">Suggestions, prompts and quick actions will appear here.</div>
           </div>
         </div>
       )}

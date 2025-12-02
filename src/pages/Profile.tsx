@@ -22,31 +22,31 @@ const Profile = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-black relative">
+    <div className="min-h-screen bg-background text-foreground relative">
       {/* Header/TopBar - Matching Dashboard style */}
       <div className="fixed top-4 left-0 right-0 z-40">
         <div className="max-w-7xl mx-auto px-6">
-          <div className="flex items-center justify-between bg-[#F9F5EC]/5 backdrop-blur-md rounded-xl px-4 py-2 shadow-lg border border-[#F9F5EC]/10">
+          <div className="flex items-center justify-between bg-card/80 backdrop-blur-md rounded-2xl px-4 py-2 shadow-card border border-border/70">
             <div className="flex items-center gap-4">
-              <div className="text-sm font-semibold text-[#F9F5EC]">PROFILE</div>
+              <div className="text-sm font-semibold tracking-[0.15em] uppercase text-muted-foreground">PROFILE</div>
             </div>
             <div className="flex items-center gap-3">
               <input 
                 placeholder="Search settings..." 
-                className="px-3 py-2 rounded-lg border border-[#F9F5EC]/10 bg-black/50 text-sm w-80 text-[#F9F5EC] placeholder:text-[#F9F5EC]/50 focus:outline-none focus:ring-2 focus:ring-[#98ff98]/30" 
+                className="px-3 py-2 rounded-lg border border-border/70 bg-muted/70 text-sm w-80 text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40" 
               />
-              <button className="relative p-2 rounded-md bg-black/50 hover:bg-[#F9F5EC]/5 transition-colors border border-[#F9F5EC]/10">
-                <span className="inline-block w-2 h-2 rounded-full bg-[#98ff98] absolute top-1 right-1" />
+              <button className="relative p-2 rounded-md bg-muted/70 hover:bg-muted border border-border/70 transition-colors">
+                <span className="inline-block w-2 h-2 rounded-full bg-primary absolute top-1 right-1" />
                 🔔
               </button>
               <button 
                 onClick={handleBackToDashboard}
-                className="px-3 py-2 rounded-md bg-[#98ff98] hover:bg-[#98ff98]/90 text-black transition-all"
+                className="px-3 py-2 rounded-md bg-primary hover:bg-primary/90 text-primary-foreground transition-all shadow-card hover:shadow-glow"
               >
                 Dashboard
               </button>
               <div className="relative">
-                <button className="w-10 h-10 rounded-full bg-[#98ff98] flex items-center justify-center text-black font-medium">
+                <button className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center text-primary-foreground font-medium shadow-glow">
                   A
                 </button>
               </div>
@@ -61,67 +61,67 @@ const Profile = () => {
           {/* Left Column - Profile Summary */}
           <div className="lg:col-span-1 space-y-6">
             {/* Profile Card */}
-            <div className="rounded-2xl bg-[#F9F5EC]/5 p-8 border border-[#F9F5EC]/10">
+            <div className="rounded-2xl bg-card/90 p-8 border border-border/70 shadow-card">
               <div className="flex flex-col items-center text-center space-y-4">
                 {/* Avatar with Edit Button */}
                 <div className="relative">
-                  <Avatar className="w-32 h-32 border-4 border-[#F9F5EC]/10 shadow-lg">
+                  <Avatar className="w-32 h-32 border-4 border-border/60 shadow-card">
                     <AvatarImage src="https://github.com/shadcn.png" />
-                    <AvatarFallback className="bg-[#F9F5EC]/5 text-[#F9F5EC]">AS</AvatarFallback>
+                    <AvatarFallback className="bg-muted text-foreground">AS</AvatarFallback>
                   </Avatar>
-                  <button className="absolute bottom-0 right-0 p-2 bg-[#98ff98] text-black rounded-full shadow-lg hover:bg-[#98ff98]/90 transition-colors">
+                  <button className="absolute bottom-0 right-0 p-2 bg-primary text-primary-foreground rounded-full shadow-glow hover:bg-primary/90 transition-colors">
                     <VscEdit size={16} />
                   </button>
                 </div>
 
                 {/* Growth Badge */}
-                <Badge variant="secondary" className="bg-[#98ff98]/20 text-[#98ff98] border border-[#98ff98]/30">
+                <Badge variant="secondary" className="bg-primary/10 text-primary border border-primary/40">
                   <VscVerified className="mr-1" /> Top 10% Creator
                 </Badge>
 
                 {/* Name and Role */}
                 <div>
-                  <h2 className="text-2xl font-bold text-[#F9F5EC]">Ashish Singh</h2>
-                  <p className="text-[#F9F5EC]/70">Digital Creator & Strategist</p>
+                  <h2 className="text-2xl font-bold text-foreground">Ashish Singh</h2>
+                  <p className="text-muted-foreground">Digital Creator & Strategist</p>
                 </div>
 
                 {/* Basic Info */}
-                <div className="w-full space-y-3 text-[#F9F5EC]/70">
+                <div className="w-full space-y-3 text-muted-foreground">
                   <div className="flex items-center justify-center gap-2">
-                    <VscMail className="text-[#98ff98]" />
+                    <VscMail className="text-primary" />
                     <span>ashish.singh@example.com</span>
                   </div>
                   <div className="flex items-center justify-center gap-2">
-                    <VscGlobe className="text-[#98ff98]" />
+                    <VscGlobe className="text-primary" />
                     <span>www.ashishsingh.com</span>
                   </div>
                   <div className="flex items-center justify-center gap-2">
-                    <VscCalendar className="text-[#98ff98]" />
+                    <VscCalendar className="text-primary" />
                     <span>Joined September 2025</span>
                   </div>
                 </div>
 
                 {/* Plan Type */}
-                <div className="w-full p-3 bg-[#F9F5EC]/5 border border-[#98ff98]/30 rounded-xl">
-                  <p className="text-sm text-[#F9F5EC]/70">Current Plan</p>
-                  <p className="text-lg font-semibold text-[#98ff98]">Enterprise</p>
+                <div className="w-full p-3 bg-muted/60 border border-border/70 rounded-xl">
+                  <p className="text-sm text-muted-foreground">Current Plan</p>
+                  <p className="text-lg font-semibold text-primary">Enterprise</p>
                 </div>
 
                 {/* Social Links */}
-                <div className="flex gap-4 text-[#F9F5EC]/50">
-                  <button className="p-2 hover:text-[#98ff98] transition-colors">
+                <div className="flex gap-4 text-muted-foreground">
+                  <button className="p-2 hover:text-primary transition-colors">
                     <FaTwitter size={20} />
                   </button>
-                  <button className="p-2 hover:text-[#98ff98] transition-colors">
+                  <button className="p-2 hover:text-primary transition-colors">
                     <FaLinkedin size={20} />
                   </button>
-                  <button className="p-2 hover:text-[#98ff98] transition-colors">
+                  <button className="p-2 hover:text-primary transition-colors">
                     <FaInstagram size={20} />
                   </button>
                 </div>
 
                 {/* Edit Profile Button */}
-                <Button className="w-full bg-[#98ff98] hover:bg-[#98ff98]/90 text-black">
+                <Button className="w-full bg-primary hover:bg-primary/90 text-primary-foreground shadow-card hover:shadow-glow">
                   Edit Profile
                 </Button>
               </div>
@@ -131,34 +131,34 @@ const Profile = () => {
           {/* Right Column - Tabs and Content */}
           <div className="lg:col-span-2">
             <Tabs defaultValue="overview" className="w-full">
-              <TabsList className="w-full justify-start border-b rounded-none h-auto p-0 bg-transparent border-[#F9F5EC]/10">
+              <TabsList className="w-full justify-start border-b rounded-none h-auto p-0 bg-transparent border-border/70">
                 <TabsTrigger 
                   value="overview"
-                  className="data-[state=active]:border-b-2 data-[state=active]:border-[#98ff98] rounded-none border-b-2 border-transparent text-[#F9F5EC]"
+                  className="data-[state=active]:border-b-2 data-[state=active]:border-primary rounded-none border-b-2 border-transparent text-muted-foreground data-[state=active]:text-foreground"
                 >
                   Overview
                 </TabsTrigger>
                 <TabsTrigger 
                   value="account"
-                  className="data-[state=active]:border-b-2 data-[state=active]:border-[#98ff98] rounded-none border-b-2 border-transparent text-[#F9F5EC]"
+                  className="data-[state=active]:border-b-2 data-[state=active]:border-primary rounded-none border-b-2 border-transparent text-muted-foreground data-[state=active]:text-foreground"
                 >
                   Account
                 </TabsTrigger>
                 <TabsTrigger 
                   value="preferences"
-                  className="data-[state=active]:border-b-2 data-[state=active]:border-[#98ff98] rounded-none border-b-2 border-transparent text-[#F9F5EC]"
+                  className="data-[state=active]:border-b-2 data-[state=active]:border-primary rounded-none border-b-2 border-transparent text-muted-foreground data-[state=active]:text-foreground"
                 >
                   Preferences
                 </TabsTrigger>
                 <TabsTrigger 
                   value="billing"
-                  className="data-[state=active]:border-b-2 data-[state=active]:border-[#98ff98] rounded-none border-b-2 border-transparent text-[#F9F5EC]"
+                  className="data-[state=active]:border-b-2 data-[state=active]:border-primary rounded-none border-b-2 border-transparent text-muted-foreground data-[state=active]:text-foreground"
                 >
                   Billing
                 </TabsTrigger>
                 <TabsTrigger 
                   value="integrations"
-                  className="data-[state=active]:border-b-2 data-[state=active]:border-[#98ff98] rounded-none border-b-2 border-transparent text-[#F9F5EC]"
+                  className="data-[state=active]:border-b-2 data-[state=active]:border-primary rounded-none border-b-2 border-transparent text-muted-foreground data-[state=active]:text-foreground"
                 >
                   Integrations
                 </TabsTrigger>
@@ -168,9 +168,9 @@ const Profile = () => {
                 <TabsContent value="overview" className="m-0">
                   <div className="space-y-6">
                     {/* Bio Section */}
-                    <div className="rounded-xl p-6 bg-[#F9F5EC]/5 border border-[#F9F5EC]/10">
-                      <h3 className="text-lg font-semibold mb-4 text-[#F9F5EC]">About</h3>
-                      <p className="text-[#F9F5EC]/70">
+                    <div className="rounded-xl p-6 bg-card border border-border/70 shadow-card">
+                      <h3 className="text-lg font-semibold mb-4 text-foreground">About</h3>
+                      <p className="text-muted-foreground">
                         Digital creator and strategist with 5+ years of experience in content creation and social media marketing. 
                         Passionate about helping brands tell their stories and connect with their audience in meaningful ways.
                       </p>
@@ -178,65 +178,65 @@ const Profile = () => {
 
                     {/* Stats Grid */}
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                      <div className="rounded-xl p-6 bg-[#F9F5EC]/5 border border-[#F9F5EC]/10">
-                        <p className="text-sm text-[#F9F5EC]/70">Total Posts</p>
-                        <p className="text-2xl font-bold text-[#98ff98]">1,234</p>
+                      <div className="rounded-xl p-6 bg-card border border-border/70 shadow-card">
+                        <p className="text-sm text-muted-foreground">Total Posts</p>
+                        <p className="text-2xl font-bold text-primary">1,234</p>
                       </div>
-                      <div className="rounded-xl p-6 bg-[#F9F5EC]/5 border border-[#F9F5EC]/10">
-                        <p className="text-sm text-[#F9F5EC]/70">Followers</p>
-                        <p className="text-2xl font-bold text-[#98ff98]">45.2K</p>
+                      <div className="rounded-xl p-6 bg-card border border-border/70 shadow-card">
+                        <p className="text-sm text-muted-foreground">Followers</p>
+                        <p className="text-2xl font-bold text-primary">45.2K</p>
                       </div>
-                      <div className="rounded-xl p-6 bg-[#F9F5EC]/5 border border-[#F9F5EC]/10">
-                        <p className="text-sm text-[#F9F5EC]/70">Engagement Rate</p>
-                        <p className="text-2xl font-bold text-[#98ff98]">4.7%</p>
+                      <div className="rounded-xl p-6 bg-card border border-border/70 shadow-card">
+                        <p className="text-sm text-muted-foreground">Engagement Rate</p>
+                        <p className="text-2xl font-bold text-primary">4.7%</p>
                       </div>
                     </div>
                   </div>
                 </TabsContent>
 
                 <TabsContent value="account" className="m-0">
-                  <div className="rounded-xl p-6 bg-[#F9F5EC]/5 border border-[#F9F5EC]/10">
+                  <div className="rounded-xl p-6 bg-card border border-border/70 shadow-card">
                     <div className="space-y-6">
                       {/* Profile Settings Section */}
                       <div>
-                        <h3 className="text-lg font-semibold mb-4 text-[#F9F5EC]">Profile Settings</h3>
+                        <h3 className="text-lg font-semibold mb-4 text-foreground">Profile Settings</h3>
                         <div className="space-y-4">
                           <div>
-                            <label className="block text-sm font-medium text-[#F9F5EC]/70 mb-2">Profile Picture</label>
+                            <label className="block text-sm font-medium text-muted-foreground mb-2">Profile Picture</label>
                             <div className="flex items-center gap-4">
-                              <Avatar className="w-16 h-16 border-2 border-[#F9F5EC]/10">
+                              <Avatar className="w-16 h-16 border-2 border-border/70">
                                 <AvatarImage src="https://github.com/shadcn.png" />
-                                <AvatarFallback className="bg-[#F9F5EC]/5 text-[#F9F5EC]">AS</AvatarFallback>
+                                <AvatarFallback className="bg-muted text-foreground">AS</AvatarFallback>
                               </Avatar>
-                              <Button variant="outline" className="border-[#F9F5EC]/10 text-[#F9F5EC] hover:bg-[#F9F5EC]/5">
+                              <Button variant="outline" className="border-border/70 text-foreground hover:bg-muted/60">
                                 Change Photo
                               </Button>
                             </div>
                           </div>
                           
                           <div>
-                            <label className="block text-sm font-medium text-[#F9F5EC]/70 mb-2">Display Name</label>
+                            <label className="block text-sm font-medium text-muted-foreground mb-2">Display Name</label>
                             <input 
                               type="text" 
                               value="Ashish Singh"
-                              className="w-full px-3 py-2 bg-black/50 border border-[#F9F5EC]/10 rounded-lg text-[#F9F5EC] focus:ring-2 focus:ring-[#98ff98]/30 focus:border-transparent"
+                              className="w-full px-3 py-2 bg-card border border-border/70 rounded-lg text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-transparent"
                             />
                           </div>
 
                           <div>
-                            <label className="block text-sm font-medium text-[#F9F5EC]/70 mb-2">Username</label>
+                            <label className="block text-sm font-medium text-muted-foreground mb-2">Username</label>
                             <input 
                               type="text" 
                               value="@ashish_creator"
-                              className="w-full px-3 py-2 bg-black/50 border border-[#F9F5EC]/10 rounded-lg text-[#F9F5EC] focus:ring-2 focus:ring-[#98ff98]/30 focus:border-transparent"
+                              className="w-full px-3 py-2 bg-card border border-border/70 rounded-lg text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-transparent"
                             />
                           </div>
 
                           <div>
-                            <label className="block text-sm font-medium text-[#F9F5EC]/70 mb-2">Bio</label>
+                            <label className="block text-sm font-medium text-muted-foreground mb-2">Bio</label>
                             <textarea 
                               rows={4}
-                              className="w-full px-3 py-2 bg-black/50 border border-[#F9F5EC]/10 rounded-lg text-[#F9F5EC] focus:ring-2 focus:ring-[#98ff98]/30 focus:border-transparent"
+                              className="w-full px-3 py-2 bg-card border border-border/70 rounded-lg text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-transparent"
                               placeholder="Tell us about yourself..."
                             ></textarea>
                           </div>
@@ -244,28 +244,28 @@ const Profile = () => {
                       </div>
 
                       {/* Security Settings */}
-                      <div className="pt-6 border-t border-[#F9F5EC]/10">
-                        <h3 className="text-lg font-semibold mb-4 text-[#F9F5EC]">Security Settings</h3>
+                      <div className="pt-6 border-t border-border/70">
+                        <h3 className="text-lg font-semibold mb-4 text-foreground">Security Settings</h3>
                         <div className="space-y-4">
                           <div>
-                            <label className="block text-sm font-medium text-[#F9F5EC]/70 mb-2">Email Address</label>
+                            <label className="block text-sm font-medium text-muted-foreground mb-2">Email Address</label>
                             <input 
                               type="email" 
                               value="ashish.singh@example.com"
-                              className="w-full px-3 py-2 bg-black/50 border border-[#F9F5EC]/10 rounded-lg text-[#F9F5EC] focus:ring-2 focus:ring-[#98ff98]/30 focus:border-transparent"
+                              className="w-full px-3 py-2 bg-card border border-border/70 rounded-lg text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-transparent"
                             />
                           </div>
 
-                          <Button variant="outline" className="w-full border-[#F9F5EC]/10 text-[#F9F5EC] hover:bg-[#F9F5EC]/5">
+                          <Button variant="outline" className="w-full border-border/70 text-foreground hover:bg-muted/60">
                             Change Password
                           </Button>
 
-                          <div className="flex items-center justify-between p-4 rounded-lg bg-[#F9F5EC]/5 border border-[#F9F5EC]/10">
+                          <div className="flex items-center justify-between p-4 rounded-lg bg-muted/60 border border-border/70">
                             <div>
-                              <h4 className="text-sm font-medium text-[#F9F5EC]">Two-Factor Authentication</h4>
-                              <p className="text-xs text-[#F9F5EC]/70">Add an extra layer of security to your account</p>
+                              <h4 className="text-sm font-medium text-foreground">Two-Factor Authentication</h4>
+                              <p className="text-xs text-muted-foreground">Add an extra layer of security to your account</p>
                             </div>
-                            <Button variant="outline" className="border-[#F9F5EC]/10 text-[#F9F5EC] hover:bg-[#F9F5EC]/5">
+                            <Button variant="outline" className="border-border/70 text-foreground hover:bg-muted/80">
                               Enable 2FA
                             </Button>
                           </div>
@@ -273,44 +273,44 @@ const Profile = () => {
                       </div>
 
                       {/* Connected Accounts */}
-                      <div className="pt-6 border-t border-[#F9F5EC]/10">
-                        <h3 className="text-lg font-semibold mb-4 text-[#F9F5EC]">Connected Accounts</h3>
+                      <div className="pt-6 border-t border-border/70">
+                        <h3 className="text-lg font-semibold mb-4 text-foreground">Connected Accounts</h3>
                         <div className="space-y-3">
-                          <div className="flex items-center justify-between p-4 rounded-lg bg-[#F9F5EC]/5 border border-[#F9F5EC]/10">
+                          <div className="flex items-center justify-between p-4 rounded-lg bg-muted/60 border border-border/70">
                             <div className="flex items-center gap-3">
-                              <FaTwitter className="text-[#98ff98]" size={20} />
+                              <FaTwitter className="text-primary" size={20} />
                               <div>
-                                <h4 className="text-sm font-medium text-[#F9F5EC]">Twitter</h4>
-                                <p className="text-xs text-[#F9F5EC]/70">Connected as @ashish_creator</p>
+                                <h4 className="text-sm font-medium text-foreground">Twitter</h4>
+                                <p className="text-xs text-muted-foreground">Connected as @ashish_creator</p>
                               </div>
                             </div>
-                            <Button variant="outline" className="border-[#F9F5EC]/10 text-[#F9F5EC] hover:bg-[#F9F5EC]/5">
+                            <Button variant="outline" className="border-border/70 text-foreground hover:bg-muted/80">
                               Disconnect
                             </Button>
                           </div>
 
-                          <div className="flex items-center justify-between p-4 rounded-lg bg-[#F9F5EC]/5 border border-[#F9F5EC]/10">
+                          <div className="flex items-center justify-between p-4 rounded-lg bg-muted/60 border border-border/70">
                             <div className="flex items-center gap-3">
-                              <FaLinkedin className="text-[#98ff98]" size={20} />
+                              <FaLinkedin className="text-primary" size={20} />
                               <div>
-                                <h4 className="text-sm font-medium text-[#F9F5EC]">LinkedIn</h4>
-                                <p className="text-xs text-[#F9F5EC]/70">Not connected</p>
+                                <h4 className="text-sm font-medium text-foreground">LinkedIn</h4>
+                                <p className="text-xs text-muted-foreground">Not connected</p>
                               </div>
                             </div>
-                            <Button variant="outline" className="border-[#F9F5EC]/10 text-[#F9F5EC] hover:bg-[#F9F5EC]/5">
+                            <Button variant="outline" className="border-border/70 text-foreground hover:bg-muted/80">
                               Connect
                             </Button>
                           </div>
 
-                          <div className="flex items-center justify-between p-4 rounded-lg bg-[#F9F5EC]/5 border border-[#F9F5EC]/10">
+                          <div className="flex items-center justify-between p-4 rounded-lg bg-muted/60 border border-border/70">
                             <div className="flex items-center gap-3">
-                              <FaInstagram className="text-[#98ff98]" size={20} />
+                              <FaInstagram className="text-primary" size={20} />
                               <div>
-                                <h4 className="text-sm font-medium text-[#F9F5EC]">Instagram</h4>
-                                <p className="text-xs text-[#F9F5EC]/70">Connected as @ashish.creates</p>
+                                <h4 className="text-sm font-medium text-foreground">Instagram</h4>
+                                <p className="text-xs text-muted-foreground">Connected as @ashish.creates</p>
                               </div>
                             </div>
-                            <Button variant="outline" className="border-[#F9F5EC]/10 text-[#F9F5EC] hover:bg-[#F9F5EC]/5">
+                            <Button variant="outline" className="border-border/70 text-foreground hover:bg-muted/80">
                               Disconnect
                             </Button>
                           </div>
@@ -318,13 +318,13 @@ const Profile = () => {
                       </div>
 
                       {/* Account Management */}
-                      <div className="pt-6 border-t border-[#F9F5EC]/10">
-                        <h3 className="text-lg font-semibold mb-4 text-[#F9F5EC]">Account Management</h3>
+                      <div className="pt-6 border-t border-border/70">
+                        <h3 className="text-lg font-semibold mb-4 text-foreground">Account Management</h3>
                         <div className="space-y-3">
-                          <Button variant="outline" className="w-full border-[#F9F5EC]/10 text-[#F9F5EC] hover:bg-[#F9F5EC]/5">
+                          <Button variant="outline" className="w-full border-border/70 text-foreground hover:bg-muted/60">
                             Export Data
                           </Button>
-                          <Button variant="outline" className="w-full border-red-500/30 text-red-500 hover:bg-red-500/10">
+                          <Button variant="outline" className="w-full border-red-500/40 text-red-500 hover:bg-red-500/10">
                             Delete Account
                           </Button>
                         </div>
@@ -334,34 +334,34 @@ const Profile = () => {
                 </TabsContent>
 
                 <TabsContent value="preferences" className="m-0">
-                  <div className="rounded-xl p-6 bg-[#F9F5EC]/5 border border-[#F9F5EC]/10">
+                  <div className="rounded-xl p-6 bg-card border border-border/70 shadow-card">
                     <div className="space-y-6">
                       {/* Theme Settings */}
                       <div>
-                        <h3 className="text-lg font-semibold mb-4 text-[#F9F5EC]">Appearance</h3>
+                        <h3 className="text-lg font-semibold mb-4 text-foreground">Appearance</h3>
                         <div className="space-y-4">
                           <div>
-                            <label className="block text-sm font-medium text-[#F9F5EC]/70 mb-2">Theme</label>
+                            <label className="block text-sm font-medium text-muted-foreground mb-2">Theme</label>
                             <div className="grid grid-cols-3 gap-4">
-                              <button className="p-4 rounded-lg bg-black border border-[#98ff98] text-[#F9F5EC] text-sm">
+                              <button className="p-4 rounded-lg bg-muted border border-primary text-foreground text-sm">
                                 Dark
                               </button>
-                              <button className="p-4 rounded-lg bg-black/50 border border-[#F9F5EC]/10 text-[#F9F5EC]/70 text-sm hover:bg-[#F9F5EC]/5">
+                              <button className="p-4 rounded-lg bg-muted border border-border/70 text-muted-foreground text-sm hover:bg-muted/80">
                                 Light
                               </button>
-                              <button className="p-4 rounded-lg bg-black/50 border border-[#F9F5EC]/10 text-[#F9F5EC]/70 text-sm hover:bg-[#F9F5EC]/5">
+                              <button className="p-4 rounded-lg bg-muted border border-border/70 text-muted-foreground text-sm hover:bg-muted/80">
                                 System
                               </button>
                             </div>
                           </div>
 
                           <div>
-                            <label className="block text-sm font-medium text-[#F9F5EC]/70 mb-2">Dashboard Layout</label>
+                            <label className="block text-sm font-medium text-muted-foreground mb-2">Dashboard Layout</label>
                             <div className="grid grid-cols-2 gap-4">
-                              <button className="p-4 rounded-lg bg-black border border-[#98ff98] text-[#F9F5EC] text-sm">
+                              <button className="p-4 rounded-lg bg-muted border border-primary text-foreground text-sm">
                                 Compact
                               </button>
-                              <button className="p-4 rounded-lg bg-black/50 border border-[#F9F5EC]/10 text-[#F9F5EC]/70 text-sm hover:bg-[#F9F5EC]/5">
+                              <button className="p-4 rounded-lg bg-muted border border-border/70 text-muted-foreground text-sm hover:bg-muted/80">
                                 Spacious
                               </button>
                             </div>
@@ -370,12 +370,12 @@ const Profile = () => {
                       </div>
 
                       {/* Language & Region */}
-                      <div className="pt-6 border-t border-[#F9F5EC]/10">
-                        <h3 className="text-lg font-semibold mb-4 text-[#F9F5EC]">Language & Region</h3>
+                      <div className="pt-6 border-t border-border/70">
+                        <h3 className="text-lg font-semibold mb-4 text-foreground">Language & Region</h3>
                         <div className="space-y-4">
                           <div>
-                            <label className="block text-sm font-medium text-[#F9F5EC]/70 mb-2">Language</label>
-                            <select className="w-full px-3 py-2 bg-black/50 border border-[#F9F5EC]/10 rounded-lg text-[#F9F5EC] focus:ring-2 focus:ring-[#98ff98]/30 focus:border-transparent">
+                            <label className="block text-sm font-medium text-muted-foreground mb-2">Language</label>
+                            <select className="w-full px-3 py-2 bg-card border border-border/70 rounded-lg text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-transparent">
                               <option value="en">English</option>
                               <option value="es">Español</option>
                               <option value="fr">Français</option>
@@ -383,8 +383,8 @@ const Profile = () => {
                           </div>
 
                           <div>
-                            <label className="block text-sm font-medium text-[#F9F5EC]/70 mb-2">Time Zone</label>
-                            <select className="w-full px-3 py-2 bg-black/50 border border-[#F9F5EC]/10 rounded-lg text-[#F9F5EC] focus:ring-2 focus:ring-[#98ff98]/30 focus:border-transparent">
+                            <label className="block text-sm font-medium text-muted-foreground mb-2">Time Zone</label>
+                            <select className="w-full px-3 py-2 bg-card border border-border/70 rounded-lg text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-transparent">
                               <option value="UTC">UTC (GMT+0)</option>
                               <option value="EST">EST (GMT-5)</option>
                               <option value="PST">PST (GMT-8)</option>
@@ -394,55 +394,55 @@ const Profile = () => {
                       </div>
 
                       {/* Notifications */}
-                      <div className="pt-6 border-t border-[#F9F5EC]/10">
-                        <h3 className="text-lg font-semibold mb-4 text-[#F9F5EC]">Notifications</h3>
+                      <div className="pt-6 border-t border-border/70">
+                        <h3 className="text-lg font-semibold mb-4 text-foreground">Notifications</h3>
                         <div className="space-y-3">
-                          <div className="flex items-center justify-between p-4 rounded-lg bg-[#F9F5EC]/5 border border-[#F9F5EC]/10">
+                          <div className="flex items-center justify-between p-4 rounded-lg bg-muted/60 border border-border/70">
                             <div>
-                              <h4 className="text-sm font-medium text-[#F9F5EC]">Email Notifications</h4>
-                              <p className="text-xs text-[#F9F5EC]/70">Receive important updates via email</p>
+                              <h4 className="text-sm font-medium text-foreground">Email Notifications</h4>
+                              <p className="text-xs text-muted-foreground">Receive important updates via email</p>
                             </div>
                             <div className="flex items-center gap-2">
-                              <input type="checkbox" className="toggle toggle-[#98ff98]" checked />
+                              <input type="checkbox" className="toggle" checked />
                             </div>
                           </div>
 
-                          <div className="flex items-center justify-between p-4 rounded-lg bg-[#F9F5EC]/5 border border-[#F9F5EC]/10">
+                          <div className="flex items-center justify-between p-4 rounded-lg bg-muted/60 border border-border/70">
                             <div>
-                              <h4 className="text-sm font-medium text-[#F9F5EC]">Push Notifications</h4>
-                              <p className="text-xs text-[#F9F5EC]/70">Get real-time alerts</p>
+                              <h4 className="text-sm font-medium text-foreground">Push Notifications</h4>
+                              <p className="text-xs text-muted-foreground">Get real-time alerts</p>
                             </div>
                             <div className="flex items-center gap-2">
-                              <input type="checkbox" className="toggle toggle-[#98ff98]" checked />
+                              <input type="checkbox" className="toggle" checked />
                             </div>
                           </div>
 
-                          <div className="flex items-center justify-between p-4 rounded-lg bg-[#F9F5EC]/5 border border-[#F9F5EC]/10">
+                          <div className="flex items-center justify-between p-4 rounded-lg bg-muted/60 border border-border/70">
                             <div>
-                              <h4 className="text-sm font-medium text-[#F9F5EC]">Weekly Reports</h4>
-                              <p className="text-xs text-[#F9F5EC]/70">Receive analytics summary</p>
+                              <h4 className="text-sm font-medium text-foreground">Weekly Reports</h4>
+                              <p className="text-xs text-muted-foreground">Receive analytics summary</p>
                             </div>
                             <div className="flex items-center gap-2">
-                              <input type="checkbox" className="toggle toggle-[#98ff98]" />
+                              <input type="checkbox" className="toggle" />
                             </div>
                           </div>
                         </div>
                       </div>
 
                       {/* Analytics Preferences */}
-                      <div className="pt-6 border-t border-[#F9F5EC]/10">
-                        <h3 className="text-lg font-semibold mb-4 text-[#F9F5EC]">Analytics Preferences</h3>
+                      <div className="pt-6 border-t border-border/70">
+                        <h3 className="text-lg font-semibold mb-4 text-foreground">Analytics Preferences</h3>
                         <div className="space-y-4">
                           <div>
-                            <label className="block text-sm font-medium text-[#F9F5EC]/70 mb-2">Default Time Period</label>
+                            <label className="block text-sm font-medium text-muted-foreground mb-2">Default Time Period</label>
                             <div className="grid grid-cols-3 gap-4">
-                              <button className="p-4 rounded-lg bg-black border border-[#98ff98] text-[#F9F5EC] text-sm">
+                              <button className="p-4 rounded-lg bg-muted border border-primary text-foreground text-sm">
                                 7 Days
                               </button>
-                              <button className="p-4 rounded-lg bg-black/50 border border-[#F9F5EC]/10 text-[#F9F5EC]/70 text-sm hover:bg-[#F9F5EC]/5">
+                              <button className="p-4 rounded-lg bg-muted border border-border/70 text-muted-foreground text-sm hover:bg-muted/80">
                                 30 Days
                               </button>
-                              <button className="p-4 rounded-lg bg-black/50 border border-[#F9F5EC]/10 text-[#F9F5EC]/70 text-sm hover:bg-[#F9F5EC]/5">
+                              <button className="p-4 rounded-lg bg-muted border border-border/70 text-muted-foreground text-sm hover:bg-muted/80">
                                 90 Days
                               </button>
                             </div>
@@ -454,15 +454,15 @@ const Profile = () => {
                 </TabsContent>
 
                 <TabsContent value="billing" className="m-0">
-                  <div className="rounded-xl p-6 bg-[#F9F5EC]/5 border border-[#F9F5EC]/10">
-                    <h3 className="text-lg font-semibold mb-6 text-[#F9F5EC]">Billing & Plans</h3>
+                  <div className="rounded-xl p-6 bg-card border border-border/70 shadow-card">
+                    <h3 className="text-lg font-semibold mb-6 text-foreground">Billing & Plans</h3>
                     {/* Billing content */}
                   </div>
                 </TabsContent>
 
                 <TabsContent value="integrations" className="m-0">
-                  <div className="rounded-xl p-6 bg-[#F9F5EC]/5 border border-[#F9F5EC]/10">
-                    <h3 className="text-lg font-semibold mb-6 text-[#F9F5EC]">Connected Apps</h3>
+                  <div className="rounded-xl p-6 bg-card border border-border/70 shadow-card">
+                    <h3 className="text-lg font-semibold mb-6 text-foreground">Connected Apps</h3>
                     {/* Integrations content */}
                   </div>
                 </TabsContent>
