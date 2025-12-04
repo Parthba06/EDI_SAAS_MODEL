@@ -43,8 +43,8 @@ const OurWorkSection: React.FC = () => {
           <p className="mb-3 text-[0.75rem] font-medium tracking-[0.15em] uppercase text-[#4a4a4a]">
             OUR WORK
           </p>
-          <h2 className="mb-3 text-[clamp(2.5rem,5vw,3.5rem)] font-semibold leading-[1.2] tracking-[-0.02em] text-[#0c1d17]">
-            From high tech to high fashion
+          <h2 className="mb-3 text-[clamp(2.5rem,5vw,3.5rem)] font-normal leading-[1.2] tracking-[-0.02em] text-[#0c1d17]">
+            From deep data to viral culture
           </h2>
           <p className="mb-8 font-['Playfair_Display',Georgia,serif] italic text-[clamp(1.8rem,4vw,2.8rem)] text-[#0c1d17]">
             and beyond
@@ -91,7 +91,7 @@ const OurWorkSection: React.FC = () => {
                 #our-work-section .scroll-track {
                   display: flex;
                   gap: 24px;
-                  animation: ourWorkScroll 36s linear infinite;
+                  animation: ourWorkScroll 16s linear infinite;
                 }
 
                 #our-work-section .scroll-wrapper:hover .scroll-track {
@@ -108,14 +108,14 @@ const OurWorkSection: React.FC = () => {
                   width: 100%;
                   height: 100%;
                   object-fit: cover;
-                  border-radius: 18px;
+                  border-radius: 26px;
                   transition: transform 0.4s ease, box-shadow 0.4s ease, border-radius 0.4s ease;
                 }
 
                 #our-work-section .scroll-card:hover img {
                   transform: scale(1.08);
-                  box-shadow: 0px 18px 45px rgba(0, 0, 0, 0.28);
-                  border-radius: 18px;
+                  box-shadow: 0px 22px 55px rgba(0, 0, 0, 0.28);
+                  border-radius: 26px;
                 }
 
                 #our-work-section .scroll-card .label {
@@ -132,26 +132,29 @@ const OurWorkSection: React.FC = () => {
               <div className="scroll-track">
                 {[
                   { labelItalic: 'Ad', labelRest: 'Creative', img: 'https://images.pexels.com/photos/1181671/pexels-photo-1181671.jpeg' },
-                  { labelItalic: 'Website', labelRest: 'Design', img: 'https://images.pexels.com/photos/1181675/pexels-photo-1181675.jpeg' },
-                  { labelItalic: 'Social Media', labelRest: 'Creative', img: 'https://images.pexels.com/photos/3977908/pexels-photo-3977908.jpeg' },
-                  { labelItalic: 'Email', labelRest: 'Design', img: 'https://images.pexels.com/photos/1181670/pexels-photo-1181670.jpeg' },
+                  { labelItalic: 'Social Media', labelRest: 'Creative', img: 'https://images.pexels.com/photos/1181675/pexels-photo-1181675.jpeg' },
+                  { labelItalic: 'Trend', labelRest: 'Analyzer', img: 'https://images.pexels.com/photos/6802046/pexels-photo-6802046.jpeg' },
+                  { labelItalic: 'Reddit', labelRest: 'Insights', img: 'https://images.pexels.com/photos/5711950/pexels-photo-5711950.jpeg' },
+                  { labelItalic: 'AI', labelRest: 'Creativity', img: 'https://images.pexels.com/photos/8386434/pexels-photo-8386434.jpeg' },
                 ]
                   .concat([
                     { labelItalic: 'Ad', labelRest: 'Creative', img: 'https://images.pexels.com/photos/1181671/pexels-photo-1181671.jpeg' },
-                    { labelItalic: 'Website', labelRest: 'Design', img: 'https://images.pexels.com/photos/1181675/pexels-photo-1181675.jpeg' },
-                    { labelItalic: 'Social Media', labelRest: 'Creative', img: 'https://images.pexels.com/photos/3977908/pexels-photo-3977908.jpeg' },
-                    { labelItalic: 'Email', labelRest: 'Design', img: 'https://images.pexels.com/photos/1181670/pexels-photo-1181670.jpeg' },
+                    { labelItalic: 'Social Media', labelRest: 'Creative', img: 'https://images.pexels.com/photos/1181675/pexels-photo-1181675.jpeg' },
+                    { labelItalic: 'Trend', labelRest: 'Analyzer', img: 'https://images.pexels.com/photos/6802046/pexels-photo-6802046.jpeg' },
+                    { labelItalic: 'Reddit', labelRest: 'Insights', img: 'https://images.pexels.com/photos/5711950/pexels-photo-5711950.jpeg' },
+                    { labelItalic: 'AI', labelRest: 'Creativity', img: 'https://images.pexels.com/photos/8386434/pexels-photo-8386434.jpeg' },
                   ])
                   .concat([
                     { labelItalic: 'Ad', labelRest: 'Creative', img: 'https://images.pexels.com/photos/1181671/pexels-photo-1181671.jpeg' },
-                    { labelItalic: 'Website', labelRest: 'Design', img: 'https://images.pexels.com/photos/1181675/pexels-photo-1181675.jpeg' },
-                    { labelItalic: 'Social Media', labelRest: 'Creative', img: 'https://images.pexels.com/photos/3977908/pexels-photo-3977908.jpeg' },
-                    { labelItalic: 'Email', labelRest: 'Design', img: 'https://images.pexels.com/photos/1181670/pexels-photo-1181670.jpeg' },
+                    { labelItalic: 'Social Media', labelRest: 'Creative', img: 'https://images.pexels.com/photos/1181675/pexels-photo-1181675.jpeg' },
+                    { labelItalic: 'Trend', labelRest: 'Analyzer', img: 'https://images.pexels.com/photos/6802046/pexels-photo-6802046.jpeg' },
+                    { labelItalic: 'Reddit', labelRest: 'Insights', img: 'https://images.pexels.com/photos/5711950/pexels-photo-5711950.jpeg' },
+                    { labelItalic: 'AI', labelRest: 'Creativity', img: 'https://images.pexels.com/photos/8386434/pexels-photo-8386434.jpeg' },
                   ])
                   .map((card, idx) => (
                     <div
                       key={idx}
-                      className="scroll-card h-[550px]"
+                      className="scroll-card h-[600px]"
                     >
                       <div className="label font-['Playfair_Display',Georgia,serif] italic">
                         {card.labelItalic} <span className="not-italic font-semibold">{card.labelRest}</span>
@@ -165,6 +168,55 @@ const OurWorkSection: React.FC = () => {
                   ))}
               </div>
             </div>
+          </div>
+
+          {/* Feature text blocks below cards */}
+          <div className="mx-auto mt-24 max-w-[1200px] px-5 pb-16">
+            <div className="grid gap-12 md:grid-cols-2 lg:grid-cols-4 lg:gap-20">
+              <div className="flex flex-col gap-3 text-sm text-[#111827]">
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-[#bfdbfe] to-[#dbebff] text-[18px] font-semibold text-[#1f2937]">
+                  GI
+                </div>
+                <h4 className="text-[1.05rem] font-semibold text-[#111827]">Growth Insights</h4>
+                <p className="mt-1 text-[0.9rem] text-[#4b5563]">
+                  Smart reach tips personalized to best time, content style, and active audience zones.
+                </p>
+              </div>
+
+              <div className="flex flex-col gap-3 text-sm text-[#111827]">
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-[#c7d2fe] to-[#e0ecff] text-[18px] font-semibold text-[#1f2937]">
+                  CS
+                </div>
+                <h4 className="text-[1.05rem] font-semibold text-[#111827]">Connect Social Platforms</h4>
+                <p className="mt-1 text-[0.9rem] text-[#4b5563]">
+                  One-tap connect for Instagram, YouTube, and X with secure read-only analytics.
+                </p>
+              </div>
+
+              <div className="flex flex-col gap-3 text-sm text-[#111827]">
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-[#bbf7d0] to-[#e0f7f2] text-[18px] font-semibold text-[#1f2937]">
+                  SG
+                </div>
+                <h4 className="text-[1.05rem] font-semibold text-[#111827]">Smart Guidance</h4>
+                <p className="mt-1 text-[0.9rem] text-[#4b5563]">
+                  Easy-to-understand suggestions that tell creators exactly what to do next.
+                </p>
+              </div>
+
+              <div className="flex flex-col gap-3 text-sm text-[#111827]">
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-[#facc15] to-[#fde68a] text-[18px] font-semibold text-[#1f2937]">
+                  TE
+                </div>
+                <h4 className="text-[1.05rem] font-semibold text-[#111827]">Trend Engine</h4>
+                <p className="mt-1 text-[0.9rem] text-[#4b5563]">
+                  Detects reels and sounds gaining momentum before they go viral.
+                </p>
+              </div>
+            </div>
+            <p className="mt-20 text-center text-[0.75rem] tracking-[0.18em] uppercase text-[#9ca3af]">
+              * Read-only connections — your content is never posted or edited by the platform.
+            </p>
+            <div className="mt-6 h-px w-full border-t border-[#e5e7eb]" />
           </div>
         </section>
       </div>

@@ -10,7 +10,7 @@ export default function Home() {
   const navigate = useNavigate();
 
   const handleGetStarted = () => {
-    navigate('/dashboard');
+    navigate("/login");
   };
 
   useEffect(() => {
