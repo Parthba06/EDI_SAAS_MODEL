@@ -30,16 +30,10 @@ const Footer: React.FC = () => {
 
         {/* Large ai.work Branding */}
         <div className="relative flex items-center justify-center pt-16 pb-8">
-          {/* Background circle - positioned at top left */}
-          <div className="absolute top-8 left-1/4 w-16 h-16 bg-gray-700 rounded-full"></div>
-          
-          {/* Main ai.work text */}
+          {/* Main hello.you text */}
           <div className="text-gray-700 font-black text-[8rem] md:text-[12rem] lg:text-[16rem] xl:text-[20rem] leading-none select-none tracking-tight">
-            ai.work
+            3.5peps
           </div>
-          
-          {/* Vertical gray bar on right side */}
-          <div className="absolute right-0 top-1/2 transform -translate-y-1/2 w-2 h-32 bg-gray-600"></div>
         </div>
       </div>
     </footer>

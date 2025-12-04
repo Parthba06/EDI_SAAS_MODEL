@@ -21,7 +21,7 @@ const ScrollReveal: React.FC<ScrollRevealProps> = ({
   children,
   scrollContainerRef,
   enableBlur = true,
-  baseOpacity = 0.1,
+  baseOpacity = 0.4,
   baseRotation = 3,
   blurStrength = 4,
   containerClassName = '',
@@ -31,6 +31,7 @@ const ScrollReveal: React.FC<ScrollRevealProps> = ({
 }) => {
   const containerRef = useRef<HTMLHeadingElement>(null);
 
+  // Split text into words
   const splitText = useMemo(() => {
     const text = typeof children === 'string' ? children : '';
     return text.split(/(\s+)/).map((word, index) => {
@@ -47,7 +48,19 @@ const ScrollReveal: React.FC<ScrollRevealProps> = ({
     const el = containerRef.current;
     if (!el) return;
 
-    const scroller = scrollContainerRef && scrollContainerRef.current ? scrollContainerRef.current : window;
+    const scroller = scrollContainerRef?.current || window;
+
+    const wordElements = el.querySelectorAll<HTMLElement>('.word');
+
+    const pinTrigger = ScrollTrigger.create({
+      trigger: el,
+      scroller,
+      start: 'top center',
+      end: `+=140%`,
+      pin: true,
+      anticipatePin: 1,
+      scrub: 0.6
+    });
 
     gsap.fromTo(
       el,
@@ -58,28 +71,26 @@ const ScrollReveal: React.FC<ScrollRevealProps> = ({
         scrollTrigger: {
           trigger: el,
           scroller,
-          start: 'top bottom',
-          end: rotationEnd,
-          scrub: 0.5
+          start: 'top center',
+          end: pinTrigger.end,
+          scrub: 1
         }
       }
     );
 
-    const wordElements = el.querySelectorAll<HTMLElement>('.word');
-
     gsap.fromTo(
       wordElements,
-      { opacity: baseOpacity, willChange: 'opacity' },
+      { opacity: Math.max(baseOpacity, 0.85), willChange: 'opacity' },
       {
-        ease: 'none',
+        ease: 'power1.out',
         opacity: 1,
-        stagger: 0.05,
+        stagger: 0.04,
         scrollTrigger: {
           trigger: el,
           scroller,
-          start: 'top bottom-=20%',
-          end: wordAnimationEnd,
-          scrub: 0.5
+          start: 'top center',
+          end: pinTrigger.end,
+          scrub: 1
         }
       }
     );
@@ -91,26 +102,47 @@ const ScrollReveal: React.FC<ScrollRevealProps> = ({
         {
           ease: 'none',
           filter: 'blur(0px)',
-          stagger: 0.05,
+          stagger: 0.08,
           scrollTrigger: {
             trigger: el,
             scroller,
-            start: 'top bottom-=20%',
-            end: wordAnimationEnd,
-            scrub: 0.5
+            start: 'top center',
+            end: pinTrigger.end,
+            scrub: 1
           }
         }
       );
     }
 
     return () => {
-      ScrollTrigger.getAll().forEach(trigger => trigger.kill());
+      pinTrigger.kill();
+      ScrollTrigger.getAll()
+        .filter(trigger => trigger.trigger === el)
+        .forEach(trigger => trigger.kill());
     };
-  }, [scrollContainerRef, enableBlur, baseRotation, baseOpacity, rotationEnd, wordAnimationEnd, blurStrength]);
+  }, [
+    scrollContainerRef,
+    enableBlur,
+    baseRotation,
+    baseOpacity,
+    rotationEnd,
+    wordAnimationEnd,
+    blurStrength
+  ]);
 
   return (
-    <h2 ref={containerRef} className={`my-5 ${containerClassName}`}>
-      <p className={`text-[clamp(1.6rem,4vw,3rem)] leading-[1.5] font-semibold ${textClassName}`}>{splitText}</p>
+    <h2 ref={containerRef} className={`my-5 !text-black !dark:text-black ${containerClassName}`}>
+      <p
+        className={`
+          text-[clamp(1.6rem,4vw,3rem)]
+          leading-[1.5]
+          font-semibold
+          !text-black !dark:text-black
+          ${textClassName}
+        `}
+      >
+        {splitText}
+      </p>
     </h2>
   );
 };

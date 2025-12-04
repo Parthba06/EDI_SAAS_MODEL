@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { BarChart3, ArrowDown } from "lucide-react";
 import ImageTrail from "./ImageTrail";
@@ -6,6 +7,11 @@ import ImageTrail from "./ImageTrail";
 export default function Home() {
   const titleRef = useRef<HTMLHeadingElement | null>(null);
   const eyebrowRef = useRef<HTMLDivElement | null>(null);
+  const navigate = useNavigate();
+
+  const handleGetStarted = () => {
+    navigate('/dashboard');
+  };
 
   useEffect(() => {
     const nodes = titleRef.current?.querySelectorAll<HTMLElement>(".split-seq");
@@ -73,7 +79,7 @@ export default function Home() {
             <BarChart3 className="w-5 h-5 text-white" />
           </div>
           <span className="text-lg md:text-xl font-bold text-black">
-            KAIROZ
+            Social Intel
           </span>
         </div>
       </div>
@@ -82,6 +88,7 @@ export default function Home() {
       <div className="absolute top-6 md:top-8 right-6 md:right-8 z-50">
         <Button
           variant="default"
+          onClick={handleGetStarted}
           className="px-4 md:px-6 py-2 bg-white text-black hover:bg-gray-100 font-semibold rounded-lg transition-all duration-300 hover:scale-105 text-sm md:text-base"
         >
           Get Started
