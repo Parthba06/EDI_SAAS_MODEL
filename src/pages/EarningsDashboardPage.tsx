@@ -282,13 +282,13 @@ const EarningsDashboardPage: React.FC = () => {
             {/* Export buttons */}
             <button
               type="button"
-              className="inline-flex items-center gap-2 rounded-full bg-slate-900 px-3 py-1.5 text-xs font-semibold text-white shadow-[0_8px_20px_rgba(15,23,42,0.35)]"
+              className="inline-flex items-center gap-2 rounded-full bg-[#008CFF] px-5 py-2.5 text-xs font-medium text-white hover:bg-[#0077E6] transition shadow-sm"
             >
               <span>Export CSV</span>
             </button>
             <button
               type="button"
-              className="inline-flex items-center gap-2 rounded-full bg-slate-900/90 px-3 py-1.5 text-xs font-semibold text-white shadow-[0_8px_20px_rgba(15,23,42,0.35)]"
+              className="inline-flex items-center gap-2 rounded-full bg-[#008CFF] px-5 py-2.5 text-xs font-medium text-white hover:bg-[#0077E6] transition shadow-sm"
             >
               <span>Export PDF</span>
             </button>
@@ -467,7 +467,10 @@ const EarningsDashboardPage: React.FC = () => {
 
             <div className="mt-3 space-y-3 text-xs">
               {platformBreakdown.map((p) => (
-                <div key={p.name} className="flex items-start justify-between gap-2 border-b border-slate-100 pb-3 last:border-0">
+                <div
+                  key={p.name}
+                  className="flex items-start justify-between gap-2 border-b border-slate-100 pb-3 last:border-0"
+                >
                   <div>
                     <div className="flex items-center gap-2">
                       <div className="flex h-6 w-6 items-center justify-center rounded-full bg-slate-100 text-[11px] font-semibold text-slate-700">
@@ -476,9 +479,7 @@ const EarningsDashboardPage: React.FC = () => {
                       <span className="text-slate-900">{p.name}</span>
                     </div>
                     <p className="mt-1 text-[11px] text-slate-500">Revenue: ₹{p.revenue.toLocaleString()}</p>
-                    {p.rpm && (
-                      <p className="text-[11px] text-slate-500">RPM ₹{p.rpm}</p>
-                    )}
+                    {p.rpm && <p className="text-[11px] text-slate-500">RPM ₹{p.rpm}</p>}
                     {p.views && (
                       <p className="text-[11px] text-slate-500">{p.views.toLocaleString()} views</p>
                     )}
@@ -497,7 +498,7 @@ const EarningsDashboardPage: React.FC = () => {
                     </span>
                     <button
                       type="button"
-                      className="mt-2 inline-flex items-center rounded-full bg-slate-900 px-3 py-1.5 text-[11px] font-semibold text-white"
+                      className="mt-2 inline-flex items-center rounded-full bg-[#008CFF] px-5 py-2.5 text-[11px] font-medium text-white hover:bg-[#0077E6] transition shadow-sm"
                     >
                       View
                     </button>
@@ -506,82 +507,13 @@ const EarningsDashboardPage: React.FC = () => {
               ))}
             </div>
           </div>
-        </div>
 
-        {/* SPONSORSHIP TRACKER & FORECAST */}
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-          {/* Sponsorship tracker */}
-          <div className="col-span-2 rounded-2xl bg-white p-6 shadow-[0_10px_25px_rgba(15,23,42,0.05)]">
-            <div className="mb-4 flex items-center justify-between">
-              <div>
-                <h2 className="text-sm font-semibold text-slate-900">Sponsorships overview</h2>
-                <p className="mt-1 text-xs text-slate-500">Track brand deals, amounts, and deadlines.</p>
-              </div>
-              <button
-                type="button"
-                className="inline-flex items-center rounded-full bg-slate-900 px-3 py-1.5 text-[11px] font-semibold text-white"
-                onClick={() => setShowNewDeal(true)}
-              >
-                + New sponsorship
-              </button>
-            </div>
+          {/* Sponsorships table */}
+          <div className="col-span-1 rounded-2xl bg-white p-6 shadow-[0_10px_25px_rgba(15,23,42,0.05)]">
+            <h2 className="text-sm font-semibold text-slate-900">Sponsorships</h2>
+            <p className="mt-1 text-xs text-slate-500">Track brand deals, amounts, and deadlines.</p>
 
-            {showNewDeal && (
-              <div className="mb-4 grid grid-cols-1 gap-2 rounded-xl bg-slate-50 p-4 text-[11px] md:grid-cols-2">
-                <input
-                  placeholder="Brand"
-                  value={newDeal.brand}
-                  onChange={(e) => setNewDeal((d) => ({ ...d, brand: e.target.value }))}
-                  className="rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-slate-700 outline-none focus:border-sky-400"
-                />
-                <input
-                  placeholder="Deal name"
-                  value={newDeal.dealName}
-                  onChange={(e) => setNewDeal((d) => ({ ...d, dealName: e.target.value }))}
-                  className="rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-slate-700 outline-none focus:border-sky-400"
-                />
-                <input
-                  placeholder="Amount (₹)"
-                  type="number"
-                  value={newDeal.amount || ""}
-                  onChange={(e) => setNewDeal((d) => ({ ...d, amount: Number(e.target.value) || 0 }))}
-                  className="rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-slate-700 outline-none focus:border-sky-400"
-                />
-                <input
-                  placeholder="Deadline (e.g. Feb 10, 2025)"
-                  value={newDeal.deadline}
-                  onChange={(e) => setNewDeal((d) => ({ ...d, deadline: e.target.value }))}
-                  className="rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-slate-700 outline-none focus:border-sky-400"
-                />
-                <select
-                  value={newDeal.status}
-                  onChange={(e) => setNewDeal((d) => ({ ...d, status: e.target.value as Sponsorship["status"] }))}
-                  className="rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-slate-700 outline-none focus:border-sky-400"
-                >
-                  <option value="Active">Active</option>
-                  <option value="Completed">Completed</option>
-                  <option value="Pending">Pending</option>
-                </select>
-                <div className="flex items-center justify-end gap-2">
-                  <button
-                    type="button"
-                    className="rounded-full px-3 py-1.5 text-[11px] text-slate-600 hover:bg-slate-200"
-                    onClick={() => setShowNewDeal(false)}
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    type="button"
-                    className="rounded-full bg-sky-500 px-3 py-1.5 text-[11px] font-semibold text-white hover:bg-sky-600"
-                    onClick={addNewSponsorship}
-                  >
-                    Save deal
-                  </button>
-                </div>
-              </div>
-            )}
-
-            <div className="overflow-x-auto text-xs">
+            <div className="mt-3 overflow-x-auto text-xs">
               <table className="min-w-full text-left">
                 <thead>
                   <tr className="border-b border-slate-100 text-[11px] uppercase tracking-wide text-slate-400">
@@ -590,7 +522,6 @@ const EarningsDashboardPage: React.FC = () => {
                     <th className="py-2 pr-4">Amount</th>
                     <th className="py-2 pr-4">Deadline</th>
                     <th className="py-2 pr-4">Status</th>
-                    <th className="py-2 pr-4 text-right">Action</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -613,14 +544,6 @@ const EarningsDashboardPage: React.FC = () => {
                         >
                           {s.status}
                         </span>
-                      </td>
-                      <td className="py-2 pr-4 text-right">
-                        <button
-                          type="button"
-                          className="inline-flex items-center rounded-full bg-slate-900 px-3 py-1.5 text-[11px] font-semibold text-white"
-                        >
-                          View deal
-                        </button>
                       </td>
                     </tr>
                   ))}
@@ -723,7 +646,7 @@ const EarningsDashboardPage: React.FC = () => {
 
                 <button
                   type="button"
-                  className="mt-3 inline-flex items-center justify-center rounded-full bg-slate-900 px-3 py-1.5 text-[11px] font-semibold text-white"
+                  className="mt-3 inline-flex items-center justify-center rounded-full bg-[#008CFF] px-5 py-2.5 text-[11px] font-medium text-white hover:bg-[#0077E6] transition shadow-sm"
                 >
                   View analytics
                 </button>
@@ -732,40 +655,6 @@ const EarningsDashboardPage: React.FC = () => {
           </div>
         </div>
 
-        {/* PAYMENT HISTORY */}
-        <div className="rounded-2xl bg-white p-6 shadow-[0_10px_25px_rgba(15,23,42,0.05)]">
-          <h2 className="text-sm font-semibold text-slate-900">Payment history</h2>
-          <p className="mt-1 text-xs text-slate-500">Payouts from platforms and sponsorships.</p>
-
-          <div className="mt-3 overflow-x-auto text-xs">
-            <table className="min-w-full text-left">
-              <thead>
-                <tr className="border-b border-slate-100 text-[11px] uppercase tracking-wide text-slate-400">
-                  <th className="py-2 pr-4">Date</th>
-                  <th className="py-2 pr-4">Platform</th>
-                  <th className="py-2 pr-4">Amount</th>
-                  <th className="py-2 pr-4">Status</th>
-                  <th className="py-2 pr-4">Transaction ID</th>
-                </tr>
-              </thead>
-              <tbody>
-                {payments.map((p) => (
-                  <tr key={p.txnId} className="border-b border-slate-50 last:border-0">
-                    <td className="py-2 pr-4">{p.date}</td>
-                    <td className="py-2 pr-4">{p.platform}</td>
-                    <td className="py-2 pr-4">₹{p.amount.toLocaleString()}</td>
-                    <td className="py-2 pr-4">
-                      <span className={"inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-semibold " + statusBadgeClass(p.status)}>
-                        {p.status}
-                      </span>
-                    </td>
-                    <td className="py-2 pr-4">{p.txnId}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
       </div>
     </div>
   );
