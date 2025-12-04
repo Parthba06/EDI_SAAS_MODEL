@@ -9,8 +9,29 @@ import {
   Tooltip,
   CartesianGrid,
   Line,
+  BarChart,
+  Bar
 } from 'recharts';
 import { VscHome, VscArchive, VscAccount, VscSettingsGear } from 'react-icons/vsc';
+import {
+  FiBell,
+  FiClock,
+  FiSend,
+  FiCheckSquare,
+  FiChevronDown,
+  FiEdit3,
+  FiUsers,
+  FiMail,
+  FiBriefcase,
+  FiTwitter,
+  FiInstagram,
+  FiYoutube,
+  FiSun,
+  FiMoon,
+  FiHeadphones,
+  FiShare2
+} from 'react-icons/fi';
+import CreatorLogo from '../assets/WhatsApp Image 2025-12-04 at 16.13.28_3db5bc93.jpg';
 import Dock from '../components/Dock';
 
 // Sample data for charts and metrics
@@ -23,103 +44,188 @@ const sampleSeries = [
   { date: '2025-09-15', followers: 12450, engagement: 3.0, reach: 49000, impressions: 92000 },
   { date: '2025-09-16', followers: 12540, engagement: 3.1, reach: 50000, impressions: 94000 }
 ];
+const overviewAccounts = [
+  {
+    id: 'youtube',
+    name: 'YouTube',
+    handle: '@creatorYT',
+    followers: '8,481',
+    delta: '+8,481',
+    comments: '4,507',
+    likes: '1,254,58',
+    accent: 'bg-red-50 border-red-100',
+    badge: 'text-red-500 bg-red-50'
+  },
+  {
+    id: 'twitter',
+    name: 'Twitter',
+    handle: '@creatorX',
+    followers: '8,481',
+    delta: '+8,481',
+    comments: '4,507',
+    likes: '1,254,58',
+    accent: 'bg-slate-50 border-slate-100',
+    badge: 'text-slate-700 bg-slate-50'
+  },
+  {
+    id: 'instagram',
+    name: 'Instagram',
+    handle: '@creatorIG',
+    followers: '8,481',
+    delta: '+8,481',
+    comments: '4,507',
+    likes: '1,254,58',
+    accent: 'bg-pink-50 border-pink-100',
+    badge: 'text-pink-500 bg-pink-50'
+  }
+];
 
-const QuickMetricCard: React.FC<any> = ({ title, value, trend }) => (
-  <div className="group rounded-2xl bg-card/90 border border-border/70 p-5 shadow-card transition-all duration-200 hover:-translate-y-1 hover:shadow-glow">
-    <div className="flex items-center justify-between text-xs font-medium text-muted-foreground">
-      <span>{title}</span>
+const CardShell: React.FC<React.PropsWithChildren<{ className?: string }>> = ({ className = '', children }) => (
+  <div
+    className={`rounded-2xl border border-slate-200 bg-white shadow-[0_18px_45px_rgba(15,23,42,0.06)] ${className}`}
+  >
+    {children}
+  </div>
+);
+
+const SectionHeader: React.FC<{ title: string; subtitle?: string; right?: React.ReactNode }> = ({
+  title,
+  subtitle,
+  right
+}) => (
+  <div className="mb-4 flex items-center justify-between gap-4">
+    <div>
+      <h3 className="text-[15px] font-semibold text-slate-900">{title}</h3>
+      {subtitle && <p className="mt-0.5 text-xs text-slate-500">{subtitle}</p>}
+    </div>
+    {right && <div className="flex items-center gap-2 text-xs text-slate-500">{right}</div>}
+  </div>
+);
+
+const BadgePill: React.FC<React.PropsWithChildren<{ tone?: 'default' | 'success' | 'danger' | 'muted' }>> = ({
+  tone = 'default',
+  children
+}) => {
+  const styles: Record<string, string> = {
+    default: 'bg-slate-100 text-slate-700',
+    success: 'bg-emerald-50 text-emerald-600',
+    danger: 'bg-rose-50 text-rose-600',
+    muted: 'bg-slate-50 text-slate-500'
+  };
+
+  return (
+    <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-[11px] font-semibold ${styles[tone]}`}>
+      {children}
+    </span>
+  );
+};
+
+const SidebarNavItem: React.FC<{
+  icon: React.ReactNode;
+  label: string;
+  active?: boolean;
+  badge?: string;
+  onClick?: () => void;
+}> = ({ icon, label, active, badge, onClick }) => (
+  <button
+    onClick={onClick}
+    className={`group flex w-full items-center justify-between rounded-2xl px-3 py-2 text-sm transition-all duration-150 ${
+      active
+        ? 'bg-white shadow-[0_18px_40px_rgba(15,23,42,0.16)] text-slate-900'
+        : 'text-slate-600 hover:text-slate-900'
+    }`}
+  >
+    <span className="flex items-center gap-3">
       <span
-        className={`inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-semibold bg-muted/80 group-hover:bg-muted ${
-          trend && trend.startsWith('+') ? 'text-primary' : 'text-foreground'
+        className={`flex h-9 w-9 items-center justify-center rounded-xl border text-[16px] ${
+          active
+            ? 'border-slate-200 bg-white text-slate-900'
+            : 'border-transparent bg-transparent text-slate-400'
         }`}
       >
-        {trend}
+        {icon}
       </span>
-    </div>
-    <h2 className="mt-3 text-2xl font-semibold tracking-tight text-foreground">{value}</h2>
-  </div>
+      <span>{label}</span>
+    </span>
+    {badge && (
+      <span className="inline-flex min-w-[30px] items-center justify-center rounded-full bg-sky-100 px-2 py-0.5 text-[11px] font-semibold text-sky-600">
+        {badge}
+      </span>
+    )}
+  </button>
 );
 
-const AISuggestion: React.FC<any> = ({ text }) => (
-  <div className="group flex items-center justify-between rounded-xl border border-border/70 bg-muted/60 p-4 transition-all duration-200 hover:bg-muted hover:shadow-card">
-    <div className="text-sm text-foreground/90">{text}</div>
-    <div className="flex items-center gap-2">
-      <button className="text-xs px-3 py-1.5 rounded-full bg-primary text-primary-foreground shadow-card transition-all duration-200 hover:-translate-y-0.5 hover:shadow-glow">
-        Apply
-      </button>
-      <button className="text-xs px-3 py-1.5 rounded-full border border-border/70 text-foreground transition-all duration-200 hover:bg-muted/80">
-        View
-      </button>
-    </div>
-  </div>
+const SidebarAccountItem: React.FC<{ label: string; active?: boolean }> = ({ label, active }) => (
+  <button
+    className={`flex w-full items-center gap-2 rounded-xl px-2.5 py-2 text-sm font-medium transition-colors ${
+      active ? 'text-slate-900' : 'text-slate-500 hover:text-slate-900'
+    }`}
+  >
+    <span className="h-5 w-5 rounded-full border border-slate-300" />
+    <span>{label}</span>
+  </button>
 );
 
-const TrendingCard: React.FC<any> = ({ tag, score, timeLeft }) => (
-  <div className="group flex flex-col gap-2 rounded-2xl border border-border/70 bg-card/90 p-4 shadow-card transition-all duration-200 hover:-translate-y-1 hover:shadow-glow">
-    <div className="flex items-center justify-between text-xs">
-      <span className="inline-flex items-center rounded-full bg-primary/10 px-2 py-0.5 font-medium text-primary">#{tag}</span>
-      <span className="text-[11px] text-muted-foreground">{timeLeft}</span>
-    </div>
-    <div className="mt-1 text-sm font-medium text-muted-foreground">Virality score</div>
-    <div className="text-xl font-semibold text-foreground">{score}</div>
-    <button className="mt-2 inline-flex w-fit items-center gap-1 rounded-full bg-muted px-3 py-1 text-xs font-medium text-foreground transition-colors duration-200 group-hover:bg-primary group-hover:text-primary-foreground">
-      Jump on trend
-      <span className="text-[10px]">↗</span>
-    </button>
-  </div>
-);
-
-const RecentPostCard: React.FC<any> = ({ image, likes, comments, engagement }) => (
-  <div className="group w-64 overflow-hidden rounded-2xl border border-border/70 bg-card/90 shadow-card transition-all duration-200 hover:-translate-y-1 hover:shadow-glow">
-    <div className="group relative h-36 w-full bg-background/80">
-      <div
-        style={{ backgroundImage: `url(${image})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
-        className="absolute inset-0 transition-transform duration-500 group-hover:scale-110"
-      />
-      <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-60" />
-    </div>
-    <div className="p-4">
-      <div className="flex items-center justify-between text-xs text-muted-foreground">
-        <span className="inline-flex items-center gap-1">
-          <span className="h-1.5 w-1.5 rounded-full bg-primary" /> {likes}
-        </span>
-        <span className="inline-flex items-center gap-1">
-          <span className="h-1.5 w-1.5 rounded-full bg-secondary" /> {comments}
-        </span>
-      </div>
-      <div className="mt-2 flex items-center gap-2 text-sm text-foreground/90">
-        Engagement:
-        <span className="font-medium text-primary">{engagement}%</span>
-      </div>
-    </div>
-  </div>
-);
-
-const TopBar: React.FC<any> = ({ onOpenAIAssistant }) => (
-  <div className="fixed left-0 right-0 top-4 z-40">
-    <div className="mx-auto flex max-w-7xl px-6">
-      <div className="flex h-14 w-full items-center justify-between rounded-2xl border border-border/70 bg-card/80 px-4 shadow-card backdrop-blur-md">
-        <div className="flex items-center gap-3">
-          <div className="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">Dashboard</div>
-        </div>
-        <div className="flex items-center gap-3">
+const TopBar: React.FC<{ onOpenAIAssistant: () => void }> = ({ onOpenAIAssistant }) => (
+  <div className="sticky top-0 z-30 bg-white shadow-[0_12px_30px_rgba(15,23,42,0.08)]">
+    <div className="flex w-full items-center justify-between px-4 py-3 sm:px-6 lg:px-8">
+      {/* Left: search bar */}
+      <div className="flex flex-1 items-center">
+        <div className="flex w-full max-w-xl items-center rounded-full bg-[#F5F5F7] px-4 py-2">
+          <span className="mr-2 text-slate-400">
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <circle cx="11" cy="11" r="7" />
+              <line x1="16.65" y1="16.65" x2="21" y2="21" />
+            </svg>
+          </span>
           <input
-            placeholder="Search posts, hashtags, competitors..."
-            className="w-72 rounded-xl border border-border/70 bg-muted/70 px-3 py-2 text-xs text-foreground placeholder:text-muted-foreground outline-none transition-[border,box-shadow] duration-200 focus:border-primary/60 focus:ring-2 focus:ring-primary/30"
+            placeholder="Search post, image or content"
+            className="w-full bg-transparent text-sm text-slate-700 placeholder:text-slate-400 outline-none"
           />
-          <button className="relative inline-flex h-9 w-9 items-center justify-center rounded-xl border border-border/70 bg-muted/70 text-xs transition-[background,box-shadow,transform] duration-200 hover:-translate-y-0.5 hover:bg-muted hover:shadow-card">
-            <span className="absolute right-1 top-1 inline-block h-1.5 w-1.5 rounded-full bg-primary" />
-            🔔
-          </button>
-          <button
-            onClick={onOpenAIAssistant}
-            className="inline-flex items-center gap-1 rounded-full bg-primary px-4 py-2 text-xs font-medium text-primary-foreground shadow-card transition-[background,box-shadow,transform] duration-200 hover:-translate-y-0.5 hover:bg-primary/90 hover:shadow-glow"
-          >
-            AI Assistant
-          </button>
-          <button className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-primary to-accent text-xs font-semibold text-primary-foreground shadow-glow">
-            A
-          </button>
+        </div>
+      </div>
+
+      {/* Right: actions */}
+      <div className="ml-4 flex items-center gap-2 text-[11px]">
+        <button className="hidden items-center gap-1 rounded-full bg-[#F5F5F7] px-3 py-1.5 text-slate-600 hover:text-slate-900 sm:inline-flex">
+          <FiClock className="text-slate-400" />
+          Set Reminder
+        </button>
+        <button className="hidden items-center gap-1 rounded-full bg-[#F5F5F7] px-3 py-1.5 text-slate-600 hover:text-slate-900 md:inline-flex">
+          <FiSend className="text-slate-400" />
+          Schedule Post
+        </button>
+        <button className="hidden items-center gap-1 rounded-full bg-[#F5F5F7] px-3 py-1.5 text-slate-600 hover:text-slate-900 lg:inline-flex">
+          <FiCheckSquare className="text-slate-400" />
+          To-do List
+        </button>
+        <button
+          onClick={onOpenAIAssistant}
+          className="inline-flex items-center gap-1 rounded-full bg-sky-500 px-3 py-1.5 text-[11px] font-semibold text-white shadow-[0_10px_25px_rgba(56,189,248,0.5)]"
+        >
+          AI
+        </button>
+        <button className="inline-flex items-center gap-1 rounded-full bg-emerald-500 px-3 py-1.5 text-[11px] font-medium text-white shadow-[0_10px_24px_rgba(16,185,129,0.6)]">
+          <FiMoon className="text-white" />
+          Dark mode
+        </button>
+        <button className="relative inline-flex h-9 w-9 items-center justify-center rounded-full bg-[#F5F5F7] text-slate-500">
+          <FiBell />
+          <span className="absolute -right-0.5 -top-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-rose-500 text-[10px] font-semibold text-white">
+            12
+          </span>
+        </button>
+        <div className="ml-1 flex h-9 w-9 items-center justify-center overflow-hidden rounded-full border border-slate-200 bg-slate-100">
+          <span className="text-[11px] font-semibold text-slate-700">PR</span>
         </div>
       </div>
     </div>
@@ -131,27 +237,7 @@ export default function Dashboard() {
   const [aiOpen, setAiOpen] = useState(false);
   const [metric, setMetric] = useState<'followers' | 'engagement' | 'reach' | 'impressions'>('followers');
   const [range, setRange] = useState<'7D' | '30D' | '90D'>('7D');
-
   const growthScore = 82;
-
-  const quickMetrics = useMemo(() => [
-    { title: 'Followers', value: '12,540', trend: '+3.2%' },
-    { title: 'Engagement rate', value: '3.1%', trend: '+0.2%' },
-    { title: 'Reach', value: '50,200', trend: '+4.1%' },
-    { title: 'Post index', value: '78', trend: '+1.8%' }
-  ], []);
-
-  const suggestions = [
-    'Post Reels at 7PM for +34% engagement',
-    'Try #TechTrends2025 — trending in your niche',
-    "Repurpose yesterday's video into a carousel"
-  ];
-
-  const trending = [
-    { tag: 'AIinCreators', score: 92, timeLeft: '6h' },
-    { tag: 'ShortsBoost', score: 85, timeLeft: '12h' },
-    { tag: 'TechTrends2025', score: 78, timeLeft: '2d' }
-  ];
 
   const dockItems = [
     { icon: <VscHome size={18} />, label: 'Home', onClick: () => navigate('/') },
@@ -161,201 +247,356 @@ export default function Dashboard() {
   ];
 
   return (
-    <div className="relative min-h-screen bg-background pt-28 pb-20">
-
+    <div className="relative min-h-screen bg-[#F5F5F7] pb-24">
       <TopBar onOpenAIAssistant={() => setAiOpen(true)} />
 
-      <div className="max-w-7xl mx-auto px-6">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Left column - main analytics */}
-          <div className="lg:col-span-2 space-y-6">
-            {/* Welcome + Growth Score */}
-            <div className="relative flex items-center justify-between overflow-hidden rounded-2xl border border-border/70 bg-card/90 p-6 shadow-card">
+      <div className="flex w-full gap-6 px-4 pt-6 sm:px-6 lg:px-8">
+        {/* Sidebar */}
+        <aside className="hidden w-[290px] shrink-0 rounded-3xl bg-[#F8F9FA] p-5 shadow-[0_24px_60px_rgba(15,23,42,0.16)] lg:block">
+          {/* Brand */}
+          <div className="flex items-center gap-2 px-1 pb-6">
+            <img
+              src={CreatorLogo}
+              alt="Creator logo"
+              className="h-7 w-auto object-contain"
+            />
+            <div className="text-sm font-semibold text-slate-900">Creator</div>
+          </div>
 
-              {/* Sparkline background */}
-              <svg className="pointer-events-none absolute inset-0 opacity-20" viewBox="0 0 100 20" preserveAspectRatio="none">
+          {/* Menu header */}
+          <div className="mb-2 flex items-center justify-between px-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-400">
+            <span>Menu</span>
+            <FiChevronDown size={12} className="text-slate-400" />
+          </div>
 
-                <path
-                  d="M0 10 L10 8 L20 12 L30 7 L40 9 L50 15 L60 10 L70 12 L80 6 L90 8 L100 10"
-                  stroke="#3EDC8E"
-                  strokeWidth="1"
-                  fill="none"
-                />
-                <path
-                  d="M0 10 L10 8 L20 12 L30 7 L40 9 L50 15 L60 10 L70 12 L80 6 L90 8 L100 10 L100 20 L0 20 Z"
-                  fill="#7FFFB0"
-                  opacity="0.1"
-                />
-              </svg>
-              <div className="relative z-10 max-w-[650px]">
-                <div className="text-xs font-medium uppercase tracking-[0.16em] text-muted-foreground">Welcome back</div>
-                <h3 className="mt-2 text-2xl font-semibold tracking-tight text-foreground">
+          {/* Menu items */}
+          <div className="space-y-1">
+            {/* Active Home card */}
+            <SidebarNavItem
+              icon={<VscHome size={18} />}
+              label="Home"
+              active
+              onClick={() => navigate('/')}
+            />
 
-                  Your Growth Score is <span className="text-primary">{growthScore}/100</span>
-                </h3>
-                <p className="mt-2 flex items-center text-sm text-muted-foreground">
+            {/* Simple rows for other items */}
+            <button className="flex w-full items-center justify-between rounded-xl px-2 py-2 text-sm text-slate-600 hover:bg-white hover:text-slate-900">
+              <span className="flex items-center gap-3">
+                <FiEdit3 size={16} className="text-slate-400" />
+                <span>Editor</span>
+              </span>
+            </button>
+            <button className="flex w-full items-center justify-between rounded-xl px-2 py-2 text-sm text-slate-600 hover:bg-white hover:text-slate-900">
+              <span className="flex items-center gap-3">
+                <FiBriefcase size={16} className="text-slate-400" />
+                <span>Sponsorship</span>
+              </span>
+              <span className="inline-flex min-w-[30px] items-center justify-center rounded-full bg-sky-100 px-2 py-0.5 text-[11px] font-semibold text-sky-600">
+                5
+              </span>
+            </button>
+            <button className="flex w-full items-center justify-between rounded-xl px-2 py-2 text-sm text-slate-600 hover:bg-white hover:text-slate-900">
+              <span className="flex items-center gap-3">
+                <FiMail size={16} className="text-slate-400" />
+                <span>Mails</span>
+              </span>
+              <span className="inline-flex min-w-[38px] items-center justify-center rounded-full bg-sky-100 px-2 py-0.5 text-[11px] font-semibold text-sky-600">
+                55+
+              </span>
+            </button>
+            <button className="flex w-full items-center justify-between rounded-xl px-2 py-2 text-sm text-slate-600 hover:bg-white hover:text-slate-900">
+              <span className="flex items-center gap-3">
+                <FiShare2 size={16} className="text-slate-400" />
+                <span>Collaboration</span>
+              </span>
+              <span className="inline-flex min-w-[34px] items-center justify-center rounded-full bg-sky-100 px-2 py-0.5 text-[11px] font-semibold text-sky-600">
+                8+
+              </span>
+            </button>
+          </div>
 
-                  Your engagement grew <span className="text-primary font-semibold mx-1">24%</span> this week
-                  <span className="inline-block ml-2 text-primary">↗</span>
-                </p>
+          {/* Accounts header */}
+          <div className="mt-6 mb-1 flex items-center justify-between px-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-400">
+            <span>Accounts</span>
+            <FiChevronDown size={12} className="text-slate-400" />
+          </div>
+
+          {/* Accounts list */}
+          <div className="mt-1 space-y-1">
+            <button className="flex w-full items-center gap-3 rounded-xl px-2 py-2 text-sm text-slate-600 hover:bg-white hover:text-slate-900">
+              <FiTwitter size={16} className="text-slate-400" />
+              <span>Twitter</span>
+            </button>
+            <button className="flex w-full items-center gap-3 rounded-xl px-2 py-2 text-sm text-slate-600 hover:bg-white hover:text-slate-900">
+              <FiInstagram size={16} className="text-slate-400" />
+              <span>Instagram</span>
+            </button>
+            <button className="flex w-full items-center gap-3 rounded-xl px-2 py-2 text-sm text-slate-600 hover:bg-white hover:text-slate-900">
+              <FiYoutube size={16} className="text-slate-400" />
+              <span>Youtube</span>
+            </button>
+          </div>
+
+          {/* Add More button */}
+          <button className="mt-4 flex w-full items-center justify-center rounded-2xl bg-[#2D7FF9] py-2.5 text-sm font-semibold text-white shadow-[0_18px_40px_rgba(45,127,249,0.7)]">
+            + Add More
+          </button>
+
+          {/* Support / Settings + Theme toggle */}
+          <div className="mt-8 space-y-1 border-t border-slate-200 pt-4 text-sm text-slate-600">
+            <button className="flex w-full items-center gap-2 rounded-xl px-2 py-1.5 text-slate-600 hover:bg-white hover:text-slate-900">
+              <FiHeadphones size={18} className="text-slate-400" />
+              <span>Support</span>
+            </button>
+            <button className="flex w-full items-center gap-2 rounded-xl px-2 py-1.5 text-slate-600 hover:bg-white hover:text-slate-900">
+              <VscSettingsGear size={18} className="text-slate-400" />
+              <span>Settings</span>
+            </button>
+
+            {/* Theme toggle */}
+            <div className="mt-4 flex items-center justify-between rounded-full bg-[#F1F3F5] px-2 py-1 text-[11px] font-medium text-slate-600">
+              <div className="relative flex items-center gap-1 rounded-full bg-white px-3 py-1 shadow-sm">
+                <FiSun size={14} className="text-amber-400" />
+                <span>White</span>
               </div>
-              <div className="relative z-10 flex h-48 w-48 items-center justify-center">
+              <div className="flex items-center gap-1 px-2 py-1 text-slate-400">
+                <FiMoon size={14} />
+                <span>Dark</span>
+              </div>
+            </div>
+          </div>
+        </aside>
 
-                {/* Simple circular progress in mint green */}
-                <svg viewBox="0 0 36 36" className="w-40 h-40">
-                  <defs>
-                    <linearGradient id="ringGradient" x1="0" y1="0" x2="1" y2="1">
-                      <stop offset="0%" stopColor="#3EDC8E" />
-                      <stop offset="50%" stopColor="#7FFFB0" />
-                      <stop offset="100%" stopColor="#B9FFD8" />
-                    </linearGradient>
-                  </defs>
-                  <path
-                    d="M18 2a16 16 0 1 0 0 32 16 16 0 1 0 0-32"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="4"
-                    opacity="0.12"
-                    className="text-muted-foreground"
-                  />
-                  <path
-                    strokeLinecap="round"
-                    d="M18 2a16 16 0 1 0 0 32 16 16 0 1 0 0-32"
-                    fill="none"
-                    stroke="url(#ringGradient)"
-                    strokeWidth="4"
-                    strokeDasharray={`${growthScore},100`}
-                    transform="rotate(-90 18 18)"
-                  />
-                  <text
-                    x="18"
-                    y="20"
-                    textAnchor="middle"
-                    className="font-bold"
-                    style={{ fontSize: '8px', fill: 'currentColor' }}
+        {/* Main content */}
+        <main className="flex-1 space-y-6 pb-4">
+          {/* Overview & Active Promotion row */}
+          <div className="grid grid-cols-1 gap-6 xl:grid-cols-3">
+            {/* Overview */}
+            <CardShell className="xl:col-span-2 p-5 sm:p-6">
+              <SectionHeader
+                title="Overview"
+                subtitle="Connected accounts"
+                right={
+                  <>
+                    <span className="hidden text-xs text-slate-400 sm:inline">Refreshed 20 sec ago</span>
+                    <BadgePill tone="muted">1 Day</BadgePill>
+                  </>
+                }
+              />
+              <div className="grid gap-4 sm:grid-cols-3">
+                {overviewAccounts.map(account => (
+                  <div
+                    key={account.id}
+                    className={`flex flex-col justify-between rounded-2xl border px-4 py-4 ${account.accent}`}
                   >
-                    {growthScore}%
-                  </text>
-                </svg>
-              </div>
-            </div>
-
-            {/* Quick Metrics */}
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-
-              {quickMetrics.map((m: any, i: number) => (
-                <QuickMetricCard key={i} {...m} />
-              ))}
-            </div>
-
-            {/* AI Suggestions */}
-            <div className="rounded-2xl border border-border/70 bg-card/90 p-6 shadow-card">
-
-              <div className="flex items-center justify-between mb-4">
-                <h4 className="text-lg font-semibold text-foreground">AI Suggestions</h4>
-                <div className="text-sm text-muted-foreground">Today</div>
-              </div>
-              <div className="space-y-3">
-                {suggestions.map((s, i) => <AISuggestion key={i} text={s} />)}
-              </div>
-            </div>
-
-            {/* Performance Graph */}
-            <div className="rounded-2xl border border-border/70 bg-card/90 p-6 shadow-card">
-
-              <div className="flex items-center justify-between mb-4">
-                <h4 className="text-lg font-semibold text-foreground">Performance</h4>
-                <div className="flex items-center gap-2">
-                  <div className="flex items-center gap-2 bg-muted/60 rounded-full p-1">
-                    {(['followers','engagement','reach','impressions'] as any).map((k: any) => (
-                      <button
-                        key={k}
-                        onClick={() => setMetric(k)}
-                        className={`px-3 py-1 rounded-full text-xs font-medium capitalize transition-colors ${
-                          metric === k
-                            ? 'bg-background text-foreground shadow-sm'
-                            : 'text-muted-foreground hover:text-foreground'
-                        }`}
-                      >
-                        {k}
-                      </button>
-                    ))}
+                    <div className="flex items-center justify-between text-xs text-slate-500">
+                      <div>
+                        <div className="text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-400">
+                          {account.name}
+                        </div>
+                        <div className="mt-0.5 text-[11px] text-slate-500">{account.handle}</div>
+                      </div>
+                      <BadgePill tone="success">{account.delta}</BadgePill>
+                    </div>
+                    <div className="mt-3 text-2xl font-semibold text-slate-900">{account.followers}</div>
+                    <div className="mt-3 flex items-center justify-between text-[11px] text-slate-500">
+                      <div>
+                        <div className="text-slate-400">Comments</div>
+                        <div className="mt-0.5 font-medium text-slate-700">{account.comments}</div>
+                      </div>
+                      <div>
+                        <div className="text-slate-400">Likes</div>
+                        <div className="mt-0.5 font-medium text-slate-700">{account.likes}</div>
+                      </div>
+                    </div>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <button
-                      onClick={() => setRange('7D')}
-                      className={`px-3 py-1 rounded-full text-xs ${
-                        range === '7D' ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:text-foreground'
-                      }`}
-                    >
-                      7D
-                    </button>
-                    <button
-                      onClick={() => setRange('30D')}
-                      className={`px-3 py-1 rounded-full text-xs ${
-                        range === '30D' ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:text-foreground'
-                      }`}
-                    >
-                      30D
-                    </button>
-                    <button
-                      onClick={() => setRange('90D')}
-                      className={`px-3 py-1 rounded-full text-xs ${
-                        range === '90D' ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:text-foreground'
-                      }`}
-                    >
-                      90D
-                    </button>
+                ))}
+              </div>
+            </CardShell>
+
+            {/* Active Promotion */}
+            <CardShell className="p-5 sm:p-6">
+              <SectionHeader
+                title="Active Promotion"
+                right={
+                  <BadgePill tone="muted">30 Days</BadgePill>
+                }
+              />
+              <div className="mb-3 flex gap-2 text-[11px]">
+                <BadgePill tone="success">Instagram</BadgePill>
+                <BadgePill tone="muted">Youtube</BadgePill>
+                <BadgePill tone="muted">Twitter</BadgePill>
+              </div>
+              <div className="h-40">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={sampleSeries}>
+                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E5E7EB" />
+                    <XAxis dataKey="date" stroke="#9CA3AF" tickLine={false} axisLine={false} tickMargin={8} />
+                    <YAxis stroke="#9CA3AF" tickLine={false} axisLine={false} tickMargin={8} />
+                    <Tooltip />
+                    <Bar dataKey="reach" radius={[8, 8, 0, 0]} fill="#BFDBFE" barSize={14} />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+              <div className="mt-4 grid grid-cols-3 gap-3 text-[11px] text-slate-500">
+                <div>
+                  <div className="text-slate-400">Followers</div>
+                  <div className="mt-1 text-lg font-semibold text-slate-900">35,543</div>
+                  <div className="mt-1 flex items-center gap-1">
+                    <BadgePill tone="success">+1800 in last 2 hr</BadgePill>
                   </div>
+                </div>
+                <div>
+                  <div className="text-slate-400">Spending</div>
+                  <div className="mt-1 text-lg font-semibold text-slate-900">₹5,000</div>
+                  <div className="mt-1">
+                    <BadgePill tone="danger">3 days left</BadgePill>
+                  </div>
+                </div>
+                <div>
+                  <div className="text-slate-400">Reach</div>
+                  <div className="mt-1 text-lg font-semibold text-slate-900">1.5L</div>
+                  <div className="mt-1 text-[11px] text-slate-400">account reached</div>
+                </div>
+              </div>
+            </CardShell>
+          </div>
+
+          {/* Engagement & Most active time */}
+          <div className="grid grid-cols-1 gap-6 xl:grid-cols-3">
+            {/* Engagement */}
+            <CardShell className="xl:col-span-2 p-5 sm:p-6">
+              <SectionHeader
+                title="Engagement"
+                right={
+                  <>
+                    <BadgePill tone="muted">1 Day</BadgePill>
+                    <span className="hidden text-xs text-slate-400 sm:inline">Refreshed 20 sec ago</span>
+                  </>
+                }
+              />
+              <div className="mb-3 flex flex-wrap items-center justify-between gap-3 text-[11px]">
+                <div className="flex items-center gap-2 rounded-full bg-slate-100 p-1">
+                  {(['followers', 'engagement', 'reach', 'impressions'] as const).map(k => (
+                    <button
+                      key={k}
+                      onClick={() => setMetric(k)}
+                      className={`rounded-full px-3 py-1 capitalize transition-colors ${
+                        metric === k
+                          ? 'bg-white text-slate-900 shadow-sm'
+                          : 'text-slate-500 hover:text-slate-800'
+                      }`}
+                    >
+                      {k}
+                    </button>
+                  ))}
+                </div>
+                <div className="flex items-center gap-1">
+                  <button
+                    onClick={() => setRange('7D')}
+                    className={`rounded-full px-2.5 py-1 text-[11px] ${
+                      range === '7D'
+                        ? 'bg-sky-500 text-white'
+                        : 'bg-white text-slate-500 hover:text-slate-800'
+                    }`}
+                  >
+                    7D
+                  </button>
+                  <button
+                    onClick={() => setRange('30D')}
+                    className={`rounded-full px-2.5 py-1 text-[11px] ${
+                      range === '30D'
+                        ? 'bg-sky-500 text-white'
+                        : 'bg-white text-slate-500 hover:text-slate-800'
+                    }`}
+                  >
+                    30D
+                  </button>
+                  <button
+                    onClick={() => setRange('90D')}
+                    className={`rounded-full px-2.5 py-1 text-[11px] ${
+                      range === '90D'
+                        ? 'bg-sky-500 text-white'
+                        : 'bg-white text-slate-500 hover:text-slate-800'
+                    }`}
+                  >
+                    90D
+                  </button>
                 </div>
               </div>
 
-              <div style={{ height: 280 }} className="mt-2">
-
+              <div style={{ height: 260 }} className="mt-1">
                 <ResponsiveContainer width="100%" height="100%">
                   <AreaChart data={sampleSeries} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
                     <defs>
                       <linearGradient id="colorMetric" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#3EDC8E" stopOpacity={0.85}/>
-                        <stop offset="95%" stopColor="#3EDC8E" stopOpacity={0}/>
+                        <stop offset="5%" stopColor="#38BDF8" stopOpacity={0.9} />
+                        <stop offset="95%" stopColor="#38BDF8" stopOpacity={0} />
                       </linearGradient>
                     </defs>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#111827" opacity={0.1} />
-                    <XAxis dataKey="date" stroke="#9CA3AF" />
-                    <YAxis stroke="#9CA3AF" />
+                    <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" />
+                    <XAxis dataKey="date" stroke="#9CA3AF" tickLine={false} axisLine={false} tickMargin={8} />
+                    <YAxis stroke="#9CA3AF" tickLine={false} axisLine={false} tickMargin={8} />
                     <Tooltip />
-                    <Area type="monotone" dataKey={metric} stroke="#3EDC8E" fillOpacity={1} fill="url(#colorMetric)" />
-                    {/* Predicted line (dashed) */}
-                    <Line type="monotone" dataKey={metric} stroke="#7FFFB0" strokeDasharray="4 6" dot={false} />
+                    <Area type="monotone" dataKey={metric} stroke="#38BDF8" fillOpacity={1} fill="url(#colorMetric)" />
+                    <Line type="monotone" dataKey={metric} stroke="#6366F1" strokeDasharray="4 6" dot={false} />
                   </AreaChart>
                 </ResponsiveContainer>
               </div>
-            </div>
-          </div>
+            </CardShell>
 
-          {/* Right column - secondary widgets */}
-          <div className="space-y-6">
-            {/* Trending Topics */}
-            <div className="rounded-2xl border border-border/70 bg-card/90 p-6 shadow-card">
-
-              <h4 className="text-lg font-semibold text-foreground mb-4">Trending Topics</h4>
-              <div className="grid grid-cols-1 gap-3">
-                {trending.map((t, i) => <TrendingCard key={i} {...t} />)}
+            {/* Most active Time */}
+            <CardShell className="p-5 sm:p-6">
+              <SectionHeader
+                title="Most active Time"
+                right={<BadgePill tone="muted">1 Day</BadgePill>}
+              />
+              <div className="mb-3 flex gap-2 text-[11px]">
+                <BadgePill tone="success">Instagram</BadgePill>
+                <BadgePill tone="muted">Youtube</BadgePill>
+                <BadgePill tone="muted">Twitter</BadgePill>
               </div>
-            </div>
+              <div
+                className="grid gap-1.5 rounded-2xl bg-slate-50 p-3"
+                style={{ gridTemplateColumns: 'repeat(24, minmax(0, 1fr))', gridTemplateRows: 'repeat(7, 1fr)' }}
+              >
+                {Array.from({ length: 168 }).map((_, idx) => {
+                  const col = idx % 24;
+                  const row = Math.floor(idx / 24);
 
-            {/* Recent Posts Performance */}
-            <div className="rounded-2xl border border-border/70 bg-card/90 p-6 shadow-card">
+                  let intensity = 'bg-slate-200';
+                  if ((row === 2 || row === 3) && col >= 8 && col <= 16) {
+                    intensity = 'bg-sky-500';
+                  } else if ((row === 1 || row === 4) && col >= 6 && col <= 18) {
+                    intensity = 'bg-sky-400';
+                  } else if (col >= 4 && col <= 20) {
+                    intensity = 'bg-sky-300';
+                  }
 
-              <h4 className="text-lg font-semibold text-foreground mb-4">Recent Posts</h4>
-              <div className="flex gap-4 overflow-x-auto py-2">
-                <RecentPostCard image={'https://picsum.photos/300/200?random=1'} likes={120} comments={10} engagement={8.2} color={'#10B981'} />
-                <RecentPostCard image={'https://picsum.photos/300/200?random=2'} likes={42} comments={4} engagement={3.1} color={'#F59E0B'} />
-                <RecentPostCard image={'https://picsum.photos/300/200?random=3'} likes={12} comments={0} engagement={1.2} color={'#EF4444'} />
+                  return <div key={idx} className={`h-3 w-3 rounded-md ${intensity}`} />;
+                })}
               </div>
-            </div>
+              <div className="mt-4 grid grid-cols-2 gap-3 text-[11px] text-slate-500">
+                <div>
+                  <div className="text-slate-400">Most active time</div>
+                  <div className="mt-1 text-sm font-semibold text-slate-900">12:00 PM - 13:45 PM</div>
+                </div>
+                <div>
+                  <div className="text-slate-400">Engagements</div>
+                  <div className="mt-1 text-sm font-semibold text-slate-900">14,487</div>
+                </div>
+                <div>
+                  <div className="text-slate-400">Likes</div>
+                  <div className="mt-1 text-sm font-semibold text-slate-900">+1,254</div>
+                </div>
+                <div>
+                  <div className="text-slate-400">Comments</div>
+                  <div className="mt-1 text-sm font-semibold text-slate-900">+1,254</div>
+                </div>
+              </div>
+            </CardShell>
           </div>
-        </div>
+        </main>
       </div>
 
       {/* AI Assistant drawer */}
