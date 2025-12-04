@@ -27,7 +27,16 @@ const Sidebar: React.FC = () => {
   return (
     <aside className="sidebar fixed left-0 top-0 hidden h-screen w-[260px] overflow-y-auto border-r border-slate-200 bg-white scrollbar-hide lg:flex lg:flex-col px-5 py-6">
       <div className="mb-8 flex items-center justify-center">
-        <img src={CreatorLogo} alt="Creator Logo" className="h-8 w-auto object-contain" />
+        <div
+          onClick={() => navigate("/")}
+          className="cursor-pointer flex items-center hover:opacity-80 transition"
+        >
+          <img
+            src={CreatorLogo}
+            alt="Creator Logo"
+            className="h-8 w-auto object-contain"
+          />
+        </div>
       </div>
 
       <div className="mb-8">
