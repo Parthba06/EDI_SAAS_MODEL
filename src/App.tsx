@@ -9,6 +9,12 @@ import Dashboard from "./pages/Dashboard";
 import Profile from "./pages/Profile";
 import Settings from "./pages/Settings";
 import Insights from "./pages/Insights";
+import EngagementPage from "./pages/EngagementPage";
+import FollowersGrowthPage from "./pages/FollowersGrowthPage";
+import AudienceDemographicsPage from "./pages/AudienceDemographicsPage";
+import HashtagAnalyticsPage from "./pages/HashtagAnalyticsPage";
+import EarningsDashboardPage from "./pages/EarningsDashboardPage";
+import Layout from "./components/Layout";
 import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
@@ -38,10 +44,17 @@ const App = () => {
           <Route path="/" element={<Index />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/profile" element={<Profile />} />
-          <Route path="/settings" element={<Settings />} />
-          <Route path="/insights" element={<Insights />} />
+          <Route element={<Layout />}>
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/engagement" element={<EngagementPage />} />
+            <Route path="/followers-growth" element={<FollowersGrowthPage />} />
+            <Route path="/audience-demographics" element={<AudienceDemographicsPage />} />
+            <Route path="/hashtag-analytics" element={<HashtagAnalyticsPage />} />
+            <Route path="/earnings" element={<EarningsDashboardPage />} />
+            <Route path="/profile" element={<Profile />} />
+            <Route path="/settings" element={<Settings />} />
+            <Route path="/insights" element={<Insights />} />
+          </Route>
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

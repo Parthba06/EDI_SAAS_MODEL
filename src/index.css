@@ -201,6 +201,16 @@
   }
 }
 
+/* Globally hide all scrollbars while keeping scroll functional */
+* {
+  scrollbar-width: none !important;      /* Firefox */
+  -ms-overflow-style: none !important;   /* IE/Edge legacy */
+}
+
+*::-webkit-scrollbar {
+  display: none !important;              /* Chrome, Edge, Safari */
+}
+
 /* Dark mode border suppression: keep light-theme borders, but visually remove them in dark mode
    and rely on shadows for separation. This targets generic border utilities without affecting layout. */
 @layer base {

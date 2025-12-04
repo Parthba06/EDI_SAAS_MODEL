@@ -1,5 +1,12 @@
 // Simple Google OAuth helper using Google Identity Services
 
+declare global {
+  interface Window {
+    // Google Identity Services object injected by https://accounts.google.com/gsi/client
+    google?: any;
+  }
+}
+
 export const signInWithGoogle = () => {
   if (typeof window === "undefined") {
     console.error("Google sign-in is only available in the browser.");
@@ -13,7 +20,7 @@ export const signInWithGoogle = () => {
     return;
   }
 
-  const google = (window as unknown as { google?: typeof window.google }).google;
+  const google = window.google;
 
   if (!google || !google.accounts || !google.accounts.oauth2) {
     console.error("Google Identity Services script not loaded.");
