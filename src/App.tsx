@@ -9,6 +9,12 @@ import Dashboard from "./pages/Dashboard";
 import Profile from "./pages/Profile";
 import Settings from "./pages/Settings";
 import Insights from "./pages/Insights";
+import EngagementPage from "./pages/EngagementPage";
+import FollowersGrowthPage from "./pages/FollowersGrowthPage";
+import AudienceDemographicsPage from "./pages/AudienceDemographicsPage";
+import HashtagAnalyticsPage from "./pages/HashtagAnalyticsPage";
+import EarningsDashboardPage from "./pages/EarningsDashboardPage";
+import Layout from "./components/Layout";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -48,26 +54,17 @@ const App = () => {
         <Toaster />
         <Sonner />
 
-        {/* Global theme switcher (hidden on homepage) */}
-        {!isHome && (
-          <button
-            onClick={toggleTheme}
-            className="fixed right-4 top-4 z-50 inline-flex items-center gap-2 rounded-full border border-border bg-card px-4 py-2 text-xs font-medium shadow-card hover:shadow-glow transition-[background,box-shadow,transform] duration-200 hover:-translate-y-0.5"
-          >
-            <span
-              className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-primary text-primary-foreground text-[10px]"
-            >
-              {theme === "dark" ? "☾" : "☼"}
-            </span>
-            <span className="hidden sm:inline">
-              {theme === "dark" ? "Dark" : "Light"} mode
-            </span>
-          </button>
-        )}
 
         <Routes>
+          <Route element={<Layout />}>
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/engagement" element={<EngagementPage />} />
+            <Route path="/followers-growth" element={<FollowersGrowthPage />} />
+            <Route path="/audience-demographics" element={<AudienceDemographicsPage />} />
+            <Route path="/hashtag-analytics" element={<HashtagAnalyticsPage />} />
+            <Route path="/earnings" element={<EarningsDashboardPage />} />
+          </Route>
           <Route path="/" element={<Index />} />
-          <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/settings" element={<Settings />} />
           <Route path="/insights" element={<Insights />} />

@@ -1,5 +1,5 @@
-import React, { useMemo, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   ResponsiveContainer,
   AreaChart,
@@ -8,11 +8,19 @@ import {
   YAxis,
   Tooltip,
   CartesianGrid,
-  Line,
   BarChart,
-  Bar
-} from 'recharts';
-import { VscHome, VscArchive, VscAccount, VscSettingsGear } from 'react-icons/vsc';
+  Bar,
+  LineChart,
+  Line,
+} from "recharts";
+
+import {
+  VscHome,
+  VscArchive,
+  VscAccount,
+  VscSettingsGear,
+} from "react-icons/vsc";
+
 import {
   FiBell,
   FiClock,
@@ -20,607 +28,813 @@ import {
   FiCheckSquare,
   FiChevronDown,
   FiEdit3,
-  FiUsers,
   FiMail,
   FiBriefcase,
-  FiTwitter,
-  FiInstagram,
-  FiYoutube,
-  FiSun,
-  FiMoon,
+  FiTwitter as FiTwitterIcon,
+  FiInstagram as FiInstagramIcon,
+  FiYoutube as FiYoutubeIcon,
   FiHeadphones,
-  FiShare2
-} from 'react-icons/fi';
-import CreatorLogo from '../assets/WhatsApp Image 2025-12-04 at 16.13.28_3db5bc93.jpg';
-import Dock from '../components/Dock';
+  FiShare2,
+} from "react-icons/fi";
 
-// Sample data for charts and metrics
+import CreatorLogo from "../assets/WhatsApp Image 2025-12-04 at 16.13.28_3db5bc93.jpg";
+import youtubeLogo from "../assets/youtube.png";
+import instaLogo from "../assets/instagram.png";
+import twitterLogo from "../assets/twitter.png";
+
+import Dock from "../components/Dock";
+
+// ----------------------------
+// Sample Chart Data
+// ----------------------------
 const sampleSeries = [
-  { date: '2025-09-10', followers: 12000, engagement: 2.4, reach: 42000, impressions: 82000 },
-  { date: '2025-09-11', followers: 12180, engagement: 2.5, reach: 43000, impressions: 84000 },
-  { date: '2025-09-12', followers: 12250, engagement: 2.6, reach: 44000, impressions: 86000 },
-  { date: '2025-09-13', followers: 12300, engagement: 2.7, reach: 45000, impressions: 88000 },
-  { date: '2025-09-14', followers: 12390, engagement: 2.9, reach: 48000, impressions: 90500 },
-  { date: '2025-09-15', followers: 12450, engagement: 3.0, reach: 49000, impressions: 92000 },
-  { date: '2025-09-16', followers: 12540, engagement: 3.1, reach: 50000, impressions: 94000 }
+  { date: "Mar", value: 10000 },
+  { date: "Apr", value: 12000 },
+  { date: "May", value: 13000 },
+  { date: "Jun", value: 12500 },
+  { date: "Jul", value: 14000 },
+  { date: "Aug", value: 16000 },
 ];
-const overviewAccounts = [
-  {
-    id: 'youtube',
-    name: 'YouTube',
-    handle: '@creatorYT',
-    followers: '8,481',
-    delta: '+8,481',
-    comments: '4,507',
-    likes: '1,254,58',
-    accent: 'bg-red-50 border-red-100',
-    badge: 'text-red-500 bg-red-50'
+
+// ----------------------------
+// Active Promotion: mock bar data per platform + range
+// ----------------------------
+type PromotionPlatform = "instagram" | "youtube" | "twitter";
+type PromotionRange = "1 Day" | "30 Days" | "90 Days";
+
+interface PromoBarPoint {
+  hour: string;
+  value: number;
+}
+
+const promoBarData: Record<PromotionPlatform, Record<PromotionRange, PromoBarPoint[]>> = {
+  instagram: {
+    "1 Day": [
+      { hour: "13", value: 22000 },
+      { hour: "14", value: 34000 },
+      { hour: "15", value: 48000 },
+      { hour: "16", value: 52000 },
+      { hour: "17", value: 46000 },
+      { hour: "18", value: 41000 },
+      { hour: "19", value: 39000 },
+      { hour: "20", value: 42000 },
+    ],
+    "30 Days": [
+      { hour: "13", value: 28000 },
+      { hour: "14", value: 36000 },
+      { hour: "15", value: 51000 },
+      { hour: "16", value: 54000 },
+      { hour: "17", value: 50000 },
+      { hour: "18", value: 47000 },
+      { hour: "19", value: 43000 },
+      { hour: "20", value: 45000 },
+    ],
+    "90 Days": [
+      { hour: "13", value: 32000 },
+      { hour: "14", value: 38000 },
+      { hour: "15", value: 52000 },
+      { hour: "16", value: 56000 },
+      { hour: "17", value: 52000 },
+      { hour: "18", value: 49000 },
+      { hour: "19", value: 46000 },
+      { hour: "20", value: 48000 },
+    ],
   },
-  {
-    id: 'twitter',
-    name: 'Twitter',
-    handle: '@creatorX',
-    followers: '8,481',
-    delta: '+8,481',
-    comments: '4,507',
-    likes: '1,254,58',
-    accent: 'bg-slate-50 border-slate-100',
-    badge: 'text-slate-700 bg-slate-50'
+  youtube: {
+    "1 Day": [
+      { hour: "13", value: 18000 },
+      { hour: "14", value: 26000 },
+      { hour: "15", value: 36000 },
+      { hour: "16", value: 40000 },
+      { hour: "17", value: 37000 },
+      { hour: "18", value: 34000 },
+      { hour: "19", value: 31000 },
+      { hour: "20", value: 33000 },
+    ],
+    "30 Days": [
+      { hour: "13", value: 20000 },
+      { hour: "14", value: 29000 },
+      { hour: "15", value: 38000 },
+      { hour: "16", value: 42000 },
+      { hour: "17", value: 39000 },
+      { hour: "18", value: 36000 },
+      { hour: "19", value: 33000 },
+      { hour: "20", value: 35000 },
+    ],
+    "90 Days": [
+      { hour: "13", value: 23000 },
+      { hour: "14", value: 31000 },
+      { hour: "15", value: 40000 },
+      { hour: "16", value: 44000 },
+      { hour: "17", value: 41000 },
+      { hour: "18", value: 38000 },
+      { hour: "19", value: 36000 },
+      { hour: "20", value: 38000 },
+    ],
   },
-  {
-    id: 'instagram',
-    name: 'Instagram',
-    handle: '@creatorIG',
-    followers: '8,481',
-    delta: '+8,481',
-    comments: '4,507',
-    likes: '1,254,58',
-    accent: 'bg-pink-50 border-pink-100',
-    badge: 'text-pink-500 bg-pink-50'
+  twitter: {
+    "1 Day": [
+      { hour: "13", value: 14000 },
+      { hour: "14", value: 20000 },
+      { hour: "15", value: 26000 },
+      { hour: "16", value: 30000 },
+      { hour: "17", value: 28000 },
+      { hour: "18", value: 25000 },
+      { hour: "19", value: 23000 },
+      { hour: "20", value: 24000 },
+    ],
+    "30 Days": [
+      { hour: "13", value: 17000 },
+      { hour: "14", value: 23000 },
+      { hour: "15", value: 29000 },
+      { hour: "16", value: 32000 },
+      { hour: "17", value: 30000 },
+      { hour: "18", value: 27000 },
+      { hour: "19", value: 25000 },
+      { hour: "20", value: 26000 },
+    ],
+    "90 Days": [
+      { hour: "13", value: 19000 },
+      { hour: "14", value: 25000 },
+      { hour: "15", value: 31000 },
+      { hour: "16", value: 34000 },
+      { hour: "17", value: 32000 },
+      { hour: "18", value: 29000 },
+      { hour: "19", value: 27000 },
+      { hour: "20", value: 28000 },
+    ],
+  },
+};
+
+// ----------------------------
+// Heatmaps (Most active time) - GitHub-style 7 x 21 grid per platform
+// ----------------------------
+type HeatLevel = 0 | 1 | 2 | 3 | 4;
+
+type HeatmapGrid = HeatLevel[][]; // [rows][cols] => 7 x N
+
+const instagramHeatmap: HeatmapGrid = [
+  [0, 0, 1, 2, 1, 0, 0, 1, 2, 3, 4, 3, 2, 1, 1, 0, 0, 1, 2, 2, 1],
+  [0, 1, 1, 2, 2, 1, 0, 1, 3, 4, 4, 3, 2, 2, 1, 0, 1, 2, 3, 2, 1],
+  [0, 1, 2, 3, 3, 2, 1, 2, 3, 4, 4, 4, 3, 2, 2, 1, 1, 3, 4, 3, 2],
+  [0, 0, 1, 2, 3, 2, 1, 1, 2, 3, 4, 3, 2, 2, 1, 1, 0, 2, 3, 2, 1],
+  [0, 0, 1, 1, 2, 1, 0, 0, 1, 2, 3, 2, 1, 1, 0, 0, 0, 1, 2, 1, 0],
+  [0, 0, 0, 1, 1, 1, 0, 0, 1, 2, 2, 1, 1, 0, 0, 0, 0, 1, 1, 1, 0],
+  [0, 0, 0, 0, 1, 1, 0, 0, 1, 2, 2, 1, 0, 0, 0, 0, 0, 1, 1, 0, 0],
+];
+
+const youtubeHeatmap: HeatmapGrid = [
+  [0, 0, 0, 1, 1, 1, 0, 0, 1, 2, 2, 2, 1, 1, 0, 0, 0, 1, 1, 1, 0],
+  [0, 0, 1, 1, 1, 1, 0, 1, 2, 3, 3, 2, 2, 1, 1, 0, 1, 2, 2, 1, 0],
+  [0, 1, 1, 2, 2, 2, 1, 1, 3, 3, 4, 3, 2, 2, 1, 1, 1, 2, 3, 2, 1],
+  [0, 1, 1, 2, 3, 2, 1, 1, 2, 3, 3, 2, 2, 1, 1, 1, 1, 2, 2, 1, 1],
+  [0, 0, 1, 1, 2, 1, 0, 0, 1, 2, 2, 1, 1, 1, 0, 0, 0, 1, 1, 1, 0],
+  [0, 0, 0, 1, 1, 1, 0, 0, 1, 1, 2, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0],
+  [0, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 0, 0],
+];
+
+const twitterHeatmap: HeatmapGrid = [
+  [0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 2, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0],
+  [0, 0, 0, 1, 1, 1, 0, 0, 1, 2, 2, 1, 1, 1, 0, 0, 0, 1, 1, 1, 0],
+  [0, 0, 1, 1, 2, 2, 1, 0, 1, 2, 3, 2, 2, 1, 1, 0, 1, 2, 2, 1, 0],
+  [0, 1, 1, 2, 2, 2, 1, 1, 2, 3, 3, 2, 2, 2, 1, 1, 1, 2, 2, 1, 1],
+  [0, 0, 1, 1, 2, 1, 1, 0, 1, 2, 2, 1, 1, 1, 0, 0, 0, 1, 1, 1, 0],
+  [0, 0, 0, 1, 1, 1, 0, 0, 1, 1, 2, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0],
+  [0, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 0, 0],
+];
+
+const heatLevelToColor = (level: HeatLevel): string => {
+  // 0 = empty, 1-4 = increasing blue intensity
+  switch (level) {
+    case 0:
+      return "#EEF2FF"; // very light
+    case 1:
+      return "#DBEAFE";
+    case 2:
+      return "#BFDBFE";
+    case 3:
+      return "#60A5FA";
+    case 4:
+    default:
+      return "#1D4ED8"; // strongest blue
   }
-];
+};
 
-const CardShell: React.FC<React.PropsWithChildren<{ className?: string }>> = ({ className = '', children }) => (
-  <div
-    className={`rounded-2xl border border-slate-200 bg-white shadow-[0_18px_45px_rgba(15,23,42,0.06)] ${className}`}
-  >
-    {children}
-  </div>
-);
+// ----------------------------
+// TYPES
+// ----------------------------
+interface SectionHeaderProps {
+  title: string;
+  subtitle?: string;
+  right?: React.ReactNode;
+}
 
-const SectionHeader: React.FC<{ title: string; subtitle?: string; right?: React.ReactNode }> = ({
-  title,
-  subtitle,
-  right
-}) => (
-  <div className="mb-4 flex items-center justify-between gap-4">
-    <div>
-      <h3 className="text-[15px] font-semibold text-slate-900">{title}</h3>
-      {subtitle && <p className="mt-0.5 text-xs text-slate-500">{subtitle}</p>}
+interface PlatformCardProps {
+  logo: string;
+  platform: string;
+  followers: string;
+  delta: string;
+  comments: string;
+  likes: string;
+}
+
+interface CardShellProps {
+  className?: string;
+  children: React.ReactNode;
+}
+
+// ----------------------------
+// CardShell - wrapper for content cards
+// ----------------------------
+const CardShell: React.FC<CardShellProps> = ({ className = "", children }) => {
+  return (
+    <div
+      className={`rounded-2xl border border-slate-100 bg-white shadow-[0_8px_24px_rgba(0,0,0,0.05)] ${className}`}
+    >
+      {children}
     </div>
+  );
+};
+
+// ----------------------------
+// SectionHeader
+// ----------------------------
+const SectionHeader: React.FC<SectionHeaderProps> = ({ title, subtitle, right }) => (
+  <div className="mb-4 flex items-start justify-between gap-4">
+    <div>
+      <h3 className="text-sm font-semibold text-slate-900">{title}</h3>
+      {subtitle && <p className="mt-1 text-[12px] text-slate-500">{subtitle}</p>}
+    </div>
+
     {right && <div className="flex items-center gap-2 text-xs text-slate-500">{right}</div>}
   </div>
 );
 
-const BadgePill: React.FC<React.PropsWithChildren<{ tone?: 'default' | 'success' | 'danger' | 'muted' }>> = ({
-  tone = 'default',
-  children
-}) => {
-  const styles: Record<string, string> = {
-    default: 'bg-slate-100 text-slate-700',
-    success: 'bg-emerald-50 text-emerald-600',
-    danger: 'bg-rose-50 text-rose-600',
-    muted: 'bg-slate-50 text-slate-500'
-  };
+// ----------------------------
+// PlatformCard
+// ----------------------------
+const PlatformCard: React.FC<PlatformCardProps> = ({ logo, platform, followers, delta, comments, likes }) => (
+  <div className="flex flex-col rounded-2xl bg-white px-5 py-4 shadow-[0_8px_24px_rgba(0,0,0,0.05)] border border-slate-100">
+    <div className="flex items-center gap-3">
+      <img src={logo} alt={platform} className="h-8 w-8 object-contain" />
+      <span className="text-sm font-semibold text-slate-900">{platform}</span>
+    </div>
 
-  return (
-    <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-[11px] font-semibold ${styles[tone]}`}>
-      {children}
-    </span>
-  );
-};
-
-const SidebarNavItem: React.FC<{
-  icon: React.ReactNode;
-  label: string;
-  active?: boolean;
-  badge?: string;
-  onClick?: () => void;
-}> = ({ icon, label, active, badge, onClick }) => (
-  <button
-    onClick={onClick}
-    className={`group flex w-full items-center justify-between rounded-2xl px-3 py-2 text-sm transition-all duration-150 ${
-      active
-        ? 'bg-white shadow-[0_18px_40px_rgba(15,23,42,0.16)] text-slate-900'
-        : 'text-slate-600 hover:text-slate-900'
-    }`}
-  >
-    <span className="flex items-center gap-3">
-      <span
-        className={`flex h-9 w-9 items-center justify-center rounded-xl border text-[16px] ${
-          active
-            ? 'border-slate-200 bg-white text-slate-900'
-            : 'border-transparent bg-transparent text-slate-400'
-        }`}
-      >
-        {icon}
+    <div className="mt-4 flex items-baseline gap-2">
+      <div className="text-2xl font-bold text-slate-900">{followers}</div>
+      <span className="inline-flex items-center rounded-full bg-[#E5F2FF] px-2.5 py-0.5 text-[11px] font-semibold text-sky-600">
+        {delta}
       </span>
-      <span>{label}</span>
-    </span>
-    {badge && (
-      <span className="inline-flex min-w-[30px] items-center justify-center rounded-full bg-sky-100 px-2 py-0.5 text-[11px] font-semibold text-sky-600">
-        {badge}
-      </span>
-    )}
-  </button>
-);
+    </div>
 
-const SidebarAccountItem: React.FC<{ label: string; active?: boolean }> = ({ label, active }) => (
-  <button
-    className={`flex w-full items-center gap-2 rounded-xl px-2.5 py-2 text-sm font-medium transition-colors ${
-      active ? 'text-slate-900' : 'text-slate-500 hover:text-slate-900'
-    }`}
-  >
-    <span className="h-5 w-5 rounded-full border border-slate-300" />
-    <span>{label}</span>
-  </button>
-);
+    <p className="mt-1 text-xs text-slate-500">Subscribers</p>
 
-const TopBar: React.FC<{ onOpenAIAssistant: () => void }> = ({ onOpenAIAssistant }) => (
-  <div className="sticky top-0 z-30 bg-white shadow-[0_12px_30px_rgba(15,23,42,0.08)]">
-    <div className="flex w-full items-center justify-between px-4 py-3 sm:px-6 lg:px-8">
-      {/* Left: search bar */}
-      <div className="flex flex-1 items-center">
-        <div className="flex w-full max-w-xl items-center rounded-full bg-[#F5F5F7] px-4 py-2">
-          <span className="mr-2 text-slate-400">
-            <svg
-              width="16"
-              height="16"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <circle cx="11" cy="11" r="7" />
-              <line x1="16.65" y1="16.65" x2="21" y2="21" />
-            </svg>
-          </span>
-          <input
-            placeholder="Search post, image or content"
-            className="w-full bg-transparent text-sm text-slate-700 placeholder:text-slate-400 outline-none"
-          />
-        </div>
+    <div className="mt-4 flex justify-between text-xs text-slate-600">
+      <div>
+        <p className="text-slate-500">Comments</p>
+        <p className="mt-1 font-semibold text-slate-900">{comments}</p>
       </div>
-
-      {/* Right: actions */}
-      <div className="ml-4 flex items-center gap-2 text-[11px]">
-        <button className="hidden items-center gap-1 rounded-full bg-[#F5F5F7] px-3 py-1.5 text-slate-600 hover:text-slate-900 sm:inline-flex">
-          <FiClock className="text-slate-400" />
-          Set Reminder
-        </button>
-        <button className="hidden items-center gap-1 rounded-full bg-[#F5F5F7] px-3 py-1.5 text-slate-600 hover:text-slate-900 md:inline-flex">
-          <FiSend className="text-slate-400" />
-          Schedule Post
-        </button>
-        <button className="hidden items-center gap-1 rounded-full bg-[#F5F5F7] px-3 py-1.5 text-slate-600 hover:text-slate-900 lg:inline-flex">
-          <FiCheckSquare className="text-slate-400" />
-          To-do List
-        </button>
-        <button
-          onClick={onOpenAIAssistant}
-          className="inline-flex items-center gap-1 rounded-full bg-sky-500 px-3 py-1.5 text-[11px] font-semibold text-white shadow-[0_10px_25px_rgba(56,189,248,0.5)]"
-        >
-          AI
-        </button>
-        <button className="inline-flex items-center gap-1 rounded-full bg-emerald-500 px-3 py-1.5 text-[11px] font-medium text-white shadow-[0_10px_24px_rgba(16,185,129,0.6)]">
-          <FiMoon className="text-white" />
-          Dark mode
-        </button>
-        <button className="relative inline-flex h-9 w-9 items-center justify-center rounded-full bg-[#F5F5F7] text-slate-500">
-          <FiBell />
-          <span className="absolute -right-0.5 -top-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-rose-500 text-[10px] font-semibold text-white">
-            12
-          </span>
-        </button>
-        <div className="ml-1 flex h-9 w-9 items-center justify-center overflow-hidden rounded-full border border-slate-200 bg-slate-100">
-          <span className="text-[11px] font-semibold text-slate-700">PR</span>
-        </div>
+      <div>
+        <p className="text-slate-500">Likes</p>
+        <p className="mt-1 font-semibold text-slate-900">{likes}</p>
       </div>
     </div>
   </div>
 );
 
-export default function Dashboard() {
-  const navigate = useNavigate();
-  const [aiOpen, setAiOpen] = useState(false);
-  const [metric, setMetric] = useState<'followers' | 'engagement' | 'reach' | 'impressions'>('followers');
-  const [range, setRange] = useState<'7D' | '30D' | '90D'>('7D');
-  const growthScore = 82;
+// ----------------------------
+// Small dropdown mimic (1 Day pill)
+// ----------------------------
+const Dropdown: React.FC<{
+  value: string;
+  options: string[];
+  onChange: (v: string) => void;
+}> = ({ value, options, onChange }) => {
+  const [firstLine, ...rest] = value.split(" ");
+  const secondLine = rest.join(" ");
 
-  const dockItems = [
-    { icon: <VscHome size={18} />, label: 'Home', onClick: () => navigate('/') },
-    { icon: <VscArchive size={18} />, label: 'Insights', onClick: () => navigate('/insights') },
-    { icon: <VscAccount size={18} />, label: 'Profile', onClick: () => navigate('/profile') },
-    { icon: <VscSettingsGear size={18} className="rotate-90" />, label: 'Settings', onClick: () => navigate('/settings') },
-  ];
+  const handleClick = () => {
+    if (!options || options.length === 0) return;
+    const currentIndex = options.indexOf(value);
+    const nextIndex = currentIndex === -1 ? 0 : (currentIndex + 1) % options.length;
+    onChange(options[nextIndex]);
+  };
 
   return (
-    <div className="relative min-h-screen bg-[#F5F5F7] pb-24">
-      <TopBar onOpenAIAssistant={() => setAiOpen(true)} />
+    <button
+      type="button"
+      onClick={handleClick}
+      className="inline-flex flex-col items-center justify-center rounded-full bg-[#F5F6F7] px-4 py-1.5 text-[11px] font-medium text-slate-700 shadow-[0_0_0_1px_rgba(148,163,184,0.25)] hover:shadow-[0_0_0_1px_rgba(148,163,184,0.4)] transition-shadow"
+    >
+      <span className="leading-tight">{firstLine}</span>
+      <span className="mt-0.5 flex items-center gap-1 leading-tight text-[10px] text-slate-600">
+        <span>{secondLine}</span>
+        <span className="text-[8px] text-slate-400">
+          <FiChevronDown />
+        </span>
+      </span>
+    </button>
+  );
+};
 
-      <div className="flex w-full gap-6 px-4 pt-6 sm:px-6 lg:px-8">
-        {/* Sidebar */}
-        <aside className="hidden w-[290px] shrink-0 rounded-3xl bg-[#F8F9FA] p-5 shadow-[0_24px_60px_rgba(15,23,42,0.16)] lg:block">
-          {/* Brand */}
-          <div className="flex items-center gap-2 px-1 pb-6">
-            <img
-              src={CreatorLogo}
-              alt="Creator logo"
-              className="h-7 w-auto object-contain"
-            />
-            <div className="text-sm font-semibold text-slate-900">Creator</div>
-          </div>
+// ----------------------------
+// MAIN DASHBOARD
+// ----------------------------
+export default function Dashboard(): JSX.Element {
+  const navigate = useNavigate();
+  const [aiOpen, setAiOpen] = useState(false);
+  const [metric, setMetric] = useState<"followers" | "engagement" | "reach" | "impressions">("followers");
+  const [range, setRange] = useState<PromotionRange>("1 Day");
+  const [engRange, setEngRange] = useState<"1 Day" | "30 Days">("1 Day");
+  const [heatmapPlatform, setHeatmapPlatform] = useState<PromotionPlatform>("instagram");
+  const [activePromoPlatform, setActivePromoPlatform] = useState<PromotionPlatform>("instagram");
+  const [overviewRange, setOverviewRange] = useState<"1 Day" | "7 Days" | "30 Days" | "90 Days">("30 Days");
+  const dockItems = [
+    { icon: <VscHome size={18} />, label: "Home", onClick: () => navigate("/") },
+    { icon: <VscArchive size={18} />, label: "Insights", onClick: () => navigate("/insights") },
+    { icon: <VscAccount size={18} />, label: "Profile", onClick: () => navigate("/profile") },
+    { icon: <VscSettingsGear size={18} className="rotate-90" />, label: "Settings", onClick: () => navigate("/settings") },
+  ];
 
-          {/* Menu header */}
-          <div className="mb-2 flex items-center justify-between px-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-400">
-            <span>Menu</span>
-            <FiChevronDown size={12} className="text-slate-400" />
-          </div>
+  // derived metrics
+  const followersCount = useMemo(() => 35543, []);
+  const followersDelta = useMemo(() => "+1800", []);
+  const spending = useMemo(() => "₹5,000", []);
+  const reach = useMemo(() => "1.5L", []);
 
-          {/* Menu items */}
-          <div className="space-y-1">
-            {/* Active Home card */}
-            <SidebarNavItem
-              icon={<VscHome size={18} />}
-              label="Home"
-              active
-              onClick={() => navigate('/')}
-            />
+  const activePromoBars = promoBarData[activePromoPlatform][range];
 
-            {/* Simple rows for other items */}
-            <button className="flex w-full items-center justify-between rounded-xl px-2 py-2 text-sm text-slate-600 hover:bg-white hover:text-slate-900">
-              <span className="flex items-center gap-3">
-                <FiEdit3 size={16} className="text-slate-400" />
-                <span>Editor</span>
-              </span>
-            </button>
-            <button className="flex w-full items-center justify-between rounded-xl px-2 py-2 text-sm text-slate-600 hover:bg-white hover:text-slate-900">
-              <span className="flex items-center gap-3">
-                <FiBriefcase size={16} className="text-slate-400" />
-                <span>Sponsorship</span>
-              </span>
-              <span className="inline-flex min-w-[30px] items-center justify-center rounded-full bg-sky-100 px-2 py-0.5 text-[11px] font-semibold text-sky-600">
-                5
-              </span>
-            </button>
-            <button className="flex w-full items-center justify-between rounded-xl px-2 py-2 text-sm text-slate-600 hover:bg-white hover:text-slate-900">
-              <span className="flex items-center gap-3">
-                <FiMail size={16} className="text-slate-400" />
-                <span>Mails</span>
-              </span>
-              <span className="inline-flex min-w-[38px] items-center justify-center rounded-full bg-sky-100 px-2 py-0.5 text-[11px] font-semibold text-sky-600">
-                55+
-              </span>
-            </button>
-            <button className="flex w-full items-center justify-between rounded-xl px-2 py-2 text-sm text-slate-600 hover:bg-white hover:text-slate-900">
-              <span className="flex items-center gap-3">
-                <FiShare2 size={16} className="text-slate-400" />
-                <span>Collaboration</span>
-              </span>
-              <span className="inline-flex min-w-[34px] items-center justify-center rounded-full bg-sky-100 px-2 py-0.5 text-[11px] font-semibold text-sky-600">
-                8+
-              </span>
-            </button>
-          </div>
-
-          {/* Accounts header */}
-          <div className="mt-6 mb-1 flex items-center justify-between px-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-400">
-            <span>Accounts</span>
-            <FiChevronDown size={12} className="text-slate-400" />
-          </div>
-
-          {/* Accounts list */}
-          <div className="mt-1 space-y-1">
-            <button className="flex w-full items-center gap-3 rounded-xl px-2 py-2 text-sm text-slate-600 hover:bg-white hover:text-slate-900">
-              <FiTwitter size={16} className="text-slate-400" />
-              <span>Twitter</span>
-            </button>
-            <button className="flex w-full items-center gap-3 rounded-xl px-2 py-2 text-sm text-slate-600 hover:bg-white hover:text-slate-900">
-              <FiInstagram size={16} className="text-slate-400" />
-              <span>Instagram</span>
-            </button>
-            <button className="flex w-full items-center gap-3 rounded-xl px-2 py-2 text-sm text-slate-600 hover:bg-white hover:text-slate-900">
-              <FiYoutube size={16} className="text-slate-400" />
-              <span>Youtube</span>
-            </button>
-          </div>
-
-          {/* Add More button */}
-          <button className="mt-4 flex w-full items-center justify-center rounded-2xl bg-[#2D7FF9] py-2.5 text-sm font-semibold text-white shadow-[0_18px_40px_rgba(45,127,249,0.7)]">
-            + Add More
-          </button>
-
-          {/* Support / Settings + Theme toggle */}
-          <div className="mt-8 space-y-1 border-t border-slate-200 pt-4 text-sm text-slate-600">
-            <button className="flex w-full items-center gap-2 rounded-xl px-2 py-1.5 text-slate-600 hover:bg-white hover:text-slate-900">
-              <FiHeadphones size={18} className="text-slate-400" />
-              <span>Support</span>
-            </button>
-            <button className="flex w-full items-center gap-2 rounded-xl px-2 py-1.5 text-slate-600 hover:bg-white hover:text-slate-900">
-              <VscSettingsGear size={18} className="text-slate-400" />
-              <span>Settings</span>
-            </button>
-
-            {/* Theme toggle */}
-            <div className="mt-4 flex items-center justify-between rounded-full bg-[#F1F3F5] px-2 py-1 text-[11px] font-medium text-slate-600">
-              <div className="relative flex items-center gap-1 rounded-full bg-white px-3 py-1 shadow-sm">
-                <FiSun size={14} className="text-amber-400" />
-                <span>White</span>
+  return (
+    <div className="relative min-h-screen bg-slate-50">
+      <div className="flex min-h-screen flex-col">
+        {/* Top bar */}
+        <div className="sticky top-0 z-30 border-b border-slate-100 bg-white shadow-[0_2px_8px_rgba(0,0,0,0.04)]">
+          <div className="flex w-full items-center justify-between px-6 py-4">
+            <div className="flex w-full items-center gap-6">
+              <div className="w-full max-w-2xl">
+                <div className="flex items-center gap-3 rounded-full bg-slate-100 px-4 py-2.5">
+                  <span className="text-slate-400 text-sm">🔍</span>
+                  <input placeholder="Search post, image or content" className="w-full bg-transparent text-sm text-slate-700 placeholder:text-slate-400 outline-none" />
+                </div>
               </div>
-              <div className="flex items-center gap-1 px-2 py-1 text-slate-400">
-                <FiMoon size={14} />
-                <span>Dark</span>
+
+              <div className="ml-auto hidden items-center gap-5 lg:flex text-xs font-medium text-slate-600">
+                <button className="flex items-center gap-2 hover:text-slate-900 transition-colors"><FiClock size={16} /> Set Reminder</button>
+                <button className="flex items-center gap-2 hover:text-slate-900 transition-colors"><FiSend size={16} /> Schedule Post</button>
+                <button className="flex items-center gap-2 hover:text-slate-900 transition-colors"><FiCheckSquare size={16} /> To-do list</button>
+              </div>
+            </div>
+
+            <div className="ml-6 flex items-center gap-3">
+              <button onClick={() => setAiOpen(true)} className="hidden items-center gap-2 rounded-full bg-sky-500 px-3.5 py-2 text-xs font-semibold text-white shadow-[0_4px_12px_rgba(14,165,233,0.3)] hover:shadow-[0_6px_16px_rgba(14,165,233,0.4)] transition-shadow md:inline-flex">AI</button>
+
+              <button className="relative inline-flex h-9 w-9 items-center justify-center rounded-full bg-slate-100 text-slate-500 hover:bg-slate-200 transition-colors">
+                <FiBell size={18} />
+                <span className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-rose-500 text-[10px] font-bold text-white">12</span>
+              </button>
+
+              <div
+                onClick={() => navigate("/profile")}
+                className="ml-2 flex h-9 w-9 cursor-pointer items-center justify-center overflow-hidden rounded-full border border-slate-200 bg-slate-100 hover:opacity-80 transition"
+              >
+                <img src={CreatorLogo} alt="profile" className="h-9 w-9 object-cover" />
               </div>
             </div>
           </div>
-        </aside>
+        </div>
 
-        {/* Main content */}
-        <main className="flex-1 space-y-6 pb-4">
-          {/* Overview & Active Promotion row */}
-          <div className="grid grid-cols-1 gap-6 xl:grid-cols-3">
-            {/* Overview */}
-            <CardShell className="xl:col-span-2 p-5 sm:p-6">
-              <SectionHeader
-                title="Overview"
-                subtitle="Connected accounts"
-                right={
-                  <>
-                    <span className="hidden text-xs text-slate-400 sm:inline">Refreshed 20 sec ago</span>
-                    <BadgePill tone="muted">1 Day</BadgePill>
-                  </>
-                }
-              />
-              <div className="grid gap-4 sm:grid-cols-3">
-                {overviewAccounts.map(account => (
-                  <div
-                    key={account.id}
-                    className={`flex flex-col justify-between rounded-2xl border px-4 py-4 ${account.accent}`}
-                  >
-                    <div className="flex items-center justify-between text-xs text-slate-500">
-                      <div>
-                        <div className="text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-400">
-                          {account.name}
+        {/* Content grid */}
+        <main className="flex-1 px-6 py-6">
+          <div className="grid grid-cols-12 gap-6">
+            {/* LEFT COLUMN (8) */}
+            <div className="col-span-12 lg:col-span-8 space-y-6">
+              {/* Overview: header + accounts + top post + summary stats */}
+              <CardShell className="p-6">
+                {/* Overview header */}
+                <div className="flex items-center justify-between gap-4">
+                  <div>
+                    <h3 className="text-sm font-semibold text-slate-900">Overview</h3>
+                    <p className="mt-1 text-xs text-slate-500">SaaS analytics snapshot for your connected accounts</p>
+                  </div>
+
+                  <div className="flex items-center gap-4">
+                    <div className="inline-flex items-center gap-2 rounded-full bg-slate-100 px-3 py-1 text-[11px] font-medium text-slate-600">
+                      <span className="text-slate-500">Range</span>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const options: ("1 Day" | "7 Days" | "30 Days" | "90 Days")[] = ["1 Day", "7 Days", "30 Days", "90 Days"];
+                          const currentIndex = options.indexOf(overviewRange);
+                          const nextIndex = currentIndex === -1 ? 0 : (currentIndex + 1) % options.length;
+                          setOverviewRange(options[nextIndex]);
+                        }}
+                        className="inline-flex items-center gap-1 rounded-full bg-white px-2 py-0.5 text-[11px] text-slate-700 shadow-sm"
+                      >
+                        <span>{overviewRange}</span>
+                        <FiChevronDown className="text-[10px]" />
+                      </button>
+                    </div>
+
+                    <div className="text-right">
+                      <div className="text-[11px] text-slate-400">Last refreshed</div>
+                      <div className="text-[11px] font-medium text-slate-600">20 sec ago</div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Connected accounts + Top post */}
+                <div className="mt-6 grid grid-cols-12 gap-4">
+                  {/* Platform cards (3 cols) */}
+                  <div className="col-span-12 md:col-span-8 grid grid-cols-1 gap-4 sm:grid-cols-3">
+                    {[{
+                      logo: youtubeLogo,
+                      platform: "YouTube",
+                    }, {
+                      logo: twitterLogo,
+                      platform: "Twitter",
+                    }, {
+                      logo: instaLogo,
+                      platform: "Instagram",
+                    }].map((item) => (
+                      <button
+                        key={item.platform}
+                        type="button"
+                        className="group text-left focus:outline-none"
+                      >
+                        <div className="flex flex-col rounded-2xl border border-slate-100 bg-white px-5 py-4 shadow-[0_10px_25px_rgba(15,23,42,0.05)] transition-transform group-hover:-translate-y-0.5">
+                          <div className="flex items-center gap-3">
+                            <img src={item.logo} alt={item.platform} className="h-8 w-8 object-contain" />
+                            <span className="text-sm font-semibold text-slate-900">{item.platform}</span>
+                          </div>
+
+                          <div className="mt-4 flex items-baseline gap-2">
+                            <div className="text-2xl font-bold text-slate-900">8,481</div>
+                            <span className="inline-flex items-center rounded-full bg-emerald-50 px-2.5 py-0.5 text-[11px] font-semibold text-emerald-600">
+                              +8,481
+                            </span>
+                          </div>
+
+                          <p className="mt-1 text-xs text-slate-500">Subscribers</p>
+
+                          <div className="mt-4 flex justify-between text-xs text-slate-600">
+                            <div>
+                              <p className="text-slate-500">Comments</p>
+                              <p className="mt-1 font-semibold text-slate-900">4,507</p>
+                            </div>
+                            <div>
+                              <p className="text-slate-500">Likes</p>
+                              <p className="mt-1 font-semibold text-slate-900">1,254,58</p>
+                            </div>
+                          </div>
                         </div>
-                        <div className="mt-0.5 text-[11px] text-slate-500">{account.handle}</div>
-                      </div>
-                      <BadgePill tone="success">{account.delta}</BadgePill>
-                    </div>
-                    <div className="mt-3 text-2xl font-semibold text-slate-900">{account.followers}</div>
-                    <div className="mt-3 flex items-center justify-between text-[11px] text-slate-500">
-                      <div>
-                        <div className="text-slate-400">Comments</div>
-                        <div className="mt-0.5 font-medium text-slate-700">{account.comments}</div>
-                      </div>
-                      <div>
-                        <div className="text-slate-400">Likes</div>
-                        <div className="mt-0.5 font-medium text-slate-700">{account.likes}</div>
-                      </div>
-                    </div>
+                      </button>
+                    ))}
                   </div>
-                ))}
-              </div>
-            </CardShell>
 
-            {/* Active Promotion */}
-            <CardShell className="p-5 sm:p-6">
-              <SectionHeader
-                title="Active Promotion"
-                right={
-                  <BadgePill tone="muted">30 Days</BadgePill>
-                }
-              />
-              <div className="mb-3 flex gap-2 text-[11px]">
-                <BadgePill tone="success">Instagram</BadgePill>
-                <BadgePill tone="muted">Youtube</BadgePill>
-                <BadgePill tone="muted">Twitter</BadgePill>
-              </div>
-              <div className="h-40">
-                <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={sampleSeries}>
-                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E5E7EB" />
-                    <XAxis dataKey="date" stroke="#9CA3AF" tickLine={false} axisLine={false} tickMargin={8} />
-                    <YAxis stroke="#9CA3AF" tickLine={false} axisLine={false} tickMargin={8} />
-                    <Tooltip />
-                    <Bar dataKey="reach" radius={[8, 8, 0, 0]} fill="#BFDBFE" barSize={14} />
-                  </BarChart>
-                </ResponsiveContainer>
-              </div>
-              <div className="mt-4 grid grid-cols-3 gap-3 text-[11px] text-slate-500">
-                <div>
-                  <div className="text-slate-400">Followers</div>
-                  <div className="mt-1 text-lg font-semibold text-slate-900">35,543</div>
-                  <div className="mt-1 flex items-center gap-1">
-                    <BadgePill tone="success">+1800 in last 2 hr</BadgePill>
-                  </div>
-                </div>
-                <div>
-                  <div className="text-slate-400">Spending</div>
-                  <div className="mt-1 text-lg font-semibold text-slate-900">₹5,000</div>
-                  <div className="mt-1">
-                    <BadgePill tone="danger">3 days left</BadgePill>
-                  </div>
-                </div>
-                <div>
-                  <div className="text-slate-400">Reach</div>
-                  <div className="mt-1 text-lg font-semibold text-slate-900">1.5L</div>
-                  <div className="mt-1 text-[11px] text-slate-400">account reached</div>
-                </div>
-              </div>
-            </CardShell>
-          </div>
+                  {/* Top Performing Post (1 wide card) */}
+                  <div className="col-span-12 md:col-span-4">
+                    <div className="flex h-full flex-col rounded-2xl border border-slate-100 bg-white p-4 shadow-[0_10px_25px_rgba(15,23,42,0.05)] transition-transform hover:-translate-y-0.5">
+                      <div className="flex items-center justify-between">
+                        <h4 className="text-xs font-semibold uppercase tracking-wide text-slate-500">Top Performing Post</h4>
+                        <span className="rounded-full bg-emerald-50 px-2 py-0.5 text-[10px] font-semibold text-emerald-600">+145% ER</span>
+                      </div>
 
-          {/* Engagement & Most active time */}
-          <div className="grid grid-cols-1 gap-6 xl:grid-cols-3">
-            {/* Engagement */}
-            <CardShell className="xl:col-span-2 p-5 sm:p-6">
-              <SectionHeader
-                title="Engagement"
-                right={
-                  <>
-                    <BadgePill tone="muted">1 Day</BadgePill>
-                    <span className="hidden text-xs text-slate-400 sm:inline">Refreshed 20 sec ago</span>
-                  </>
-                }
-              />
-              <div className="mb-3 flex flex-wrap items-center justify-between gap-3 text-[11px]">
-                <div className="flex items-center gap-2 rounded-full bg-slate-100 p-1">
-                  {(['followers', 'engagement', 'reach', 'impressions'] as const).map(k => (
-                    <button
-                      key={k}
-                      onClick={() => setMetric(k)}
-                      className={`rounded-full px-3 py-1 capitalize transition-colors ${
-                        metric === k
-                          ? 'bg-white text-slate-900 shadow-sm'
-                          : 'text-slate-500 hover:text-slate-800'
-                      }`}
+                      <div className="mt-3 flex gap-3">
+                        <div className="h-16 w-16 flex-shrink-0 overflow-hidden rounded-xl bg-slate-200" />
+                        <div className="flex min-w-0 flex-1 flex-col">
+                          <p className="truncate text-sm font-semibold text-slate-900">How I edit my videos faster</p>
+                          <p className="mt-1 text-[11px] text-slate-500">Instagram Reels · 24.5k views</p>
+                          <p className="mt-1 text-[11px] text-slate-500">Engagement score: <span className="font-semibold text-slate-900">92/100</span></p>
+                        </div>
+                      </div>
+
+                      <button
+                        type="button"
+                        className="mt-4 inline-flex items-center justify-center rounded-full bg-sky-500 px-3 py-1.5 text-[11px] font-semibold text-white shadow-[0_8px_20px_rgba(56,189,248,0.35)] hover:bg-sky-600"
+                      >
+                        View performance
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Summary stats row */}
+                <div className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-4">
+                  {[{
+                    label: "Total Followers",
+                    value: followersCount.toLocaleString(),
+                  }, {
+                    label: "Engagement Rate",
+                    value: "6.8%",
+                  }, {
+                    label: "Monthly Growth",
+                    value: "+18.4%",
+                  }, {
+                    label: "Total Posts",
+                    value: "1,245",
+                  }].map((stat) => (
+                    <div
+                      key={stat.label}
+                      className="flex flex-col justify-between rounded-2xl border border-slate-100 bg-slate-50 px-4 py-3"
                     >
-                      {k}
-                    </button>
+                      <div className="flex items-start justify-between gap-2">
+                        <div>
+                          <p className="text-[11px] text-slate-500">{stat.label}</p>
+                          <p className="mt-1 text-sm font-semibold text-slate-900">{stat.value}</p>
+                        </div>
+                        <div className="flex h-7 w-7 items-center justify-center rounded-full bg-white text-[11px] text-sky-500">
+                          ●
+                        </div>
+                      </div>
+
+                      <div className="mt-2 h-10 w-full">
+                        <ResponsiveContainer width="100%" height="100%">
+                          <LineChart data={sampleSeries}>
+                            <XAxis dataKey="date" hide />
+                            <YAxis hide />
+                            <Tooltip contentStyle={{ display: "none" }} />
+                            <Line
+                              type="monotone"
+                              dataKey="value"
+                              stroke="#2563EB"
+                              strokeWidth={1.8}
+                              dot={false}
+                              isAnimationActive
+                            />
+                          </LineChart>
+                        </ResponsiveContainer>
+                      </div>
+                    </div>
                   ))}
                 </div>
-                <div className="flex items-center gap-1">
-                  <button
-                    onClick={() => setRange('7D')}
-                    className={`rounded-full px-2.5 py-1 text-[11px] ${
-                      range === '7D'
-                        ? 'bg-sky-500 text-white'
-                        : 'bg-white text-slate-500 hover:text-slate-800'
-                    }`}
+              </CardShell>
+
+              {/* Engagement Chart */}
+              <CardShell className="p-6">
+                <div className="flex items-start justify-between gap-4 mb-6">
+                  <div>
+                    <h3 className="text-sm font-semibold text-slate-900">Engagement</h3>
+                    <p className="mt-1 text-xs text-slate-500">Performance across channels</p>
+                  </div>
+
+                  <div className="flex items-center gap-3">
+                    <div className="inline-flex items-center gap-1 rounded-full bg-slate-100 p-1">
+                      <button className="px-3 py-1.5 rounded-full bg-white text-xs font-medium text-sky-600 shadow-sm">Instagram</button>
+                      <button className="px-3 py-1.5 text-xs font-medium text-slate-600 hover:text-slate-900">Youtube</button>
+                      <button className="px-3 py-1.5 text-xs font-medium text-slate-600 hover:text-slate-900">Twitter</button>
+                    </div>
+
+                    <button
+                      type="button"
+                      className="inline-flex items-center gap-1 rounded-full bg-slate-100 px-3 py-1 text-[11px] font-medium text-slate-600 hover:bg-slate-200"
+                    >
+                      <span className="text-xs">⟳</span>
+                      <span>Refresh</span>
+                    </button>
+                  </div>
+                </div>
+
+                <div className="h-[280px] w-full">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <AreaChart data={sampleSeries} margin={{ top: 10, right: 20, left: -20, bottom: 0 }}>
+                      <defs>
+                        <linearGradient id="colorEng" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="5%" stopColor="#2D7FF9" stopOpacity={0.3}/>
+                          <stop offset="95%" stopColor="#2D7FF9" stopOpacity={0}/>
+                        </linearGradient>
+                      </defs>
+
+                      <CartesianGrid vertical={false} stroke="#E2E8F0" strokeDasharray="0" />
+                      <XAxis dataKey="date" axisLine={false} tickLine={false} tick={{ fill: "#94A3B8", fontSize: 12 }} />
+                      <YAxis axisLine={false} tickLine={false} tick={{ fill: "#94A3B8", fontSize: 12 }} />
+                      <Tooltip 
+                        contentStyle={{ backgroundColor: "#fff", border: "1px solid #E2E8F0", borderRadius: "8px" }}
+                        labelStyle={{ color: "#1E293B" }}
+                      />
+                      <Area 
+                        type="monotone" 
+                        dataKey="value" 
+                        stroke="#2563EB" 
+                        fill="url(#colorEng)" 
+                        strokeWidth={2.5}
+                        dot={{ fill: "#2563EB", r: 4, strokeWidth: 2, stroke: "#fff" }}
+                        activeDot={{ r: 6 }}
+                      />
+                    </AreaChart>
+                  </ResponsiveContainer>
+                </div>
+
+                <div className="mt-4 flex items-center justify-between text-xs text-slate-500">
+                  <div>Most recent increase <span className="ml-2 inline-flex items-center rounded-full bg-emerald-50 px-2 py-0.5 text-[11px] font-semibold text-emerald-600">+16,487</span></div>
+                  <div>Refreshed 20 sec ago</div>
+                </div>
+              </CardShell>
+            </div>
+
+            {/* RIGHT COLUMN (4) */}
+            <div className="col-span-12 lg:col-span-4 space-y-6">
+              {/* Active Promotion */}
+              <CardShell className="p-6">
+                <div className="mb-6 flex items-start justify-between gap-4">
+                  <div>
+                    <h3 className="text-sm font-semibold text-slate-900">Active Promotion</h3>
+                    <p className="mt-1 text-xs text-slate-500">Ad performance summary</p>
+                  </div>
+
+                  <div className="flex items-center gap-3">
+                    <div className="inline-flex items-center gap-1 rounded-full bg-[#F5F6F7] p-1">
+                      {([
+                        { id: "instagram", label: "Instagram" },
+                        { id: "youtube", label: "Youtube" },
+                        { id: "twitter", label: "Twitter" },
+                      ] as const).map((p) => {
+                        const selected = activePromoPlatform === p.id;
+                        return (
+                          <button
+                            key={p.id}
+                            onClick={() => setActivePromoPlatform(p.id)}
+                            className={
+                              "px-3 py-1.5 rounded-full text-xs font-medium transition-colors " +
+                              (selected
+                                ? "bg-white text-sky-600 shadow-sm"
+                                : "text-slate-600 hover:text-slate-900")
+                            }
+                          >
+                            {p.label}
+                          </button>
+                        );
+                      })}
+                    </div>
+
+                    <button
+                      type="button"
+                      className="flex h-7 w-7 items-center justify-center rounded-full bg-slate-100 text-slate-500 hover:bg-slate-200 text-xs"
+                    >
+                      ⟳
+                    </button>
+                  </div>
+                </div>
+
+                <div className="h-[180px] w-full">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart data={activePromoBars} margin={{ top: 10, right: 12, left: -18, bottom: 0 }}>
+                      <CartesianGrid vertical={false} stroke="#E2E8F0" strokeDasharray="0" />
+                      <XAxis
+                        dataKey="hour"
+                        axisLine={false}
+                        tickLine={false}
+                        tick={{ fill: "#94A3B8", fontSize: 11 }}
+                      />
+                      <YAxis
+                        axisLine={false}
+                        tickLine={false}
+                        tick={{ fill: "#94A3B8", fontSize: 11 }}
+                      />
+                      <Tooltip
+                        contentStyle={{
+                          backgroundColor: "#fff",
+                          border: "1px solid #E2E8F0",
+                          borderRadius: "8px",
+                          fontSize: 12,
+                        }}
+                        labelStyle={{ color: "#1E293B" }}
+                      />
+                      <Bar
+                        dataKey="value"
+                        radius={[6, 6, 0, 0]}
+                        fill={
+                          activePromoPlatform === "instagram"
+                            ? "#2563EB"
+                            : activePromoPlatform === "youtube"
+                            ? "#38BDF8"
+                            : "#60A5FA"
+                        }
+                        barSize={18}
+                      />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
+
+                <div className="mt-6 grid grid-cols-3 gap-4 text-xs">
+                  <div>
+                    <p className="text-slate-500">Followers</p>
+                    <div className="mt-2 flex items-center gap-1.5">
+                      <span className="text-lg font-bold text-slate-900">
+                        {followersCount.toLocaleString()}
+                      </span>
+                      <span className="inline-flex items-center rounded-full bg-emerald-50 px-2 py-0.5 text-[10px] font-semibold text-emerald-600">
+                        {followersDelta}
+                      </span>
+                    </div>
+                    <p className="mt-1 text-xs text-slate-500">In last 2 hr</p>
+                  </div>
+
+                  <div>
+                    <p className="text-slate-500">Spending</p>
+                    <p className="mt-2 text-lg font-bold text-slate-900">{spending}</p>
+                    <span className="mt-1 inline-flex items-center rounded-full bg-rose-50 px-2 py-0.5 text-[10px] font-semibold text-rose-600">
+                      3 days left
+                    </span>
+                  </div>
+
+                  <div>
+                    <p className="text-slate-500">Reach</p>
+                    <p className="mt-2 text-lg font-bold text-slate-900">{reach}</p>
+                    <p className="mt-1 text-xs text-slate-500">account reached</p>
+                  </div>
+                </div>
+              </CardShell>
+
+              {/* Most active Time */}
+              <CardShell className="p-5">
+                <div className="mb-4 flex items-start justify-between gap-4">
+                  <div>
+                    <h3 className="text-sm font-semibold text-slate-900">Most active Time</h3>
+                    <p className="mt-1 text-xs text-slate-500">Activity heatmap</p>
+                  </div>
+
+                  <div className="flex items-center gap-3">
+                    <div className="inline-flex items-center gap-1 rounded-full bg-slate-100 p-1">
+                      {([
+                        { id: "instagram", label: "Instagram" },
+                        { id: "youtube", label: "Youtube" },
+                        { id: "twitter", label: "Twitter" },
+                      ] as const).map((p) => {
+                        const selected = heatmapPlatform === p.id;
+                        return (
+                          <button
+                            key={p.id}
+                            onClick={() => setHeatmapPlatform(p.id)}
+                            className={
+                              "px-3 py-1.5 rounded-full text-xs font-medium transition-colors " +
+                              (selected
+                                ? "bg-white text-sky-600 shadow-sm"
+                                : "text-slate-600 hover:text-slate-900")
+                            }
+                          >
+                            {p.label}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="rounded-lg bg-[#F7F9FC] p-3">
+                  <div
+                    className="grid gap-1"
+                    style={{ gridTemplateColumns: `repeat(${instagramHeatmap[0].length}, minmax(0, 1fr))` }}
                   >
-                    7D
-                  </button>
-                  <button
-                    onClick={() => setRange('30D')}
-                    className={`rounded-full px-2.5 py-1 text-[11px] ${
-                      range === '30D'
-                        ? 'bg-sky-500 text-white'
-                        : 'bg-white text-slate-500 hover:text-slate-800'
-                    }`}
-                  >
-                    30D
-                  </button>
-                  <button
-                    onClick={() => setRange('90D')}
-                    className={`rounded-full px-2.5 py-1 text-[11px] ${
-                      range === '90D'
-                        ? 'bg-sky-500 text-white'
-                        : 'bg-white text-slate-500 hover:text-slate-800'
-                    }`}
-                  >
-                    90D
-                  </button>
+                    {(heatmapPlatform === "instagram"
+                      ? instagramHeatmap
+                      : heatmapPlatform === "youtube"
+                      ? youtubeHeatmap
+                      : twitterHeatmap
+                    ).map((row, rIndex) =>
+                      row.map((level, cIndex) => (
+                        <div
+                          key={`${rIndex}-${cIndex}`}
+                          className="w-3 h-3 rounded-[2px]"
+                          style={{ backgroundColor: heatLevelToColor(level) }}
+                        />
+                      ))
+                    )}
+                  </div>
                 </div>
-              </div>
 
-              <div style={{ height: 260 }} className="mt-1">
-                <ResponsiveContainer width="100%" height="100%">
-                  <AreaChart data={sampleSeries} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
-                    <defs>
-                      <linearGradient id="colorMetric" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#38BDF8" stopOpacity={0.9} />
-                        <stop offset="95%" stopColor="#38BDF8" stopOpacity={0} />
-                      </linearGradient>
-                    </defs>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" />
-                    <XAxis dataKey="date" stroke="#9CA3AF" tickLine={false} axisLine={false} tickMargin={8} />
-                    <YAxis stroke="#9CA3AF" tickLine={false} axisLine={false} tickMargin={8} />
-                    <Tooltip />
-                    <Area type="monotone" dataKey={metric} stroke="#38BDF8" fillOpacity={1} fill="url(#colorMetric)" />
-                    <Line type="monotone" dataKey={metric} stroke="#6366F1" strokeDasharray="4 6" dot={false} />
-                  </AreaChart>
-                </ResponsiveContainer>
-              </div>
-            </CardShell>
+                <div className="mt-4 flex items-center justify-between text-xs">
+                  <div>
+                    <p className="text-slate-500">Most active time</p>
+                    <p className="mt-1 font-semibold text-slate-900">12:00 PM - 1:45 PM</p>
+                  </div>
 
-            {/* Most active Time */}
-            <CardShell className="p-5 sm:p-6">
-              <SectionHeader
-                title="Most active Time"
-                right={<BadgePill tone="muted">1 Day</BadgePill>}
-              />
-              <div className="mb-3 flex gap-2 text-[11px]">
-                <BadgePill tone="success">Instagram</BadgePill>
-                <BadgePill tone="muted">Youtube</BadgePill>
-                <BadgePill tone="muted">Twitter</BadgePill>
-              </div>
-              <div
-                className="grid gap-1.5 rounded-2xl bg-slate-50 p-3"
-                style={{ gridTemplateColumns: 'repeat(24, minmax(0, 1fr))', gridTemplateRows: 'repeat(7, 1fr)' }}
-              >
-                {Array.from({ length: 168 }).map((_, idx) => {
-                  const col = idx % 24;
-                  const row = Math.floor(idx / 24);
-
-                  let intensity = 'bg-slate-200';
-                  if ((row === 2 || row === 3) && col >= 8 && col <= 16) {
-                    intensity = 'bg-sky-500';
-                  } else if ((row === 1 || row === 4) && col >= 6 && col <= 18) {
-                    intensity = 'bg-sky-400';
-                  } else if (col >= 4 && col <= 20) {
-                    intensity = 'bg-sky-300';
-                  }
-
-                  return <div key={idx} className={`h-3 w-3 rounded-md ${intensity}`} />;
-                })}
-              </div>
-              <div className="mt-4 grid grid-cols-2 gap-3 text-[11px] text-slate-500">
-                <div>
-                  <div className="text-slate-400">Most active time</div>
-                  <div className="mt-1 text-sm font-semibold text-slate-900">12:00 PM - 13:45 PM</div>
+                  <div className="text-right">
+                    <p className="text-slate-500">Engagements</p>
+                    <p className="mt-1 font-semibold text-slate-900">14,487</p>
+                  </div>
                 </div>
-                <div>
-                  <div className="text-slate-400">Engagements</div>
-                  <div className="mt-1 text-sm font-semibold text-slate-900">14,487</div>
-                </div>
-                <div>
-                  <div className="text-slate-400">Likes</div>
-                  <div className="mt-1 text-sm font-semibold text-slate-900">+1,254</div>
-                </div>
-                <div>
-                  <div className="text-slate-400">Comments</div>
-                  <div className="mt-1 text-sm font-semibold text-slate-900">+1,254</div>
-                </div>
-              </div>
-            </CardShell>
+              </CardShell>
+            </div>
           </div>
         </main>
       </div>
 
-      {/* AI Assistant drawer */}
+      {/* AI Drawer */}
       {aiOpen && (
         <div className="fixed inset-0 z-50">
           <div className="absolute inset-0 bg-black/40" onClick={() => setAiOpen(false)} />
-          <div className="absolute right-0 top-0 bottom-0 w-96 border-l border-border bg-card p-6 shadow-glow">
-
+          <div className="absolute right-0 top-0 bottom-0 w-96 border-l border-slate-100 bg-white p-6 shadow-2xl">
             <div className="flex items-center justify-between">
-              <h3 className="text-lg font-semibold text-foreground">AI Assistant</h3>
-              <button onClick={() => setAiOpen(false)}>Close</button>
+              <h3 className="text-lg font-semibold text-slate-900">AI Assistant</h3>
+              <button onClick={() => setAiOpen(false)} className="text-sm text-slate-600 hover:text-slate-900">Close</button>
             </div>
-            <div className="mt-4 text-sm text-muted-foreground">Suggestions, prompts and quick actions will appear here.</div>
+
+            <div className="mt-4 text-sm text-slate-600">
+              Suggestions, prompts and quick actions will appear here.
+            </div>
           </div>
         </div>
       )}
-
-      {/* Dock Navigation */}
-      <Dock 
-        items={dockItems}
-        panelHeight={68}
-        baseItemSize={50}
-        magnification={70}
-      />
     </div>
   );
 }
