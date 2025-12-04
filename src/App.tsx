@@ -21,23 +21,27 @@ const App = () => {
     return window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
   });
 
-  useEffect(() => {
-    const root = document.documentElement;
-    if (theme === "dark") {
-      root.classList.add("dark");
-    } else {
-      root.classList.remove("dark");
-    }
-    window.localStorage.setItem("theme", theme);
-  }, [theme]);
-
-  const toggleTheme = () => {
-    setTheme((prev) => (prev === "dark" ? "light" : "dark"));
-  };
-
   const AppShell = () => {
     const location = useLocation();
     const isHome = location.pathname === "/" || location.pathname === "/home";
+
+    useEffect(() => {
+      const root = document.documentElement;
+      if (isHome) {
+        root.classList.remove("dark");
+        return;
+      }
+      if (theme === "dark") {
+        root.classList.add("dark");
+      } else {
+        root.classList.remove("dark");
+      }
+      window.localStorage.setItem("theme", theme);
+    }, [theme, isHome]);
+
+    const toggleTheme = () => {
+      setTheme((prev) => (prev === "dark" ? "light" : "dark"));
+    };
 
     return (
       <div className="w-full min-h-screen bg-background text-foreground transition-colors duration-300">
@@ -77,7 +81,7 @@ const App = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
-        <BrowserRouter>
+        <BrowserRouter future={{ v7_relativeSplatPath: true }}>
           <AppShell />
         </BrowserRouter>
       </TooltipProvider>

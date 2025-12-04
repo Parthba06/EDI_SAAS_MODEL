@@ -8,7 +8,7 @@ import {
   YAxis,
   Tooltip,
   CartesianGrid,
-  Line
+  Line,
 } from 'recharts';
 import { VscHome, VscArchive, VscAccount, VscSettingsGear } from 'react-icons/vsc';
 import Dock from '../components/Dock';
@@ -25,27 +25,29 @@ const sampleSeries = [
 ];
 
 const QuickMetricCard: React.FC<any> = ({ title, value, trend }) => (
-  <div className="rounded-2xl bg-card/80 p-6 hover:bg-card transition transform hover:-translate-y-1 shadow-card hover:shadow-glow border border-border/60 backdrop-blur-sm">
-    <div className="flex justify-between text-sm text-muted-foreground">
+  <div className="group rounded-2xl bg-card/90 border border-border/70 p-5 shadow-card transition-all duration-200 hover:-translate-y-1 hover:shadow-glow">
+    <div className="flex items-center justify-between text-xs font-medium text-muted-foreground">
       <span>{title}</span>
       <span
-        className={`font-semibold ${trend && trend.startsWith('+') ? 'text-primary' : 'text-foreground'}`}
+        className={`inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-semibold bg-muted/80 group-hover:bg-muted ${
+          trend && trend.startsWith('+') ? 'text-primary' : 'text-foreground'
+        }`}
       >
         {trend}
       </span>
     </div>
-    <h2 className="text-2xl font-semibold text-foreground mt-3">{value}</h2>
+    <h2 className="mt-3 text-2xl font-semibold tracking-tight text-foreground">{value}</h2>
   </div>
 );
 
 const AISuggestion: React.FC<any> = ({ text }) => (
-  <div className="flex items-center justify-between bg-muted/60 rounded-xl p-4 border border-border/60 hover:bg-muted transition-colors">
+  <div className="group flex items-center justify-between rounded-xl border border-border/70 bg-muted/60 p-4 transition-all duration-200 hover:bg-muted hover:shadow-card">
     <div className="text-sm text-foreground/90">{text}</div>
     <div className="flex items-center gap-2">
-      <button className="text-sm px-3 py-1 rounded-md bg-primary hover:bg-primary/90 text-primary-foreground transition-all">
+      <button className="text-xs px-3 py-1.5 rounded-full bg-primary text-primary-foreground shadow-card transition-all duration-200 hover:-translate-y-0.5 hover:shadow-glow">
         Apply
       </button>
-      <button className="text-sm px-3 py-1 rounded-md border border-border/70 text-foreground hover:bg-muted/80 transition-colors">
+      <button className="text-xs px-3 py-1.5 rounded-full border border-border/70 text-foreground transition-all duration-200 hover:bg-muted/80">
         View
       </button>
     </div>
@@ -53,68 +55,71 @@ const AISuggestion: React.FC<any> = ({ text }) => (
 );
 
 const TrendingCard: React.FC<any> = ({ tag, score, timeLeft }) => (
-  <div className="rounded-xl bg-card/80 p-4 flex flex-col gap-2 border border-border/60 hover:bg-card transition-colors shadow-card">
-    <div className="flex justify-between text-sm">
-      <span className="font-medium text-primary">#{tag}</span>
-      <span className="text-xs text-muted-foreground">{timeLeft}</span>
+  <div className="group flex flex-col gap-2 rounded-2xl border border-border/70 bg-card/90 p-4 shadow-card transition-all duration-200 hover:-translate-y-1 hover:shadow-glow">
+    <div className="flex items-center justify-between text-xs">
+      <span className="inline-flex items-center rounded-full bg-primary/10 px-2 py-0.5 font-medium text-primary">#{tag}</span>
+      <span className="text-[11px] text-muted-foreground">{timeLeft}</span>
     </div>
-    <div className="text-foreground font-semibold text-lg">Virality {score}</div>
-    <button className="mt-2 self-start px-3 py-1 rounded bg-primary hover:bg-primary/90 text-primary-foreground font-medium transition-all">
+    <div className="mt-1 text-sm font-medium text-muted-foreground">Virality score</div>
+    <div className="text-xl font-semibold text-foreground">{score}</div>
+    <button className="mt-2 inline-flex w-fit items-center gap-1 rounded-full bg-muted px-3 py-1 text-xs font-medium text-foreground transition-colors duration-200 group-hover:bg-primary group-hover:text-primary-foreground">
       Jump on trend
+      <span className="text-[10px]">↗</span>
     </button>
   </div>
 );
 
 const RecentPostCard: React.FC<any> = ({ image, likes, comments, engagement }) => (
-  <div className="w-64 rounded-xl overflow-hidden border border-border/60 hover:border-primary/70 transition-all transform hover:-translate-y-1 bg-card/80 shadow-card">
-    <div className="w-full h-36 bg-black relative group">
-      <div style={{ backgroundImage: `url(${image})`, backgroundSize: 'cover', backgroundPosition: 'center' }} className="absolute inset-0 transition-transform duration-500 group-hover:scale-110" />
-      <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+  <div className="group w-64 overflow-hidden rounded-2xl border border-border/70 bg-card/90 shadow-card transition-all duration-200 hover:-translate-y-1 hover:shadow-glow">
+    <div className="group relative h-36 w-full bg-background/80">
+      <div
+        style={{ backgroundImage: `url(${image})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
+        className="absolute inset-0 transition-transform duration-500 group-hover:scale-110"
+      />
+      <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-60" />
     </div>
     <div className="p-4">
-      <div className="flex justify-between text-sm text-muted-foreground">
-        <span className="flex items-center gap-1">
-          <span className="w-1.5 h-1.5 rounded-full bg-primary" /> {likes}
+      <div className="flex items-center justify-between text-xs text-muted-foreground">
+        <span className="inline-flex items-center gap-1">
+          <span className="h-1.5 w-1.5 rounded-full bg-primary" /> {likes}
         </span>
-        <span className="flex items-center gap-1">
-          <span className="w-1.5 h-1.5 rounded-full bg-secondary" /> {comments}
+        <span className="inline-flex items-center gap-1">
+          <span className="h-1.5 w-1.5 rounded-full bg-secondary" /> {comments}
         </span>
       </div>
-      <div className="text-sm text-foreground/90 mt-2 flex items-center gap-2">
-        Engagement: 
-        <span className="text-primary font-medium">{engagement}%</span>
+      <div className="mt-2 flex items-center gap-2 text-sm text-foreground/90">
+        Engagement:
+        <span className="font-medium text-primary">{engagement}%</span>
       </div>
     </div>
   </div>
 );
 
 const TopBar: React.FC<any> = ({ onOpenAIAssistant }) => (
-  <div className="fixed top-4 left-0 right-0 z-40">
-    <div className="max-w-7xl mx-auto px-6">
-      <div className="flex items-center justify-between bg-card/80 backdrop-blur-md rounded-2xl px-4 py-2 shadow-card border border-border/70">
-        <div className="flex items-center gap-4">
-          <div className="text-sm font-semibold tracking-[0.15em] uppercase text-muted-foreground">Dashboard</div>
+  <div className="fixed left-0 right-0 top-4 z-40">
+    <div className="mx-auto flex max-w-7xl px-6">
+      <div className="flex h-14 w-full items-center justify-between rounded-2xl border border-border/70 bg-card/80 px-4 shadow-card backdrop-blur-md">
+        <div className="flex items-center gap-3">
+          <div className="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">Dashboard</div>
         </div>
         <div className="flex items-center gap-3">
-          <input 
-            placeholder="Search posts, hashtags, competitors..." 
-            className="px-3 py-2 rounded-lg border border-border/70 bg-muted/70 text-sm w-80 text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40" 
+          <input
+            placeholder="Search posts, hashtags, competitors..."
+            className="w-72 rounded-xl border border-border/70 bg-muted/70 px-3 py-2 text-xs text-foreground placeholder:text-muted-foreground outline-none transition-[border,box-shadow] duration-200 focus:border-primary/60 focus:ring-2 focus:ring-primary/30"
           />
-          <button className="relative p-2 rounded-md bg-muted/70 hover:bg-muted border border-border/70 transition-colors">
-            <span className="inline-block w-2 h-2 rounded-full bg-primary absolute top-1 right-1" />
+          <button className="relative inline-flex h-9 w-9 items-center justify-center rounded-xl border border-border/70 bg-muted/70 text-xs transition-[background,box-shadow,transform] duration-200 hover:-translate-y-0.5 hover:bg-muted hover:shadow-card">
+            <span className="absolute right-1 top-1 inline-block h-1.5 w-1.5 rounded-full bg-primary" />
             🔔
           </button>
-          <button 
-            onClick={onOpenAIAssistant} 
-            className="px-3 py-2 rounded-md bg-primary hover:bg-primary/90 text-primary-foreground transition-all shadow-card hover:shadow-glow"
+          <button
+            onClick={onOpenAIAssistant}
+            className="inline-flex items-center gap-1 rounded-full bg-primary px-4 py-2 text-xs font-medium text-primary-foreground shadow-card transition-[background,box-shadow,transform] duration-200 hover:-translate-y-0.5 hover:bg-primary/90 hover:shadow-glow"
           >
             AI Assistant
           </button>
-          <div className="relative">
-            <button className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center text-primary-foreground font-medium shadow-glow">
-              A
-            </button>
-          </div>
+          <button className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-primary to-accent text-xs font-semibold text-primary-foreground shadow-glow">
+            A
+          </button>
         </div>
       </div>
     </div>
@@ -156,18 +161,20 @@ export default function Dashboard() {
   ];
 
   return (
-    <div className="min-h-screen pt-28 pb-20 bg-background relative">
-      
+    <div className="relative min-h-screen bg-background pt-28 pb-20">
+
       <TopBar onOpenAIAssistant={() => setAiOpen(true)} />
 
       <div className="max-w-7xl mx-auto px-6">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Left column - large area */}
+          {/* Left column - main analytics */}
           <div className="lg:col-span-2 space-y-6">
             {/* Welcome + Growth Score */}
-            <div className="rounded-2xl bg-card/90 p-6 flex items-center justify-between relative overflow-hidden border border-border/70 shadow-card">
+            <div className="relative flex items-center justify-between overflow-hidden rounded-2xl border border-border/70 bg-card/90 p-6 shadow-card">
+
               {/* Sparkline background */}
-              <svg className="absolute inset-0 opacity-20" viewBox="0 0 100 20" preserveAspectRatio="none">
+              <svg className="pointer-events-none absolute inset-0 opacity-20" viewBox="0 0 100 20" preserveAspectRatio="none">
+
                 <path
                   d="M0 10 L10 8 L20 12 L30 7 L40 9 L50 15 L60 10 L70 12 L80 6 L90 8 L100 10"
                   stroke="#3EDC8E"
@@ -180,17 +187,20 @@ export default function Dashboard() {
                   opacity="0.1"
                 />
               </svg>
-              <div className="max-w-[650px] relative z-10">
-                <div className="text-sm text-muted-foreground">Hi, Ashish 👋</div>
-                <h3 className="text-2xl font-semibold text-foreground mt-2">
+              <div className="relative z-10 max-w-[650px]">
+                <div className="text-xs font-medium uppercase tracking-[0.16em] text-muted-foreground">Welcome back</div>
+                <h3 className="mt-2 text-2xl font-semibold tracking-tight text-foreground">
+
                   Your Growth Score is <span className="text-primary">{growthScore}/100</span>
                 </h3>
-                <p className="text-sm text-muted-foreground mt-2 flex items-center">
+                <p className="mt-2 flex items-center text-sm text-muted-foreground">
+
                   Your engagement grew <span className="text-primary font-semibold mx-1">24%</span> this week
                   <span className="inline-block ml-2 text-primary">↗</span>
                 </p>
               </div>
-              <div className="w-48 h-48 flex items-center justify-center relative z-10">
+              <div className="relative z-10 flex h-48 w-48 items-center justify-center">
+
                 {/* Simple circular progress in mint green */}
                 <svg viewBox="0 0 36 36" className="w-40 h-40">
                   <defs>
@@ -231,14 +241,16 @@ export default function Dashboard() {
             </div>
 
             {/* Quick Metrics */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+
               {quickMetrics.map((m: any, i: number) => (
                 <QuickMetricCard key={i} {...m} />
               ))}
             </div>
 
             {/* AI Suggestions */}
-            <div className="rounded-2xl bg-card/90 p-6 border border-border/70 shadow-card">
+            <div className="rounded-2xl border border-border/70 bg-card/90 p-6 shadow-card">
+
               <div className="flex items-center justify-between mb-4">
                 <h4 className="text-lg font-semibold text-foreground">AI Suggestions</h4>
                 <div className="text-sm text-muted-foreground">Today</div>
@@ -249,7 +261,8 @@ export default function Dashboard() {
             </div>
 
             {/* Performance Graph */}
-            <div className="rounded-2xl bg-card/90 p-6 border border-border/70 shadow-card">
+            <div className="rounded-2xl border border-border/70 bg-card/90 p-6 shadow-card">
+
               <div className="flex items-center justify-between mb-4">
                 <h4 className="text-lg font-semibold text-foreground">Performance</h4>
                 <div className="flex items-center gap-2">
@@ -297,7 +310,8 @@ export default function Dashboard() {
                 </div>
               </div>
 
-              <div style={{ height: 280 }}>
+              <div style={{ height: 280 }} className="mt-2">
+
                 <ResponsiveContainer width="100%" height="100%">
                   <AreaChart data={sampleSeries} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
                     <defs>
@@ -319,10 +333,11 @@ export default function Dashboard() {
             </div>
           </div>
 
-          {/* Right column */}
+          {/* Right column - secondary widgets */}
           <div className="space-y-6">
             {/* Trending Topics */}
-            <div className="rounded-2xl bg-card/90 p-6 border border-border/70 shadow-card">
+            <div className="rounded-2xl border border-border/70 bg-card/90 p-6 shadow-card">
+
               <h4 className="text-lg font-semibold text-foreground mb-4">Trending Topics</h4>
               <div className="grid grid-cols-1 gap-3">
                 {trending.map((t, i) => <TrendingCard key={i} {...t} />)}
@@ -330,7 +345,8 @@ export default function Dashboard() {
             </div>
 
             {/* Recent Posts Performance */}
-            <div className="rounded-2xl bg-card/90 p-6 border border-border/70 shadow-card">
+            <div className="rounded-2xl border border-border/70 bg-card/90 p-6 shadow-card">
+
               <h4 className="text-lg font-semibold text-foreground mb-4">Recent Posts</h4>
               <div className="flex gap-4 overflow-x-auto py-2">
                 <RecentPostCard image={'https://picsum.photos/300/200?random=1'} likes={120} comments={10} engagement={8.2} color={'#10B981'} />
@@ -345,8 +361,9 @@ export default function Dashboard() {
       {/* AI Assistant drawer */}
       {aiOpen && (
         <div className="fixed inset-0 z-50">
-          <div className="absolute inset-0 bg-black/50" onClick={() => setAiOpen(false)} />
-          <div className="absolute right-0 top-0 bottom-0 w-96 bg-card p-6 border-l border-border shadow-glow">
+          <div className="absolute inset-0 bg-black/40" onClick={() => setAiOpen(false)} />
+          <div className="absolute right-0 top-0 bottom-0 w-96 border-l border-border bg-card p-6 shadow-glow">
+
             <div className="flex items-center justify-between">
               <h3 className="text-lg font-semibold text-foreground">AI Assistant</h3>
               <button onClick={() => setAiOpen(false)}>Close</button>
