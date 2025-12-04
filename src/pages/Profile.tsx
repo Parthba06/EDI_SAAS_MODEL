@@ -35,7 +35,10 @@ const Profile = () => {
                 placeholder="Search settings..." 
                 className="px-3 py-2 rounded-lg border border-border/70 bg-muted/70 text-sm w-80 text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40" 
               />
-              <button className="relative p-2 rounded-md bg-muted/70 hover:bg-muted border border-border/70 transition-colors">
+              <button
+                className="relative p-2 rounded-md bg-muted/70 hover:bg-muted border border-border/70 transition-colors"
+                aria-label="Notifications"
+              >
                 <span className="inline-block w-2 h-2 rounded-full bg-primary absolute top-1 right-1" />
                 🔔
               </button>
@@ -69,7 +72,10 @@ const Profile = () => {
                     <AvatarImage src="https://github.com/shadcn.png" />
                     <AvatarFallback className="bg-muted text-foreground">AS</AvatarFallback>
                   </Avatar>
-                  <button className="absolute bottom-0 right-0 p-2 bg-primary text-primary-foreground rounded-full shadow-glow hover:bg-primary/90 transition-colors">
+                  <button
+                    className="absolute bottom-0 right-0 p-2 bg-primary text-primary-foreground rounded-full shadow-glow hover:bg-primary/90 transition-colors"
+                    aria-label="Edit profile picture"
+                  >
                     <VscEdit size={16} />
                   </button>
                 </div>
@@ -109,10 +115,10 @@ const Profile = () => {
 
                 {/* Social Links */}
                 <div className="flex gap-4 text-muted-foreground">
-                  <button className="p-2 hover:text-primary transition-colors">
+                  <button className="p-2 hover:text-primary transition-colors" aria-label="Open Twitter profile">
                     <FaTwitter size={20} />
                   </button>
-                  <button className="p-2 hover:text-primary transition-colors">
+                  <button className="p-2 hover:text-primary transition-colors" aria-label="Open LinkedIn profile">
                     <FaLinkedin size={20} />
                   </button>
                   <button className="p-2 hover:text-primary transition-colors">
@@ -215,18 +221,30 @@ const Profile = () => {
                           </div>
                           
                           <div>
-                            <label className="block text-sm font-medium text-muted-foreground mb-2">Display Name</label>
-                            <input 
-                              type="text" 
+                            <label
+                              htmlFor="display-name"
+                              className="block text-sm font-medium text-muted-foreground mb-2"
+                            >
+                              Display Name
+                            </label>
+                            <input
+                              id="display-name"
+                              type="text"
                               value="Ashish Singh"
                               className="w-full px-3 py-2 bg-card border border-border/70 rounded-lg text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-transparent"
                             />
                           </div>
 
                           <div>
-                            <label className="block text-sm font-medium text-muted-foreground mb-2">Username</label>
-                            <input 
-                              type="text" 
+                            <label
+                              htmlFor="username"
+                              className="block text-sm font-medium text-muted-foreground mb-2"
+                            >
+                              Username
+                            </label>
+                            <input
+                              id="username"
+                              type="text"
                               value="@ashish_creator"
                               className="w-full px-3 py-2 bg-card border border-border/70 rounded-lg text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-transparent"
                             />
@@ -248,9 +266,15 @@ const Profile = () => {
                         <h3 className="text-lg font-semibold mb-4 text-foreground">Security Settings</h3>
                         <div className="space-y-4">
                           <div>
-                            <label className="block text-sm font-medium text-muted-foreground mb-2">Email Address</label>
-                            <input 
-                              type="email" 
+                            <label
+                              htmlFor="email-address"
+                              className="block text-sm font-medium text-muted-foreground mb-2"
+                            >
+                              Email Address
+                            </label>
+                            <input
+                              id="email-address"
+                              type="email"
                               value="ashish.singh@example.com"
                               className="w-full px-3 py-2 bg-card border border-border/70 rounded-lg text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-transparent"
                             />
@@ -374,8 +398,16 @@ const Profile = () => {
                         <h3 className="text-lg font-semibold mb-4 text-foreground">Language & Region</h3>
                         <div className="space-y-4">
                           <div>
-                            <label className="block text-sm font-medium text-muted-foreground mb-2">Language</label>
-                            <select className="w-full px-3 py-2 bg-card border border-border/70 rounded-lg text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-transparent">
+                            <label
+                              htmlFor="language-select"
+                              className="block text-sm font-medium text-muted-foreground mb-2"
+                            >
+                              Language
+                            </label>
+                            <select
+                              id="language-select"
+                              className="w-full px-3 py-2 bg-card border border-border/70 rounded-lg text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-transparent"
+                            >
                               <option value="en">English</option>
                               <option value="es">Español</option>
                               <option value="fr">Français</option>
@@ -383,8 +415,16 @@ const Profile = () => {
                           </div>
 
                           <div>
-                            <label className="block text-sm font-medium text-muted-foreground mb-2">Time Zone</label>
-                            <select className="w-full px-3 py-2 bg-card border border-border/70 rounded-lg text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-transparent">
+                            <label
+                              htmlFor="timezone-select"
+                              className="block text-sm font-medium text-muted-foreground mb-2"
+                            >
+                              Time Zone
+                            </label>
+                            <select
+                              id="timezone-select"
+                              className="w-full px-3 py-2 bg-card border border-border/70 rounded-lg text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-transparent"
+                            >
                               <option value="UTC">UTC (GMT+0)</option>
                               <option value="EST">EST (GMT-5)</option>
                               <option value="PST">PST (GMT-8)</option>

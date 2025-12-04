@@ -1,9 +1,32 @@
 // Simple Google OAuth helper using Google Identity Services
 
+type GoogleTokenResponse = {
+  access_token?: string;
+  expires_in?: number;
+  token_type?: string;
+  scope?: string;
+};
+
+type GoogleTokenClient = {
+  requestAccessToken: (options?: { prompt?: string }) => void;
+};
+
+type GoogleIdentity = {
+  accounts?: {
+    oauth2?: {
+      initTokenClient: (config: {
+        client_id: string;
+        scope: string;
+        callback: (response: GoogleTokenResponse) => void;
+      }) => GoogleTokenClient;
+    };
+  };
+};
+
 declare global {
   interface Window {
     // Google Identity Services object injected by https://accounts.google.com/gsi/client
-    google?: any;
+    google?: GoogleIdentity;
   }
 }
 

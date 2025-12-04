@@ -37,7 +37,7 @@ import {
   FiShare2,
 } from "react-icons/fi";
 
-import CreatorLogo from "../assets/WhatsApp Image 2025-12-04 at 16.13.28_3db5bc93.jpg";
+import profileAvatar from "../assets/profile-avatar.png";
 import youtubeLogo from "../assets/youtube.png";
 import instaLogo from "../assets/instagram.png";
 import twitterLogo from "../assets/twitter.png";
@@ -394,10 +394,9 @@ export default function Dashboard(): JSX.Element {
               </button>
 
               <div
-                onClick={() => navigate("/profile")}
-                className="ml-2 flex h-9 w-9 cursor-pointer items-center justify-center overflow-hidden rounded-full border border-slate-200 bg-slate-100 hover:opacity-80 transition"
+                className="ml-2 flex h-9 w-9 items-center justify-center overflow-hidden rounded-full border border-slate-200 bg-slate-100"
               >
-                <img src={CreatorLogo} alt="profile" className="h-9 w-9 object-cover" />
+                <img src={profileAvatar} alt="User profile" className="h-9 w-9 object-cover" />
               </div>
             </div>
           </div>

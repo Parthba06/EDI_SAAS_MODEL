@@ -2,9 +2,18 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
 import logo from "@/assets/lgg.png";
-import { signInWithGoogle } from "@/lib/googleAuth";
+import { supabase } from "@/utils/supabase";
 
 const Login = () => {
+  const handleGoogleLogin = async () => {
+    await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: {
+        redirectTo: `${window.location.origin}/dashboard`,
+      },
+    });
+  };
+
   return (
     <div className="relative flex min-h-screen w-full items-center justify-center bg-black text-white overflow-hidden">
       <div className="pointer-events-none absolute inset-0 opacity-60">
@@ -42,7 +51,7 @@ const Login = () => {
             <Button
               variant="outline"
               className="w-full justify-center border border-white/60 bg-transparent text-white hover:bg-white/5"
-              onClick={signInWithGoogle}
+              onClick={handleGoogleLogin}
             >
               <span className="mr-2 inline-flex h-5 w-5 items-center justify-center rounded-full bg-white">
                 <img
