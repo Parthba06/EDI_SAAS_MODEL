@@ -4,6 +4,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
+
 import Index from "./pages/Index";
 import Dashboard from "./pages/Dashboard";
 import Profile from "./pages/Profile";
@@ -14,10 +15,17 @@ import FollowersGrowthPage from "./pages/FollowersGrowthPage";
 import AudienceDemographicsPage from "./pages/AudienceDemographicsPage";
 import HashtagAnalyticsPage from "./pages/HashtagAnalyticsPage";
 import EarningsDashboardPage from "./pages/EarningsDashboardPage";
+
 import Layout from "./components/Layout";
 import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
+
+// 🔥 ADDED ROUTE
+import AuthCallback from "./pages/AuthCallback";
+
+// 🔥 ADDED PROTECTED ROUTE
+import ProtectedRoute from "./components/ProtectedRoute";
 
 const queryClient = new QueryClient();
 
@@ -41,21 +49,91 @@ const App = () => {
         <Sonner />
 
         <Routes>
+          {/* PUBLIC ROUTES */}
           <Route path="/" element={<Index />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
+
+          {/* REQUIRED FOR GOOGLE OAUTH → Supabase redirect here */}
+          <Route path="/auth/callback" element={<AuthCallback />} />
+
+          {/* PROTECTED ROUTES WRAPPED WITH "ProtectedRoute" */}
           <Route element={<Layout />}>
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/engagement" element={<EngagementPage />} />
-            <Route path="/followers-growth" element={<FollowersGrowthPage />} />
-            <Route path="/audience-demographics" element={<AudienceDemographicsPage />} />
-            <Route path="/hashtag-analytics" element={<HashtagAnalyticsPage />} />
-            <Route path="/earnings" element={<EarningsDashboardPage />} />
-            <Route path="/profile" element={<Profile />} />
-            <Route path="/settings" element={<Settings />} />
-            <Route path="/insights" element={<Insights />} />
+            <Route
+              path="/dashboard"
+              element={
+                <ProtectedRoute>
+                  <Dashboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/engagement"
+              element={
+                <ProtectedRoute>
+                  <EngagementPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/followers-growth"
+              element={
+                <ProtectedRoute>
+                  <FollowersGrowthPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/audience-demographics"
+              element={
+                <ProtectedRoute>
+                  <AudienceDemographicsPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/hashtag-analytics"
+              element={
+                <ProtectedRoute>
+                  <HashtagAnalyticsPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/earnings"
+              element={
+                <ProtectedRoute>
+                  <EarningsDashboardPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/profile"
+              element={
+                <ProtectedRoute>
+                  <Profile />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/settings"
+              element={
+                <ProtectedRoute>
+                  <Settings />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/insights"
+              element={
+                <ProtectedRoute>
+                  <Insights />
+                </ProtectedRoute>
+              }
+            />
           </Route>
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+
+          {/* 404 */}
           <Route path="*" element={<NotFound />} />
         </Routes>
       </div>
@@ -71,6 +149,6 @@ const App = () => {
       </TooltipProvider>
     </QueryClientProvider>
   );
-}; 
+};
 
 export default App;
