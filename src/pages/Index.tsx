@@ -1,5 +1,7 @@
 import Hero from "@/components/Hero";
+import PostHeroInsights from "@/components/PostHeroInsights";
 import ScrollRevealSection from "@/components/ScrollRevealSection";
+import OurWorkSection from "@/components/OurWorkSection";
 import FlowingMenuSection from "@/components/FlowingMenuSection";
 import IntegrationVisualization from "@/components/IntegrationVisualization";
 import RampTimelineSection from "@/components/RampTimelineSection";
@@ -11,6 +13,8 @@ const Index = () => {
     <div className="min-h-screen">
       <Hero />
       <ScrollRevealSection />
+      <OurWorkSection />
+      <PostHeroInsights />
       <FlowingMenuSection />
       <IntegrationVisualization />
       <RampTimelineSection />
