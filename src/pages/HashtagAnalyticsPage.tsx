@@ -349,6 +349,7 @@ const HashtagAnalyticsPage: React.FC = () => {
                   const next = idx === -1 ? 0 : (idx + 1) % rangeOptions.length;
                   setRange(rangeOptions[next]);
                 }}
+                aria-label="Change date range"
               >
                 <FiChevronDown className="text-[10px]" />
               </button>
@@ -545,8 +546,8 @@ const HashtagAnalyticsPage: React.FC = () => {
                 <ZAxis dataKey="frequency" range={[60, 200]} />
                 <Tooltip
                   cursor={{ strokeDasharray: "3 3" }}
-                  formatter={(_value: any, _name, props: any) => {
-                    const payload = props.payload as BubblePoint;
+                  formatter={(_value: number | string, _name: string, props: { payload?: BubblePoint }) => {
+                    const payload = props.payload ?? ({} as BubblePoint);
                     return [
                       `Reach: ${Math.round(payload.reach * 100)}% | Competition: ${Math.round(
                         payload.competition * 100
@@ -563,9 +564,19 @@ const HashtagAnalyticsPage: React.FC = () => {
                 />
                 <Scatter
                   data={bubbleData}
-                  shape={(props: any) => {
-                    const { cx, cy, size, payload } = props;
-                    const color = bubbleColor((payload as BubblePoint).performance);
+                  shape={(props: unknown) => {
+                    const { cx, cy, size, payload } = (props as {
+                      cx?: number;
+                      cy?: number;
+                      size?: number;
+                      payload?: BubblePoint;
+                    }) ?? {};
+
+                    if (cx == null || cy == null || size == null || !payload) {
+                      return <circle cx={0} cy={0} r={0} fill="transparent" fillOpacity={0} />;
+                    }
+
+                    const color = bubbleColor(payload.performance);
                     const r = Math.sqrt(size) / 2;
                     return <circle cx={cx} cy={cy} r={r} fill={color} fillOpacity={0.8} />;
                   }}
@@ -710,7 +721,6 @@ const HashtagAnalyticsPage: React.FC = () => {
                       type="button"
                       onClick={() => copyToClipboard(tag)}
                       className="group inline-flex items-center gap-1 rounded-full border border-blue-100 bg-white px-5 py-2 text-[11px] font-medium text-blue-600 shadow-sm transition-all duration-200 hover:scale-105 hover:shadow-blue-200/60"
-                      style={{ transitionDelay: `${index * 70}ms` }}
                     >
                       <span>{tag}</span>
                       <span className="text-[10px] text-blue-500 opacity-0 transition-opacity duration-150 group-hover:opacity-100">
@@ -734,7 +744,6 @@ const HashtagAnalyticsPage: React.FC = () => {
                       type="button"
                       onClick={() => copyToClipboard(tag)}
                       className="group inline-flex items-center gap-1 rounded-full border border-blue-100 bg-white px-5 py-2 text-[11px] font-medium text-blue-600 shadow-sm transition-all duration-200 hover:scale-105 hover:shadow-blue-200/60"
-                      style={{ transitionDelay: `${index * 70}ms` }}
                     >
                       <span>{tag}</span>
                       <span className="text-[10px] text-blue-500 opacity-0 transition-opacity duration-150 group-hover:opacity-100">
@@ -758,7 +767,6 @@ const HashtagAnalyticsPage: React.FC = () => {
                       type="button"
                       onClick={() => copyToClipboard(tag)}
                       className="group inline-flex items-center gap-1 rounded-full border border-blue-100 bg-white px-5 py-2 text-[11px] font-medium text-blue-600 shadow-sm transition-all duration-200 hover:scale-105 hover:shadow-blue-200/60"
-                      style={{ transitionDelay: `${index * 70}ms` }}
                     >
                       <span>{tag}</span>
                       <span className="text-[10px] text-blue-500 opacity-0 transition-opacity duration-150 group-hover:opacity-100">
@@ -782,7 +790,6 @@ const HashtagAnalyticsPage: React.FC = () => {
                       type="button"
                       onClick={() => copyToClipboard(tag)}
                       className="group inline-flex items-center gap-1 rounded-full border border-blue-100 bg-white px-5 py-2 text-[11px] font-medium text-blue-600 shadow-sm transition-all duration-200 hover:scale-105 hover:shadow-blue-200/60"
-                      style={{ transitionDelay: `${index * 70}ms` }}
                     >
                       <span>{tag}</span>
                       <span className="text-[10px] text-blue-500 opacity-0 transition-opacity duration-150 group-hover:opacity-100">

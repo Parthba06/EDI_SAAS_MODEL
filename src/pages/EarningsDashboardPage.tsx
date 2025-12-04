@@ -215,7 +215,7 @@ const EarningsDashboardPage: React.FC = () => {
   const rangeOptions: EarnRange[] = ["7 Days", "30 Days", "90 Days", "This Month", "This Year"];
 
   const revenueSeries = useMemo(() => revenueData[range], [range]);
-  const forecastSeries = useMemo(() => buildForecast(), [range, platform]);
+  const forecastSeries = useMemo(() => buildForecast(), []);
 
   const totalRevenue = useMemo(() => revenueSeries.reduce((sum, p) => sum + p.total, 0), [revenueSeries]);
 
@@ -350,10 +350,22 @@ const EarningsDashboardPage: React.FC = () => {
                     fontSize: 12,
                   }}
                   labelStyle={{ color: "#0F172A", fontWeight: 600 }}
-                  formatter={(value: any, _name, props: any) => {
-                    const p = props.payload as RevenuePoint;
+                  formatter={(
+                    value: number | string,
+                    _name: string,
+                    props: { payload?: RevenuePoint }
+                  ) => {
+                    const p = props.payload ?? {
+                      label: "",
+                      total: 0,
+                      youtube: 0,
+                      instagram: 0,
+                      twitter: 0,
+                      sponsorships: 0,
+                    };
+                    const numericValue = typeof value === "number" ? value : Number(value) || 0;
                     const split = `YT: ₹${Math.round(p.youtube).toLocaleString()} | IG: ₹${Math.round(p.instagram).toLocaleString()} | TW: ₹${Math.round(p.twitter).toLocaleString()} | Spon: ₹${Math.round(p.sponsorships).toLocaleString()}`;
-                    return [`₹${Math.round(value).toLocaleString()} (total)\n${split}`, "Revenue"];
+                    return [`₹${Math.round(numericValue).toLocaleString()} (total)\n${split}`, "Revenue"];
                   }}
                 />
                 <Line
