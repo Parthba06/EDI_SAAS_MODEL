@@ -158,12 +158,12 @@ const EngagementPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 px-6 py-6 text-slate-800">
+    <div className="min-h-screen bg-[#f7f9fc] px-6 py-6 text-slate-800">
       <div className="mx-auto max-w-6xl space-y-6">
         {/* Header */}
-        <div className="rounded-xl bg-white px-6 py-4 shadow-[0_10px_25px_rgba(15,23,42,0.05)] flex items-center justify-between gap-4">
+        <div className="flex items-center justify-between gap-4 rounded-2xl bg-white px-6 py-4 shadow-[0_4px_16px_rgba(0,0,0,0.06)]">
           <div>
-            <h1 className="text-lg font-semibold text-slate-900">Engagement Analytics</h1>
+            <h1 className="text-lg font-semibold text-slate-800">Engagement Analytics</h1>
             <p className="mt-1 text-sm text-slate-500">Deep insights into post performance across all platforms.</p>
           </div>
 
@@ -171,7 +171,7 @@ const EngagementPage: React.FC = () => {
             <button
               type="button"
               onClick={handleRangeClick}
-              className="inline-flex items-center gap-2 rounded-full bg-slate-100 px-3 py-1.5 text-xs font-medium text-slate-700"
+              className="inline-flex items-center gap-2 rounded-full bg-[#e8f4ff] px-3 py-1.5 text-xs font-medium text-slate-700"
             >
               <span>{range}</span>
               <FiChevronDown className="text-[10px]" />
@@ -179,13 +179,13 @@ const EngagementPage: React.FC = () => {
 
             <button
               type="button"
-              className="inline-flex items-center gap-2 rounded-full bg-slate-900 px-3 py-1.5 text-xs font-semibold text-white shadow-[0_8px_20px_rgba(15,23,42,0.35)]"
+              className="inline-flex items-center gap-2 rounded-full bg-[#008CFF] px-5 py-2.5 text-xs font-medium text-white hover:bg-[#0077E6] transition shadow-sm"
             >
               <span>Export CSV</span>
             </button>
             <button
               type="button"
-              className="inline-flex items-center gap-2 rounded-full bg-slate-900/90 px-3 py-1.5 text-xs font-semibold text-white shadow-[0_8px_20px_rgba(15,23,42,0.35)]"
+              className="inline-flex items-center gap-2 rounded-full bg-[#008CFF] px-5 py-2.5 text-xs font-medium text-white hover:bg-[#0077E6] transition shadow-sm"
             >
               <span>Export PNG</span>
             </button>
@@ -194,7 +194,7 @@ const EngagementPage: React.FC = () => {
 
         {/* Tabs + Interval filters */}
         <div className="flex flex-wrap items-center justify-between gap-4">
-          <div className="inline-flex items-center gap-1 rounded-full bg-[#F5F6F7] px-2 py-1">
+          <div className="inline-flex items-center gap-1 rounded-full bg-[#f1f5f9] px-2 py-1">
             {([
               { id: "instagram", label: "Instagram" },
               { id: "youtube", label: "YouTube" },
@@ -209,7 +209,7 @@ const EngagementPage: React.FC = () => {
                   className={
                     "px-3 py-1.5 rounded-full text-xs font-medium transition-colors " +
                     (selected
-                      ? "bg-white text-sky-600 shadow-sm"
+                      ? "bg-white text-[#008cff] shadow-sm"
                       : "text-slate-600 hover:text-slate-900")
                   }
                 >
@@ -219,7 +219,7 @@ const EngagementPage: React.FC = () => {
             })}
           </div>
 
-          <div className="inline-flex items-center gap-1 rounded-full bg-slate-100 px-2 py-1 text-xs font-medium text-slate-600">
+          <div className="inline-flex items-center gap-1 rounded-full bg-[#f1f5f9] px-2 py-1 text-xs font-medium text-slate-600">
             {([
               { id: "daily", label: "Daily" },
               { id: "weekly", label: "Weekly" },
@@ -243,10 +243,10 @@ const EngagementPage: React.FC = () => {
         </div>
 
         {/* Main line chart card */}
-        <div className="rounded-2xl bg-white p-6 shadow-[0_10px_25px_rgba(15,23,42,0.05)]">
+        <div className="rounded-2xl bg-white p-6 shadow-[0_4px_16px_rgba(0,0,0,0.06)]">
           <div className="mb-4 flex items-center justify-between">
             <div>
-              <h2 className="text-sm font-semibold text-slate-900">Engagement over time</h2>
+              <h2 className="text-sm font-semibold text-slate-800">Engagement over time</h2>
               <p className="mt-1 text-xs text-slate-500">Track total interactions across likes, comments, shares and saves.</p>
             </div>
             <div className="text-xs text-slate-500">Platform: <span className="font-semibold text-slate-900 capitalize">{platform}</span></div>
@@ -261,7 +261,7 @@ const EngagementPage: React.FC = () => {
                     <stop offset="95%" stopColor="#2563EB" stopOpacity={0} />
                   </linearGradient>
                 </defs>
-                <CartesianGrid vertical={false} stroke="#E2E8F0" strokeDasharray="0" />
+                <CartesianGrid vertical={false} stroke="#E5E7EB" strokeDasharray="3 3" />
                 <XAxis dataKey="label" axisLine={false} tickLine={false} tick={{ fill: "#94A3B8", fontSize: 12 }} />
                 <YAxis axisLine={false} tickLine={false} tick={{ fill: "#94A3B8", fontSize: 12 }} />
                 <Tooltip
@@ -276,7 +276,7 @@ const EngagementPage: React.FC = () => {
                 <Line
                   type="monotone"
                   dataKey="value"
-                  stroke="#2563EB"
+                  stroke="#3b82f6"
                   strokeWidth={2.4}
                   dot={{ r: 3, strokeWidth: 2, stroke: "#fff", fill: "#2563EB" }}
                   activeDot={{ r: 5 }}
@@ -292,12 +292,12 @@ const EngagementPage: React.FC = () => {
           {metricsConfig.map((metric) => (
             <div
               key={metric.key}
-              className="flex flex-col rounded-xl bg-white p-4 shadow-sm transition-transform hover:-translate-y-0.5"
+              className="flex flex-col rounded-2xl bg-white p-4 shadow-[0_4px_16px_rgba(0,0,0,0.06)] transition-transform hover:-translate-y-0.5"
             >
               <div className="flex items-start justify-between">
                 <div>
                   <p className="text-xs text-slate-500">{metric.label}</p>
-                  <p className="mt-1 text-lg font-bold text-slate-900">
+                  <p className="mt-1 text-lg font-bold text-slate-800">
                     {metric.key === "views" ? "120.4K" : "24.5K"}
                   </p>
                 </div>
@@ -334,12 +334,12 @@ const EngagementPage: React.FC = () => {
         </div>
 
         {/* Advanced breakdown + Top posts */}
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+        <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-3">
           {/* Engagement breakdown chart */}
-          <div className="col-span-1 rounded-2xl bg-white p-6 shadow-[0_10px_25px_rgba(15,23,42,0.05)]">
+          <div className="col-span-1 rounded-2xl bg-white p-6 shadow-[0_4px_16px_rgba(0,0,0,0.06)]">
             <div className="mb-4 flex items-center justify-between">
               <div>
-                <h2 className="text-sm font-semibold text-slate-900">Engagement breakdown</h2>
+                <h2 className="text-sm font-semibold text-slate-800">Engagement breakdown</h2>
                 <p className="mt-1 text-xs text-slate-500">Distribution of likes, comments, shares and saves by month.</p>
               </div>
               <div className="text-xs text-slate-500">Last 4 months</div>
@@ -347,71 +347,116 @@ const EngagementPage: React.FC = () => {
 
             <div className="h-64 w-full">
               <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={breakdown} stackOffset="none" margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
-                  <CartesianGrid vertical={false} stroke="#E2E8F0" strokeDasharray="0" />
-                  <XAxis dataKey="period" axisLine={false} tickLine={false} tick={{ fill: "#94A3B8", fontSize: 11 }} />
-                  <YAxis axisLine={false} tickLine={false} tick={{ fill: "#94A3B8", fontSize: 11 }} />
+                <BarChart
+                  data={breakdown}
+                  stackOffset="none"
+                  margin={{ top: 16, right: 16, left: 0, bottom: 12 }}
+                  barCategoryGap="20%"
+                  barGap={2}
+                >
+                  <CartesianGrid vertical={false} stroke="#E2E8F0" strokeDasharray="3 3" />
+                  <XAxis
+                    dataKey="period"
+                    axisLine={false}
+                    tickLine={false}
+                    tick={{ fill: "#64748B", fontSize: 12 }}
+                  />
+                  <YAxis
+                    axisLine={false}
+                    tickLine={false}
+                    tick={{ fill: "#64748B", fontSize: 12 }}
+                  />
                   <Tooltip
                     contentStyle={{
-                      backgroundColor: "#fff",
+                      backgroundColor: "#FFFFFF",
                       border: "1px solid #E2E8F0",
                       borderRadius: 8,
+                      boxShadow: "0 8px 20px rgba(15,23,42,0.08)",
+                      padding: 12,
                       fontSize: 12,
                     }}
-                    labelStyle={{ color: "#0F172A", fontWeight: 600 }}
+                    labelStyle={{ color: "#0F172A", fontWeight: 600, marginBottom: 4 }}
                   />
-                  <Bar dataKey="likes" stackId="a" fill="#2563EB" radius={[6, 6, 0, 0]} />
-                  <Bar dataKey="comments" stackId="a" fill="#10B981" radius={[0, 0, 0, 0]} />
-                  <Bar dataKey="shares" stackId="a" fill="#F59E0B" radius={[0, 0, 0, 0]} />
-                  <Bar dataKey="saves" stackId="a" fill="#6366F1" radius={[0, 0, 0, 0]} />
+                  <Bar
+                    dataKey="likes"
+                    stackId="a"
+                    fill="#3B82F6"
+                    radius={[6, 6, 0, 0]}
+                    isAnimationActive
+                  />
+                  <Bar
+                    dataKey="comments"
+                    stackId="a"
+                    fill="#10B981"
+                    radius={[0, 0, 0, 0]}
+                    isAnimationActive
+                  />
+                  <Bar
+                    dataKey="shares"
+                    stackId="a"
+                    fill="#F59E0B"
+                    radius={[0, 0, 0, 0]}
+                    isAnimationActive
+                  />
+                  <Bar
+                    dataKey="saves"
+                    stackId="a"
+                    fill="#EC4899"
+                    radius={[0, 0, 6, 6]}
+                    isAnimationActive
+                  />
                 </BarChart>
               </ResponsiveContainer>
             </div>
           </div>
 
           {/* Top posts */}
-          <div className="col-span-2 rounded-2xl bg-white p-6 shadow-[0_10px_25px_rgba(15,23,42,0.05)]">
+          <div className="col-span-2 rounded-2xl bg-white p-6 shadow-[0_4px_16px_rgba(0,0,0,0.06)]">
             <div className="mb-4 flex items-center justify-between">
               <div>
-                <h2 className="text-sm font-semibold text-slate-900">Top performing posts</h2>
+                <h2 className="text-sm font-semibold text-slate-800">Top performing posts</h2>
                 <p className="mt-1 text-xs text-slate-500">Posts with the highest engagement score in the selected range.</p>
               </div>
               <div className="text-xs text-slate-500">Scroll to explore</div>
             </div>
 
-            <div className="flex gap-4 overflow-x-auto pb-2">
+            <div className="flex gap-4 overflow-x-auto overflow-y-hidden pb-2 no-scrollbar">
               {topPosts.map((post) => (
                 <div
                   key={post.id}
-                  className="min-w-[220px] flex-shrink-0 rounded-2xl border border-slate-100 bg-white p-4 shadow-sm"
+                  className="min-w-[240px] flex-shrink-0 rounded-2xl border border-slate-100 bg-white p-5 shadow-sm"
                 >
-                  <div className="flex items-center gap-3">
-                    <div className={`h-14 w-14 rounded-xl ${post.thumbColor}`} />
-                    <div className="min-w-0 flex-1">
-                      <p className="truncate text-sm font-semibold text-slate-900">{post.title}</p>
-                      <p className="mt-1 text-[11px] text-slate-500">{post.platform}</p>
-                    </div>
-                  </div>
-
-                  <div className="mt-3 flex items-center justify-between text-xs text-slate-500">
+                  <div className="flex h-full flex-col justify-between">
                     <div>
-                      <p>Engagement score</p>
-                      <p className="mt-0.5 text-sm font-semibold text-slate-900">{post.score}/100</p>
-                    </div>
-                    <div className="text-right">
-                      <p>Likes · Comments</p>
-                      <p className="mt-0.5 text-sm font-semibold text-slate-900">
-                        {post.likes.toLocaleString()} · {post.comments.toLocaleString()}
-                      </p>
-                    </div>
-                  </div>
+                      <div className="flex items-center gap-3">
+                        <div className={`h-14 w-14 rounded-xl ${post.thumbColor}`} />
+                        <div className="min-w-0 flex-1">
+                          <p className="truncate text-[15px] font-semibold text-slate-900">{post.title}</p>
+                          <p className="mt-1 text-sm text-slate-500">{post.platform}</p>
+                        </div>
+                      </div>
 
-                  <button
-                    type="button"
-                    className="mt-3 inline-flex items-center justify-center rounded-full bg-slate-900 px-3 py-1.5 text-[11px] font-semibold text-white"
-                  >
-                    View post
-                  </button>
+                      <div className="mt-3 flex items-center justify-between text-[13px] text-slate-700">
+                        <div>
+                          <p>Engagement score</p>
+                          <p className="mt-0.5 font-medium text-slate-700">{post.score}/100</p>
+                        </div>
+                        <div className="text-right">
+                          <p>Likes · Comments</p>
+                          <p className="mt-0.5 font-medium text-slate-700">
+                            {post.likes.toLocaleString()} · {post.comments.toLocaleString()}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <button
+                      type="button"
+                      className="mt-4 inline-flex items-center justify-center rounded-full bg-[#008CFF] px-5 py-2.5 text-[11px] font-medium text-white hover:bg-[#0077E6] transition shadow-sm"
+                    >
+                      View post
+                    </button>
+                  </div>
                 </div>
               ))}
             </div>

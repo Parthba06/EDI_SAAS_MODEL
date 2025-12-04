@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useRef, useState } from "react";
 import {
   ResponsiveContainer,
   LineChart,
@@ -14,6 +14,9 @@ import {
   ZAxis,
 } from "recharts";
 import { FiChevronDown } from "react-icons/fi";
+import { generateAIHashtags as generateHashtags } from "../api/aiHashtagGenerator";
+
+
 
 // Types
 
@@ -232,6 +235,11 @@ const HashtagAnalyticsPage: React.FC = () => {
   const [sortKey, setSortKey] = useState<"rank" | "reach" | "likes" | "difficulty">("rank");
   const [sortAsc, setSortAsc] = useState<boolean>(true);
   const [searchTopic, setSearchTopic] = useState<string>("");
+  const [isGenerating, setIsGenerating] = useState<boolean>(false);
+  const [apiHashtags, setApiHashtags] = useState<string[]>([]);
+  const [lastGeneratedAt, setLastGeneratedAt] = useState<number>(0);
+  const [copiedTag, setCopiedTag] = useState<string | null>(null);
+  const suggestionsRef = useRef<HTMLDivElement | null>(null);
 
   const rangeOptions: HashRange[] = ["7 Days", "30 Days", "90 Days"];
 
@@ -253,15 +261,8 @@ const HashtagAnalyticsPage: React.FC = () => {
   }, [platform, range, sortKey, sortAsc]);
 
   const suggestedHashtags = useMemo(() => {
-    if (!searchTopic.trim()) return [] as string[];
-    const base = searchTopic
-      .toLowerCase()
-      .replace(/[^a-z0-9\s]/g, "")
-      .split(/\s+/)
-      .filter(Boolean);
-    const keyword = base[base.length - 1] || "content";
-    return Array.from({ length: 10 }, (_, i) => `#${keyword}${i === 0 ? "" : i}`);
-  }, [searchTopic]);
+    return apiHashtags.length > 0 ? apiHashtags : [];
+  }, [apiHashtags]);
 
   const handleHeaderSort = (key: typeof sortKey) => {
     if (sortKey === key) setSortAsc((prev) => !prev);
@@ -271,9 +272,36 @@ const HashtagAnalyticsPage: React.FC = () => {
     }
   };
 
+  const handleGenerateHashtags = async () => {
+  if (!searchTopic.trim()) return;
+
+  console.log("Calling API with:", searchTopic);
+
+  setIsGenerating(true);
+  setLastGeneratedAt(Date.now());
+  suggestionsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+
+  try {
+    const result = await generateHashtags(searchTopic);
+
+    console.log("API RESULT:", result);
+
+    setApiHashtags(result);
+  } catch (error) {
+    console.error("API ERROR:", error);
+    setApiHashtags([]);
+  } finally {
+    setIsGenerating(false);
+  }
+};
+
+
   const copyToClipboard = (text: string) => {
     if (navigator && navigator.clipboard) {
-      navigator.clipboard.writeText(text).catch(() => {});
+      navigator.clipboard.writeText(text).then(() => {
+        setCopiedTag(text);
+        setTimeout(() => setCopiedTag(null), 1000);
+      }).catch(() => {});
     }
   };
 
@@ -329,13 +357,19 @@ const HashtagAnalyticsPage: React.FC = () => {
             {/* Export + AI buttons */}
             <button
               type="button"
-              className="inline-flex items-center gap-2 rounded-full bg-slate-900 px-3 py-1.5 text-xs font-semibold text-white shadow-[0_8px_20px_rgba(15,23,42,0.35)]"
+              className="inline-flex items-center gap-2 rounded-full bg-[#008CFF] px-5 py-2.5 text-xs font-medium text-white hover:bg-[#0077E6] transition shadow-sm"
             >
               <span>Export</span>
             </button>
             <button
               type="button"
-              className="inline-flex items-center gap-2 rounded-full bg-sky-500 px-3 py-1.5 text-xs font-semibold text-white shadow-[0_8px_20px_rgba(56,189,248,0.4)] hover:bg-sky-600"
+              className="inline-flex items-center gap-2 rounded-full bg-[#008CFF] px-5 py-2.5 text-xs font-medium text-white hover:bg-[#0077E6] transition shadow-sm"
+              onClick={() => {
+                suggestionsRef.current?.scrollIntoView({
+                  behavior: "smooth",
+                  block: "start",
+                });
+              }}
             >
               <span>Generate Hashtags with AI</span>
             </button>
@@ -416,7 +450,7 @@ const HashtagAnalyticsPage: React.FC = () => {
                     <td className="py-2 pr-4 align-top text-right">
                       <button
                         type="button"
-                        className="inline-flex items-center rounded-full bg-slate-900 px-3 py-1.5 text-[11px] font-semibold text-white"
+                        className="inline-flex items-center rounded-full bg-[#008CFF] px-5 py-2.5 text-[11px] font-medium text-white hover:bg-[#0077E6] transition shadow-sm"
                         onClick={() => copyToClipboard(row.tag)}
                       >
                         Copy
@@ -438,7 +472,7 @@ const HashtagAnalyticsPage: React.FC = () => {
             </div>
             <button
               type="button"
-              className="inline-flex items-center rounded-full bg-slate-900 px-3 py-1.5 text-[11px] font-semibold text-white"
+              className="inline-flex items-center rounded-full bg-[#008CFF] px-5 py-2.5 text-[11px] font-medium text-white hover:bg-[#0077E6] transition shadow-sm"
             >
               + Create new group
             </button>
@@ -580,40 +614,187 @@ const HashtagAnalyticsPage: React.FC = () => {
           </div>
         </div>
 
-        {/* HASHTAG SUGGESTION SEARCH + AI INSIGHTS */}
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-          {/* Hashtag suggestion search */}
-          <div className="col-span-2 rounded-2xl bg-white p-6 shadow-[0_10px_25px_rgba(0,0,0,0.05)]">
-            <h2 className="text-sm font-semibold text-slate-900">Hashtag suggestions</h2>
-            <p className="mt-1 text-xs text-slate-500">Enter a topic and generate hashtag ideas (placeholder logic).</p>
+        {/* AI HASHTAG GENERATOR HERO + AI INSIGHTS */}
+        <div
+          ref={suggestionsRef}
+          id="hashtag-generator"
+          className="mt-8 grid grid-cols-1 gap-6 lg:grid-cols-3"
+        >
+          {/* HERO: AI Hashtag Generator */}
+          <div
+            className={
+              "lg:col-span-2 rounded-3xl border border-slate-200 bg-gradient-to-br from-white via-blue-50/40 to-blue-100/20 p-8 shadow-[0_20px_50px_rgba(15,23,42,0.08)] backdrop-blur-xl transition " +
+              (Date.now() - lastGeneratedAt < 1200
+                ? "ring-1 ring-sky-300/70 shadow-[0_0_0_1px_rgba(56,189,248,0.4),0_30px_70px_rgba(15,23,42,0.32)]"
+                : "")
+            }
+          >
+            {/* Header */}
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+              <div>
+                <div className="flex items-center gap-3">
+                  <h2 className="text-lg font-semibold text-slate-900">AI Hashtag Generator</h2>
+                  <span className="relative inline-flex h-7 w-7 items-center justify-center">
+                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-sky-400/60"></span>
+                    <span className="relative inline-flex h-3.5 w-3.5 rounded-full bg-sky-500 shadow-[0_0_12px_rgba(56,189,248,0.8)]"></span>
+                  </span>
+                </div>
+                <p className="mt-2 text-xs text-slate-600">
+                  Generate optimized hashtags powered by intelligent analysis.
+                </p>
+                <div className="mt-2 h-0.5 w-24 bg-gradient-to-r from-sky-500 via-indigo-500 to-transparent opacity-80" />
+              </div>
 
-            <div className="mt-3 flex flex-col gap-2 sm:flex-row">
-              <input
-                value={searchTopic}
-                onChange={(e) => setSearchTopic(e.target.value)}
-                placeholder="Enter a topic or niche…"
-                className="flex-1 rounded-full border border-slate-200 bg-slate-50 px-4 py-2 text-xs text-slate-700 outline-none focus:border-sky-400 focus:bg-white"
-              />
-              <button
-                type="button"
-                className="inline-flex items-center justify-center rounded-full bg-sky-500 px-4 py-2 text-xs font-semibold text-white shadow-[0_6px_18px_rgba(56,189,248,0.4)] hover:bg-sky-600"
-              >
-                Generate hashtags
-              </button>
+              {isGenerating && (
+                <div className="flex max-w-xs flex-col gap-1 text-[11px] text-sky-800">
+                  <div className="flex items-center gap-2">
+                    <span className="inline-flex h-1.5 w-1.5 animate-pulse rounded-full bg-sky-500" />
+                    <span>Analyzing content…</span>
+                  </div>
+                  <p className="text-[11px] text-slate-600">
+                    AI is analyzing keywords, sentiment, and engagement patterns…
+                  </p>
+                </div>
+              )}
             </div>
 
-            <div className="mt-4 flex flex-wrap gap-2 text-xs">
-              {suggestedHashtags.map((tag) => (
+            {/* Input + Generate */}
+            <div className="mt-5 space-y-3">
+              <div className="relative">
+                <textarea
+                  value={searchTopic}
+                  onChange={(e) => setSearchTopic(e.target.value)}
+                  placeholder="Describe your post to generate the best hashtags…"
+                  rows={3}
+                  className="w-full resize-none rounded-2xl border border-slate-200 bg-white/80 px-4 py-3 text-sm text-slate-800 shadow-sm outline-none focus:border-sky-400 focus:ring-2 focus:ring-sky-200"
+                />
+                <div className="pointer-events-none absolute bottom-2 right-3 text-[10px] text-slate-400">
+                  {searchTopic.length}/280
+                </div>
+              </div>
+
+              <div className="flex flex-wrap items-center justify-between gap-3">
                 <button
-                  key={tag}
                   type="button"
-                  onClick={() => copyToClipboard(tag)}
-                  className="inline-flex items-center gap-1 rounded-full bg-slate-100 px-3 py-1 text-[11px] font-medium text-slate-700 hover:bg-slate-200"
+                  className="inline-flex items-center gap-3 rounded-full bg-gradient-to-r from-blue-500 to-blue-600 px-8 py-3 text-sm font-semibold text-white shadow-[0_10px_30px_rgba(37,99,235,0.55)] transition-transform hover:scale-[1.02] hover:shadow-[0_16px_40px_rgba(37,99,235,0.7)]"
+                  onClick={handleGenerateHashtags}
                 >
-                  <span>{tag}</span>
-                  <span className="text-[10px] text-slate-500">Copy</span>
+                  <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-white/15 text-xs">
+                    ⚡
+                  </span>
+                  <span>{isGenerating ? "Analyzing content…" : "Generate AI hashtags"}</span>
                 </button>
-              ))}
+
+                {isGenerating && (
+                  <div className="flex items-center gap-2 text-[11px] text-slate-600">
+                    <span className="flex space-x-1">
+                      <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-sky-400 [animation-delay:-0.1s]" />
+                      <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-sky-400" />
+                      <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-sky-400 [animation-delay:0.1s]" />
+                    </span>
+                    <span>AI is preparing hashtag sets for you…</span>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Results groups */}
+            <div className="mt-6 grid gap-4 md:grid-cols-2">
+              {/* Trending Hashtags */}
+              <div className="space-y-2">
+                <h3 className="text-xs font-semibold uppercase tracking-wide text-slate-500">Trending hashtags</h3>
+                <div className="flex flex-wrap gap-2 text-xs">
+                  {(!isGenerating ? suggestedHashtags.slice(0, 4) : []).map((tag, index) => (
+                    <button
+                      key={`trending-${tag}`}
+                      type="button"
+                      onClick={() => copyToClipboard(tag)}
+                      className="group inline-flex items-center gap-1 rounded-full border border-blue-100 bg-white px-5 py-2 text-[11px] font-medium text-blue-600 shadow-sm transition-all duration-200 hover:scale-105 hover:shadow-blue-200/60"
+                      style={{ transitionDelay: `${index * 70}ms` }}
+                    >
+                      <span>{tag}</span>
+                      <span className="text-[10px] text-blue-500 opacity-0 transition-opacity duration-150 group-hover:opacity-100">
+                        📋
+                      </span>
+                      {copiedTag === tag && (
+                        <span className="ml-1 text-[10px] text-emerald-600">Copied!</span>
+                      )}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* High-engagement Hashtags */}
+              <div className="space-y-2">
+                <h3 className="text-xs font-semibold uppercase tracking-wide text-slate-500">High-engagement hashtags</h3>
+                <div className="flex flex-wrap gap-2 text-xs">
+                  {(!isGenerating ? suggestedHashtags.slice(4, 8) : []).map((tag, index) => (
+                    <button
+                      key={`engagement-${tag}`}
+                      type="button"
+                      onClick={() => copyToClipboard(tag)}
+                      className="group inline-flex items-center gap-1 rounded-full border border-blue-100 bg-white px-5 py-2 text-[11px] font-medium text-blue-600 shadow-sm transition-all duration-200 hover:scale-105 hover:shadow-blue-200/60"
+                      style={{ transitionDelay: `${index * 70}ms` }}
+                    >
+                      <span>{tag}</span>
+                      <span className="text-[10px] text-blue-500 opacity-0 transition-opacity duration-150 group-hover:opacity-100">
+                        📋
+                      </span>
+                      {copiedTag === tag && (
+                        <span className="ml-1 text-[10px] text-emerald-600">Copied!</span>
+                      )}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Niche-specific Hashtags */}
+              <div className="space-y-2">
+                <h3 className="text-xs font-semibold uppercase tracking-wide text-slate-500">Niche-specific hashtags</h3>
+                <div className="flex flex-wrap gap-2 text-xs">
+                  {(!isGenerating ? suggestedHashtags.slice(8, 12) : []).map((tag, index) => (
+                    <button
+                      key={`niche-${tag}`}
+                      type="button"
+                      onClick={() => copyToClipboard(tag)}
+                      className="group inline-flex items-center gap-1 rounded-full border border-blue-100 bg-white px-5 py-2 text-[11px] font-medium text-blue-600 shadow-sm transition-all duration-200 hover:scale-105 hover:shadow-blue-200/60"
+                      style={{ transitionDelay: `${index * 70}ms` }}
+                    >
+                      <span>{tag}</span>
+                      <span className="text-[10px] text-blue-500 opacity-0 transition-opacity duration-150 group-hover:opacity-100">
+                        📋
+                      </span>
+                      {copiedTag === tag && (
+                        <span className="ml-1 text-[10px] text-emerald-600">Copied!</span>
+                      )}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Bonus Discoverability Tags */}
+              <div className="space-y-2">
+                <h3 className="text-xs font-semibold uppercase tracking-wide text-slate-500">Bonus discoverability tags</h3>
+                <div className="flex flex-wrap gap-2 text-xs">
+                  {(!isGenerating ? suggestedHashtags.slice(12, 16) : []).map((tag, index) => (
+                    <button
+                      key={`bonus-${tag}`}
+                      type="button"
+                      onClick={() => copyToClipboard(tag)}
+                      className="group inline-flex items-center gap-1 rounded-full border border-blue-100 bg-white px-5 py-2 text-[11px] font-medium text-blue-600 shadow-sm transition-all duration-200 hover:scale-105 hover:shadow-blue-200/60"
+                      style={{ transitionDelay: `${index * 70}ms` }}
+                    >
+                      <span>{tag}</span>
+                      <span className="text-[10px] text-blue-500 opacity-0 transition-opacity duration-150 group-hover:opacity-100">
+                        📋
+                      </span>
+                      {copiedTag === tag && (
+                        <span className="ml-1 text-[10px] text-emerald-600">Copied!</span>
+                      )}
+                    </button>
+                  ))}
+                </div>
+              </div>
             </div>
           </div>
 

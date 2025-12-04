@@ -281,7 +281,7 @@ const AudienceDemographicsPage: React.FC = () => {
 
             <button
               type="button"
-              className="inline-flex items-center gap-2 rounded-full bg-slate-900 px-3 py-1.5 text-xs font-semibold text-white shadow-[0_8px_20px_rgba(15,23,42,0.35)]"
+              className="inline-flex items-center gap-2 rounded-full bg-[#008CFF] px-5 py-2.5 text-xs font-medium text-white hover:bg-[#0077E6] transition shadow-sm"
             >
               <span>Export</span>
             </button>
@@ -445,35 +445,57 @@ const AudienceDemographicsPage: React.FC = () => {
         </div>
 
         {/* Activity heatmap full width */}
-        <div className="rounded-2xl bg-white p-6 shadow-[0_10px_25px_rgba(0,0,0,0.05)]">
+        <div className="rounded-2xl bg-white p-7 shadow-[0_4px_16px_rgba(0,0,0,0.06)]">
           <div className="mb-4 flex items-center justify-between">
             <div>
               <h2 className="text-sm font-semibold text-slate-900">Audience activity by hour</h2>
-              <p className="mt-1 text-xs text-slate-500">Detailed view of when your audience is active (24×7).</p>
+              <p className="mt-1 text-xs text-slate-500">Detailed 24×7 view of hourly audience engagement.</p>
             </div>
           </div>
 
-          <div className="overflow-x-auto">
-            <div className="min-w-[600px]">
-              <div className="grid gap-1" style={{ gridTemplateColumns: `repeat(${hours.length}, minmax(0, 1fr))` }}>
-                {heatmap.map((row, dayIndex) =>
-                  row.map((intensity, hourIndex) => {
-                    const colors = ["#EFF6FF", "#DBEAFE", "#BFDBFE", "#60A5FA", "#1D4ED8"];
-                    const color = colors[Math.max(0, Math.min(colors.length - 1, intensity))];
-                    return (
-                      <div
-                        key={`${dayIndex}-${hourIndex}`}
-                        className="h-4 w-4 rounded-[3px]"
-                        style={{ backgroundColor: color }}
-                        title={`${days[dayIndex]} ${hourIndex.toString().padStart(2, "0")}:00 activity`}
-                      />
-                    );
-                  })
-                )}
-              </div>
-              <div className="mt-2 flex items-center justify-between text-[10px] text-slate-500">
-                <span>Mon</span>
-                <span className="ml-auto">Sun</span>
+          <div className="overflow-x-auto overflow-y-hidden">
+            <div className="min-w-[640px]">
+              {/* Heatmap grid */}
+              <div className="flex gap-2">
+                {/* Day labels */}
+                <div className="flex flex-col justify-between py-1 text-[11px] text-slate-500">
+                  {days.map((day) => (
+                    <div key={day} className="h-6 flex items-center pr-1">
+                      {day}
+                    </div>
+                  ))}
+                </div>
+
+                {/* 7x24 cells */}
+                <div className="flex-1">
+                  <div className="grid gap-1.5" style={{ gridTemplateColumns: `repeat(${hours.length}, minmax(0, 1fr))` }}>
+                    {heatmap.map((row, dayIndex) =>
+                      row.map((value, hourIndex) => {
+                        const level = Math.max(0, Math.min(4, Math.round(value)));
+                        const palette = ["#EFF6FF", "#BFDBFE", "#60A5FA", "#3B82F6", "#1D4ED8"];
+                        const color = palette[level];
+                        const hourLabel = `${hourIndex.toString().padStart(2, "0")}:00`;
+                        const dayLabel = days[dayIndex];
+                        const interactions = 300 + value * 250; // simple scaled placeholder
+                        return (
+                          <div
+                            key={`${dayIndex}-${hourIndex}`}
+                            className="h-6 w-6 rounded-[3px] transition-colors duration-150"
+                            style={{ backgroundColor: color }}
+                            title={`${dayLabel}, ${hourLabel} — Activity: ${Math.round(interactions).toLocaleString()} interactions`}
+                          />
+                        );
+                      })
+                    )}
+                  </div>
+
+                  {/* Hour labels */}
+                  <div className="mt-3 flex justify-between text-[11px] text-slate-500">
+                    {[0, 3, 6, 9, 12, 15, 18, 21].map((h) => (
+                      <span key={h}>{h}</span>
+                    ))}
+                  </div>
+                </div>
               </div>
             </div>
           </div>
