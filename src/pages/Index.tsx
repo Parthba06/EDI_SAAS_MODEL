@@ -4,7 +4,6 @@ import ScrollRevealSection from "@/components/ScrollRevealSection";
 import OurWorkSection from "@/components/OurWorkSection";
 import FlowingMenuSection from "@/components/FlowingMenuSection";
 import IntegrationVisualization from "@/components/IntegrationVisualization";
-import AgenticHireSection from "@/components/AgenticHireSection";
 import FeatureGrid from "@/components/FeatureGrid";
 import Footer from "@/components/Footer";
 import Ramp30DayTimelineSection from "@/components/Ramp30DayTimelineSection";
@@ -24,7 +23,6 @@ const Index = () => {
       <FlowingMenuSection />
       <IntegrationVisualization />
       <PricingSection />
-      <AgenticHireSection />
       <Footer />
     </div>
   );

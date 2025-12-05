@@ -85,11 +85,11 @@ export default function Home() {
       </div>
 
       {/* Get Started Button - Top Right */}
-      <div className="absolute top-6 md:top-8 right-6 md:right-8 z-50">
+      <div className="absolute top-6 md:top-8 right-2 md:right-4 z-50">
         <Button
           variant="default"
           onClick={handleGetStarted}
-          className="px-4 md:px-6 py-2 bg-white text-black hover:bg-gray-100 font-semibold rounded-lg transition-all duration-300 hover:scale-105 text-sm md:text-base"
+          className="px-6 md:px-8 py-3 bg-white text-black hover:bg-gray-100 font-semibold rounded-lg transition-all duration-300 hover:scale-105 text-base md:text-lg"
         >
           Get Started
         </Button>
@@ -99,7 +99,7 @@ export default function Home() {
       <div className="relative pt-32 md:pt-36 lg:pt-40 pb-24 md:pb-28 lg:pb-32 mx-auto max-w-7xl px-4 md:px-8 z-50 pointer-events-none">
         {/* Agency pill */}
         <div ref={eyebrowRef} className="eyebrow-seq inline-flex items-center gap-2 text-black text-xl md:text-1xl font-hero-sans font-semibold mb-6">
-          <span className="inline-block h-2 w-3 bg-emerald-500 rounded-[3px] rotate-45" />
+          <span className="inline-block h-2 w-3 bg-blue-500 rounded-[3px] rotate-45" />
           Social Media Analytics
         </div>
 
@@ -121,7 +121,7 @@ export default function Home() {
         {/* Discover more CTA */}
         <div className="mt-6 flex items-center gap-2 text-base md:text-lg text-black font-hero-sans font-semibold pointer-events-auto">
           <a href="#" className="underline-offset-4 hover:underline pointer-events-auto">Discover more</a>
-          <span className="inline-flex h-6 w-6 items-center justify-center rounded-md bg-green-300">
+          <span className="inline-flex h-6 w-6 items-center justify-center rounded-md bg-blue-300">
             <ArrowDown className="h-3 w-3 text-black" />
           </span>
         </div>
