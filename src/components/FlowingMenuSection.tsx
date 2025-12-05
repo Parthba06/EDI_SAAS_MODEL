@@ -9,7 +9,7 @@ const FlowingMenuSection = () => {
   ];
 
   return (
-    <section className="w-full h-[600px] relative" style={{ backgroundColor: '#EAEAEA' }}>
+    <section className="w-full h-[600px] relative bg-[#F9FAF7] text-black border-t border-black/10">
       <FlowingMenu items={demoItems} />
     </section>
   );

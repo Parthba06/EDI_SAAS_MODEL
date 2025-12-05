@@ -202,7 +202,7 @@ const hashtagGroups: HashGroup[] = [
     hashtags: ["#contentcreator", "#personalbrand", "#creatorlife", "#workflow"],
     performance: 7.1,
     usage: 15,
-    gradient: "from-emerald-500 via-teal-500 to-sky-500",
+    gradient: "from-[#0E5EFF] via-sky-500 to-cyan-400",
   },
 ];
 
@@ -211,7 +211,7 @@ const hashtagGroups: HashGroup[] = [
 const difficultyColor = (d: HashtagRow["difficulty"]): string => {
   switch (d) {
     case "Easy":
-      return "bg-emerald-50 text-emerald-700";
+      return "bg-blue-50 text-blue-700";
     case "Medium":
       return "bg-amber-50 text-amber-700";
     case "Hard":

@@ -192,8 +192,8 @@ const IntegrationVisualization = () => {
   }, []);
 
   return (
-    <div className="w-full min-h-screen py-12 md:py-16 lg:py-20 px-4 md:px-6 lg:px-8" style={{ backgroundColor: '#EAEAEA' }}>
-      <div className="max-w-[1400px] mx-auto">
+    <div className="w-full min-h-screen bg-[#F5F5F5] text-black border-t border-black/10 py-24">
+      <div className="max-w-7xl mx-auto px-4 md:px-8">
         <div ref={gridRef} className="relative grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 xl:gap-16 items-center">
           <style>
             {`
@@ -221,7 +221,7 @@ const IntegrationVisualization = () => {
               const c2y = l.start.y + dy * 0.8;
               return (
                 <g key={i}>
-                  <circle r="3.5" fill="#6ee7b7">
+                  <circle r="3.5" fill="#0E5EFF">
                     <animateMotion dur={`${4 + i * 0.3}s`} repeatCount="indefinite" path={`M ${l.start.x} ${l.start.y} C ${c1x} ${c1y}, ${c2x} ${c2y}, ${l.end.x} ${l.end.y}`} />
                     <animate attributeName="opacity" values="0;1;1;1;0" dur={`${4 + i * 0.3}s`} repeatCount="indefinite" />
                   </circle>
@@ -232,7 +232,7 @@ const IntegrationVisualization = () => {
               const { start, end } = centerToRight;
               return (
                 <g>
-                  <circle r="4" fill="#6ee7b7">
+                  <circle r="4" fill="#0E5EFF">
                     <animateMotion
                       dur="3s"
                       repeatCount="indefinite"
@@ -374,13 +374,13 @@ const IntegrationVisualization = () => {
                   <svg viewBox="0 0 120 32" className="w-full h-10">
                     <defs>
                       <linearGradient id="sparkGrad" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="0%" stopColor="#6ee7b7" stopOpacity="0.35" />
-                        <stop offset="100%" stopColor="#6ee7b7" stopOpacity="0" />
+                        <stop offset="0%" stopColor="#0E5EFF" stopOpacity="0.35" />
+                        <stop offset="100%" stopColor="#0E5EFF" stopOpacity="0" />
                       </linearGradient>
                       <linearGradient id="sparkStroke" x1="0%" y1="0%" x2="100%" y2="0%" gradientUnits="objectBoundingBox">
-                        <stop offset="0%" stopColor="#86efac" />
-                        <stop offset="50%" stopColor="#6ee7b7" />
-                        <stop offset="100%" stopColor="#86efac" />
+                        <stop offset="0%" stopColor="#60A5FA" />
+                        <stop offset="50%" stopColor="#0E5EFF" />
+                        <stop offset="100%" stopColor="#60A5FA" />
                         <animateTransform attributeName="gradientTransform" type="translate" from="-1 0" to="1 0" dur="2.5s" repeatCount="indefinite" />
                       </linearGradient>
                     </defs>
@@ -407,7 +407,7 @@ const IntegrationVisualization = () => {
                       cy="50"
                       r="35"
                       fill="none"
-                      stroke="#6ee7b7"
+                      stroke="#0E5EFF"
                       strokeWidth="20"
                       strokeDasharray="220"
                       strokeDashoffset="55"
