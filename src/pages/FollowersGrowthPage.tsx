@@ -313,9 +313,7 @@ const FollowersGrowthPage: React.FC = () => {
                 <span
                   className={
                     "inline-flex items-center rounded-full px-2 py-0.5 font-semibold " +
-                    (card.positive
-                      ? "bg-emerald-50 text-emerald-600"
-                      : "bg-rose-50 text-rose-600")
+                    (card.positive ? "bg-blue-50 text-blue-600" : "bg-rose-50 text-rose-600")
                   }
                 >
                   {card.delta}
@@ -360,11 +358,11 @@ const FollowersGrowthPage: React.FC = () => {
                   <Bar
                     dataKey="change"
                     radius={[6, 6, 0, 0]}
-                    fill="#22C55E"
+                    fill="#0E5EFF"
                     shape={(props: any) => {
                       const { x, y, width, height, payload } = props;
                       const positive = payload.change >= 0;
-                      const color = positive ? "#22C55E" : "#EF4444";
+                      const color = positive ? "#0E5EFF" : "#EF4444";
                       const topY = positive ? y : y + height;
                       const barHeight = Math.abs(height);
                       return (

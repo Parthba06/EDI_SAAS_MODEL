@@ -37,16 +37,19 @@ const OurWorkSection: React.FC = () => {
   }, []);
 
   return (
-    <section id="our-work-section" className="w-full bg-[#f5f8f1] text-black py-[120px]">
-      <div className="mx-auto max-w-[1200px] px-5">
+    <section
+      id="our-work-section"
+      className="w-full bg-[#0A0F24] text-white border-t border-white/10 py-24"
+    >
+      <div className="mx-auto max-w-7xl px-4 md:px-8">
         <div className="w-full text-center">
-          <p className="mb-3 text-[0.75rem] font-medium tracking-[0.15em] uppercase text-[#4a4a4a]">
+          <p className="mb-3 text-[0.75rem] font-medium tracking-[0.15em] uppercase text-white/70">
             OUR WORK
           </p>
-          <h2 className="mb-3 text-[clamp(2.5rem,5vw,3.5rem)] font-normal leading-[1.2] tracking-[-0.02em] text-[#0c1d17]">
+          <h2 className="mb-3 text-[clamp(2.5rem,5vw,3.5rem)] font-normal leading-[1.2] tracking-[-0.02em] text-white">
             From deep data to viral culture
           </h2>
-          <p className="mb-8 font-['Playfair_Display',Georgia,serif] italic text-[clamp(1.8rem,4vw,2.8rem)] text-[#0c1d17]">
+          <p className="mb-8 font-['Playfair_Display',Georgia,serif] italic text-[clamp(1.8rem,4vw,2.8rem)] text-[#0E5EFF]">
             and beyond
           </p>
         </div>
@@ -69,14 +72,14 @@ const OurWorkSection: React.FC = () => {
 
         {/* New creative work cards section */}
         <section className="mt-24 w-full text-left">
-          <div className="mx-auto max-w-[1200px] px-5">
-            <p className="mb-2 text-[0.75rem] font-medium tracking-[0.18em] uppercase text-[#4b4f4a]">
+          <div className="mx-auto max-w-7xl px-4 md:px-8">
+            <p className="mb-2 text-[0.75rem] font-medium tracking-[0.18em] uppercase text-white/70">
               EASY & HASSLE-FREE
             </p>
-            <h3 className="text-[clamp(2.5rem,4.6vw,3.4rem)] leading-[1.18] font-semibold tracking-[-0.02em] text-[#0c1d17]">
+            <h3 className="text-[clamp(2.5rem,4.6vw,3.4rem)] leading-[1.18] font-semibold tracking-[-0.02em] text-white">
               Every type of creative work you&apos;ll <br />
                 ever need,
-              <span className="font-['Playfair_Display',Georgia,serif] italic font-normal"> and more</span>
+              <span className="font-['Playfair_Display',Georgia,serif] italic font-normal text-[#0E5EFF]"> and more</span>
             </h3>
           </div>
 
@@ -171,18 +174,8 @@ const OurWorkSection: React.FC = () => {
           </div>
 
           {/* Feature text blocks below cards */}
-          <div className="mx-auto mt-24 max-w-[1200px] px-5 pb-16">
-            <div className="grid gap-12 md:grid-cols-2 lg:grid-cols-4 lg:gap-20">
-              <div className="flex flex-col gap-3 text-sm text-[#111827]">
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-[#bfdbfe] to-[#dbebff] text-[18px] font-semibold text-[#1f2937]">
-                  GI
-                </div>
-                <h4 className="text-[1.05rem] font-semibold text-[#111827]">Growth Insights</h4>
-                <p className="mt-1 text-[0.9rem] text-[#4b5563]">
-                  Smart reach tips personalized to best time, content style, and active audience zones.
-                </p>
-              </div>
-
+          <div className="mx-auto mt-24 max-w-7xl px-4 md:px-8 pb-16">
+            <div className="grid gap-12 md:grid-cols-2 lg:grid-cols-3 lg:gap-20">
               <div className="flex flex-col gap-3 text-sm text-[#111827]">
                 <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-[#c7d2fe] to-[#e0ecff] text-[18px] font-semibold text-[#1f2937]">
                   CS

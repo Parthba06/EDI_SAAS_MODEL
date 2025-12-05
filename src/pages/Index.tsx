@@ -4,10 +4,12 @@ import ScrollRevealSection from "@/components/ScrollRevealSection";
 import OurWorkSection from "@/components/OurWorkSection";
 import FlowingMenuSection from "@/components/FlowingMenuSection";
 import IntegrationVisualization from "@/components/IntegrationVisualization";
-import RampTimelineSection from "@/components/RampTimelineSection";
 import AgenticHireSection from "@/components/AgenticHireSection";
 import FeatureGrid from "@/components/FeatureGrid";
 import Footer from "@/components/Footer";
+import Ramp30DayTimelineSection from "@/components/Ramp30DayTimelineSection";
+import PricingSection from "@/components/PricingSection";
+import InsightFeatureSection from "@/components/InsightFeatureSection";
 
 const Index = () => {
   return (
@@ -17,9 +19,11 @@ const Index = () => {
       <FeatureGrid />
       <OurWorkSection />
       <PostHeroInsights />
+      <InsightFeatureSection />
+      <Ramp30DayTimelineSection />
       <FlowingMenuSection />
       <IntegrationVisualization />
-      <RampTimelineSection />
+      <PricingSection />
       <AgenticHireSection />
       <Footer />
     </div>

@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { BarChart3, ArrowDown } from "lucide-react";
 import ImageTrail from "./ImageTrail";
+import logo from "@/assets/logo-removebg-preview.png";
 
 export default function Home() {
   const titleRef = useRef<HTMLHeadingElement | null>(null);
@@ -38,7 +39,7 @@ export default function Home() {
   }, []);
 
   return (
-    <main className="relative w-full min-h-screen lg:h-screen overflow-hidden" style={{ backgroundColor: '#EAEAEA' }}>
+    <main className="relative w-full min-h-screen lg:h-screen overflow-hidden bg-[#F4F4F4] text-black border-b border-black/10">
       {/* ImageTrail Effect */}
       <div className="absolute inset-0 z-20">
         <ImageTrail
@@ -75,12 +76,11 @@ export default function Home() {
       {/* Logo - Top Left */}
       <div className="absolute top-6 md:top-8 left-6 md:left-8 z-50">
         <div className="flex items-center space-x-2">
-          <div className="w-8 h-8 bg-black rounded-lg flex items-center justify-center">
-            <BarChart3 className="w-5 h-5 text-white" />
-          </div>
-          <span className="text-lg md:text-xl font-bold text-black">
-            Social Intel
-          </span>
+          <img
+            src={logo}
+            alt="FlowFund logo"
+            className="h-8 w-auto md:h-9 object-contain drop-shadow-[0_4px_12px_rgba(15,23,42,0.45)]"
+          />
         </div>
       </div>
 
@@ -96,7 +96,7 @@ export default function Home() {
       </div>
 
       {/* Text Content */}
-      <div className="relative pt-24 md:pt-32 lg:pt-40 px-6 md:px-10 lg:px-16 max-w-[1400px] z-50 pointer-events-none">
+      <div className="relative pt-32 md:pt-36 lg:pt-40 pb-24 md:pb-28 lg:pb-32 mx-auto max-w-7xl px-4 md:px-8 z-50 pointer-events-none">
         {/* Agency pill */}
         <div ref={eyebrowRef} className="eyebrow-seq inline-flex items-center gap-2 text-black text-xl md:text-1xl font-hero-sans font-semibold mb-6">
           <span className="inline-block h-2 w-3 bg-emerald-500 rounded-[3px] rotate-45" />
