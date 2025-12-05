@@ -122,6 +122,15 @@ const FollowersGrowthPage: React.FC = () => {
     setRange(options[next]);
   };
 
+  const chartData = useMemo(() => {
+    return baseLabels.map((label) => ({
+      label,
+      instagram: followersSeries.instagram[range].find((p) => p.label === label)?.value ?? 0,
+      youtube: followersSeries.youtube[range].find((p) => p.label === label)?.value ?? 0,
+      twitter: followersSeries.twitter[range].find((p) => p.label === label)?.value ?? 0,
+    }));
+  }, [range]);
+
   const totalFollowers = 12540 + 8481 + 4507;
   const newFollowers = 860; // placeholder
   const highestSpikeDay = "Saturday";
@@ -188,7 +197,7 @@ const FollowersGrowthPage: React.FC = () => {
 
           <div className="h-72 w-full">
             <ResponsiveContainer width="100%" height="100%">
-              <LineChart margin={{ top: 10, right: 20, left: 0, bottom: 0 }}>
+              <LineChart data={chartData} margin={{ top: 10, right: 20, left: 0, bottom: 0 }}>
                 <defs>
                   <linearGradient id="igFG" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="5%" stopColor="#EC4899" stopOpacity={0.3} />
@@ -230,37 +239,34 @@ const FollowersGrowthPage: React.FC = () => {
                 {activePlatforms.includes("instagram") && (
                   <Line
                     type="monotone"
-                    dataKey={(d: any) => followersSeries.instagram[range].find((p) => p.label === d.label)?.value}
+                    dataKey="instagram"
                     name="instagram"
                     stroke="#EC4899"
                     strokeWidth={2.2}
                     dot={{ r: 3, strokeWidth: 2, stroke: "#fff", fill: "#EC4899" }}
                     activeDot={{ r: 5 }}
-                    fill="url(#igFG)"
                   />
                 )}
                 {activePlatforms.includes("youtube") && (
                   <Line
                     type="monotone"
-                    dataKey={(d: any) => followersSeries.youtube[range].find((p) => p.label === d.label)?.value}
+                    dataKey="youtube"
                     name="youtube"
                     stroke="#F97316"
                     strokeWidth={2.2}
                     dot={{ r: 3, strokeWidth: 2, stroke: "#fff", fill: "#F97316" }}
                     activeDot={{ r: 5 }}
-                    fill="url(#ytFG)"
                   />
                 )}
                 {activePlatforms.includes("twitter") && (
                   <Line
                     type="monotone"
-                    dataKey={(d: any) => followersSeries.twitter[range].find((p) => p.label === d.label)?.value}
+                    dataKey="twitter"
                     name="twitter"
                     stroke="#3B82F6"
                     strokeWidth={2.2}
                     dot={{ r: 3, strokeWidth: 2, stroke: "#fff", fill: "#3B82F6" }}
                     activeDot={{ r: 5 }}
-                    fill="url(#twFG)"
                   />
                 )}
               </LineChart>
