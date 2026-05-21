@@ -8,6 +8,7 @@ import {
   FiPieChart,
   FiHash,
   FiBarChart2,
+  FiLayers,
   FiBriefcase,
   FiMail,
   FiSettings,
@@ -112,6 +113,18 @@ const Sidebar: React.FC = () => {
             onClick={() => navigate("/earnings")}
           >
             <FiBarChart2 size={16} /> Earnings Dashboard
+          </button>
+
+          {/* Creator Comparison */}
+          <button
+            className={`flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition-colors ${
+              currentPath === "/creator-comparison"
+                ? "bg-slate-100 text-slate-900 font-medium"
+                : "text-slate-600 hover:bg-slate-50"
+            }`}
+            onClick={() => navigate("/creator-comparison")}
+          >
+            <FiLayers size={16} /> Creator Comparison
           </button>
 
           {/* Sponsorship */}

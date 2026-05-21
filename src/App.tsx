@@ -15,6 +15,7 @@ import FollowersGrowthPage from "./pages/FollowersGrowthPage";
 import AudienceDemographicsPage from "./pages/AudienceDemographicsPage";
 import HashtagAnalyticsPage from "./pages/HashtagAnalyticsPage";
 import EarningsDashboardPage from "./pages/EarningsDashboardPage";
+import CreatorComparisonPage from "./pages/CreatorComparisonPage";
 
 import Layout from "./components/Layout";
 import NotFound from "./pages/NotFound";
@@ -104,6 +105,14 @@ const App = () => {
               element={
                 <ProtectedRoute>
                   <EarningsDashboardPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/creator-comparison"
+              element={
+                <ProtectedRoute>
+                  <CreatorComparisonPage />
                 </ProtectedRoute>
               }
             />
