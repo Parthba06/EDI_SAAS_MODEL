@@ -1,99 +1,220 @@
-import { Link } from "react-router-dom";
+// src/pages/Signup.tsx
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
-import logo from "@/assets/lgg.png";
-import { supabase } from "@/utils/supabase";
+import logo from "@/assets/logo-removebg-preview.png";
+import { useEffect, useRef } from "react";
 
 const Signup = () => {
-  const handleGoogleLogin = async () => {
-    await supabase.auth.signInWithOAuth({
-      provider: "google",
-      options: {
-        redirectTo: `${window.location.origin}/dashboard`,
-      },
-    });
+  const navigate = useNavigate();
+  const orbRef1 = useRef<HTMLDivElement>(null);
+  const orbRef2 = useRef<HTMLDivElement>(null);
+
+  const handleSignup = () => {
+    navigate("/dashboard");
   };
 
+  // Subtle floating animation for orbs
+  useEffect(() => {
+    let frame: number;
+    let t = 0;
+    const animate = () => {
+      t += 0.008;
+      if (orbRef1.current) {
+        orbRef1.current.style.transform = `translate(${Math.sin(t) * 20}px, ${Math.cos(t * 0.7) * 15}px)`;
+      }
+      if (orbRef2.current) {
+        orbRef2.current.style.transform = `translate(${Math.cos(t * 0.9) * 25}px, ${Math.sin(t * 0.6) * 20}px)`;
+      }
+      frame = requestAnimationFrame(animate);
+    };
+    frame = requestAnimationFrame(animate);
+    return () => cancelAnimationFrame(frame);
+  }, []);
+
   return (
-    <div className="relative flex min-h-screen w-full items-center justify-center bg-black text-white overflow-hidden">
-      <div className="pointer-events-none absolute inset-0 opacity-60">
-        <div className="h-full w-full bg-[radial-gradient(circle_at_top,_#111827_0,_#020617_45%,_#000000_100%)]" />
+    <div className="flex min-h-screen w-full">
+      {/* ─── LEFT PANEL: Brand showcase ─── */}
+      <div className="relative hidden lg:flex lg:w-[55%] flex-col justify-center overflow-hidden bg-[#0A0F24]">
+        {/* Animated gradient orbs */}
+        <div
+          ref={orbRef1}
+          className="pointer-events-none absolute -left-32 -top-32 h-[500px] w-[500px] rounded-full opacity-30"
+          style={{
+            background: "radial-gradient(circle, #0E5EFF 0%, transparent 70%)",
+          }}
+        />
+        <div
+          ref={orbRef2}
+          className="pointer-events-none absolute -right-20 bottom-20 h-[400px] w-[400px] rounded-full opacity-20"
+          style={{
+            background: "radial-gradient(circle, #6366f1 0%, transparent 70%)",
+          }}
+        />
+
+        {/* Subtle grid pattern */}
+        <div
+          className="pointer-events-none absolute inset-0 opacity-[0.04]"
+          style={{
+            backgroundImage:
+              "linear-gradient(rgba(255,255,255,.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.1) 1px, transparent 1px)",
+            backgroundSize: "60px 60px",
+          }}
+        />
+
+        {/* Top: Logo */}
+        <div className="absolute top-0 left-0 z-20 p-10">
+          <div className="flex items-center gap-3">
+            <img
+              src={logo}
+              alt="FlowFund logo"
+              className="h-8 w-auto object-contain brightness-0 invert"
+            />
+          </div>
+        </div>
+
+        {/* Center: Value prop */}
+        <div className="relative z-10 flex-1 flex flex-col justify-center px-10 lg:px-16">
+          <div className="max-w-lg">
+            <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-1.5 text-xs font-medium text-emerald-300 backdrop-blur-sm">
+              <span className="inline-block h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
+              Free to Get Started
+            </div>
+            <h1 className="text-4xl xl:text-5xl font-semibold leading-[1.15] tracking-tight text-white mb-5">
+              Start growing
+              <br />
+              <span className="bg-gradient-to-r from-emerald-400 via-blue-400 to-indigo-400 bg-clip-text text-transparent">
+                smarter today
+              </span>
+            </h1>
+            <p className="text-base text-slate-400 leading-relaxed max-w-md">
+              Join thousands of creators who use AI-powered insights to
+              understand their audience and scale their content strategy.
+            </p>
+          </div>
+
+          {/* Benefits list */}
+          <div className="mt-12 space-y-4">
+            {[
+              "Cross-platform analytics in one dashboard",
+              "AI-generated hashtag & content recommendations",
+              "Real-time engagement tracking & alerts",
+            ].map((benefit) => (
+              <div key={benefit} className="flex items-center gap-3">
+                <div className="flex h-5 w-5 items-center justify-center rounded-full bg-blue-500/20">
+                  <svg className="h-3 w-3 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="3">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                  </svg>
+                </div>
+                <span className="text-sm text-slate-300">{benefit}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
       </div>
 
-      <div className="pointer-events-none absolute inset-0">
-        <div className="absolute -left-10 top-20 h-40 w-40 rounded-full bg-purple-500/40 blur-3xl" />
-        <div className="absolute right-10 bottom-32 h-32 w-32 rounded-full bg-blue-500/40 blur-3xl" />
-        <div className="absolute left-1/3 top-1/4 h-24 w-24 rounded-full border border-white/5" />
-      </div>
+      {/* ─── RIGHT PANEL: Auth form ─── */}
+      <div className="relative flex flex-1 flex-col items-center justify-center bg-[#F4F4F4] px-6 py-12 lg:px-16">
+        {/* Subtle top-right accent blob */}
+        <div className="pointer-events-none absolute -right-20 -top-20 h-64 w-64 rounded-full bg-indigo-500/[0.06] blur-3xl" />
 
-      <div className="relative z-10 flex w-full max-w-md flex-col px-4">
-        <Card className="mx-auto w-full max-w-sm border-white/10 bg-black/70 text-white shadow-2xl shadow-black/60 backdrop-blur-xl">
-          <CardHeader className="space-y-4 pb-4 text-center">
-            <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-white">
-              <img
-                src={logo}
-                alt="Creator logo"
-                className="h-10 w-10 object-contain"
-              />
-            </div>
-            <div className="space-y-1">
-              <CardTitle className="text-base font-semibold tracking-[0.18em] text-gray-300">
-                CREATOR
-              </CardTitle>
-              <h2 className="text-xl font-semibold">Sign up</h2>
-              <CardDescription className="text-xs text-gray-400">
-                Join to unlock AI-powered creator insights.
-              </CardDescription>
-            </div>
-          </CardHeader>
+        {/* Mobile logo */}
+        <div className="mb-10 flex items-center gap-3 lg:hidden">
+          <img
+            src={logo}
+            alt="FlowFund logo"
+            className="h-8 w-auto object-contain"
+          />
+        </div>
 
-          <CardContent className="space-y-3">
+        <div className="w-full max-w-[380px]">
+          {/* Header */}
+          <div className="mb-8">
+            <h2 className="text-2xl font-semibold tracking-tight text-gray-900">
+              Create your account
+            </h2>
+            <p className="mt-2 text-sm text-gray-500">
+              Get started for free — no credit card required
+            </p>
+          </div>
+
+          {/* Auth buttons */}
+          <div className="space-y-3">
             <Button
               variant="outline"
-              className="w-full justify-center border border-white/60 bg-transparent text-white hover:bg-white/5"
-              onClick={handleGoogleLogin}
+              onClick={handleSignup}
+              className="group relative w-full justify-center gap-3 rounded-xl border border-gray-200 bg-white px-4 py-6 text-sm font-medium text-gray-700 shadow-sm transition-all duration-200 hover:border-gray-300 hover:bg-gray-50 hover:shadow-md"
             >
-              <span className="mr-2 inline-flex h-5 w-5 items-center justify-center rounded-full bg-white">
+              <span className="inline-flex h-5 w-5 items-center justify-center">
                 <img
                   src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
                   alt="Google logo"
-                  className="h-4 w-4"
+                  className="h-5 w-5"
                 />
               </span>
               Sign up with Google
             </Button>
+
             <Button
               variant="outline"
-              className="w-full justify-center border border-white/60 bg-transparent text-white hover:bg-white/5"
+              onClick={handleSignup}
+              className="group relative w-full justify-center gap-3 rounded-xl border border-gray-200 bg-white px-4 py-6 text-sm font-medium text-gray-700 shadow-sm transition-all duration-200 hover:border-gray-300 hover:bg-gray-50 hover:shadow-md"
             >
-              <span className="mr-2 inline-flex h-5 w-5 items-center justify-center rounded-full bg-white">
-                <img
-                  src="https://cdn-icons-png.flaticon.com/512/159/159832.png"
-                  alt="Mobile icon"
-                  className="h-3.5 w-3.5"
-                />
+              <span className="inline-flex h-5 w-5 items-center justify-center">
+                <svg viewBox="0 0 24 24" className="h-5 w-5 text-gray-600" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                  <rect x="5" y="2" width="14" height="20" rx="3" />
+                  <line x1="12" y1="18" x2="12" y2="18.01" strokeWidth="2" />
+                </svg>
               </span>
-              Sign up with mobile
+              Sign up with Mobile
             </Button>
-          </CardContent>
+          </div>
 
-          <CardFooter className="flex flex-col items-center justify-between gap-3 border-t border-white/10 pt-4 text-xs text-gray-400">
-            <div className="flex items-center gap-1">
-              <span>Already have an account?</span>
-              <Link to="/login" className="font-medium text-blue-400 hover:text-blue-300">
-                Sign in
-              </Link>
-            </div>
-          </CardFooter>
-        </Card>
+          {/* Divider */}
+          <div className="my-8 flex items-center gap-4">
+            <div className="h-px flex-1 bg-gray-200" />
+            <span className="text-xs font-medium text-gray-400 uppercase tracking-wider">or</span>
+            <div className="h-px flex-1 bg-gray-200" />
+          </div>
 
-        <div className="mt-6 flex w-full items-center justify-center text-[10px] text-gray-500">
-          <span>
-            © {new Date().getFullYear()} Social Intel ·
-            <button className="ml-1 hover:text-gray-300">Support</button> ·
-            <button className="ml-1 hover:text-gray-300">Privacy</button> ·
-            <button className="ml-1 hover:text-gray-300">Terms</button>
-          </span>
+          {/* Placeholder */}
+          <div className="rounded-xl border border-gray-200 bg-white p-4 text-center shadow-sm">
+            <p className="text-sm text-gray-500">
+              More sign-up options coming soon
+            </p>
+          </div>
+
+          {/* Terms */}
+          <p className="mt-6 text-center text-xs text-gray-400 leading-relaxed">
+            By signing up, you agree to our{" "}
+            <button className="text-gray-500 hover:text-gray-700 underline underline-offset-2 transition-colors">
+              Terms of Service
+            </button>{" "}
+            and{" "}
+            <button className="text-gray-500 hover:text-gray-700 underline underline-offset-2 transition-colors">
+              Privacy Policy
+            </button>
+          </p>
+
+          {/* Sign in link */}
+          <p className="mt-6 text-center text-sm text-gray-500">
+            Already have an account?{" "}
+            <Link
+              to="/login"
+              className="font-semibold text-blue-600 hover:text-blue-700 transition-colors"
+            >
+              Sign in
+            </Link>
+          </p>
+        </div>
+
+        {/* Footer */}
+        <div className="absolute bottom-6 left-0 right-0 flex items-center justify-center gap-4 text-xs text-gray-400">
+          <span>© {new Date().getFullYear()} FlowFund</span>
+          <span>·</span>
+          <button className="hover:text-gray-600 transition-colors">Privacy</button>
+          <span>·</span>
+          <button className="hover:text-gray-600 transition-colors">Terms</button>
         </div>
       </div>
     </div>

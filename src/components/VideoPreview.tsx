@@ -27,6 +27,8 @@ const VideoPreview: React.FC<VideoPreviewProps> = ({ src, alt }) => {
           loop
           muted
           playsInline
+          disablePictureInPicture
+          controlsList="nodownload nofullscreen noremoteplayback"
         />
       </div>
     </motion.div>

@@ -64,6 +64,8 @@ const OurWorkSection: React.FC = () => {
             loop
             muted
             playsInline
+            disablePictureInPicture
+            controlsList="nodownload nofullscreen noremoteplayback"
             autoPlay
             preload="auto"
             className="block h-auto w-full rounded-xl"
@@ -173,44 +175,7 @@ const OurWorkSection: React.FC = () => {
             </div>
           </div>
 
-          {/* Feature text blocks below cards */}
-          <div className="mx-auto mt-24 max-w-7xl px-4 md:px-8 pb-16">
-            <div className="grid gap-12 md:grid-cols-2 lg:grid-cols-3 lg:gap-20">
-              <div className="flex flex-col gap-3 text-sm text-[#111827]">
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-[#c7d2fe] to-[#e0ecff] text-[18px] font-semibold text-[#1f2937]">
-                  CS
-                </div>
-                <h4 className="text-[1.05rem] font-semibold text-[#111827]">Connect Social Platforms</h4>
-                <p className="mt-1 text-[0.9rem] text-[#4b5563]">
-                  One-tap connect for Instagram, YouTube, and X with secure read-only analytics.
-                </p>
-              </div>
 
-              <div className="flex flex-col gap-3 text-sm text-[#111827]">
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-[#bbf7d0] to-[#e0f7f2] text-[18px] font-semibold text-[#1f2937]">
-                  SG
-                </div>
-                <h4 className="text-[1.05rem] font-semibold text-[#111827]">Smart Guidance</h4>
-                <p className="mt-1 text-[0.9rem] text-[#4b5563]">
-                  Easy-to-understand suggestions that tell creators exactly what to do next.
-                </p>
-              </div>
-
-              <div className="flex flex-col gap-3 text-sm text-[#111827]">
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-[#facc15] to-[#fde68a] text-[18px] font-semibold text-[#1f2937]">
-                  TE
-                </div>
-                <h4 className="text-[1.05rem] font-semibold text-[#111827]">Trend Engine</h4>
-                <p className="mt-1 text-[0.9rem] text-[#4b5563]">
-                  Detects reels and sounds gaining momentum before they go viral.
-                </p>
-              </div>
-            </div>
-            <p className="mt-20 text-center text-[0.75rem] tracking-[0.18em] uppercase text-[#9ca3af]">
-              * Read-only connections — your content is never posted or edited by the platform.
-            </p>
-            <div className="mt-6 h-px w-full border-t border-[#e5e7eb]" />
-          </div>
         </section>
       </div>
     </section>

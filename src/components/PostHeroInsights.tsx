@@ -82,6 +82,8 @@ const PostHeroInsights: React.FC = () => {
                 autoPlay
                 muted
                 playsInline
+                disablePictureInPicture
+                controlsList="nodownload nofullscreen noremoteplayback"
                 preload="auto"
                 className="w-16 h-16 rounded-lg object-cover bg-transparent"
               ></video>
@@ -102,6 +104,8 @@ const PostHeroInsights: React.FC = () => {
                 autoPlay
                 muted
                 playsInline
+                disablePictureInPicture
+                controlsList="nodownload nofullscreen noremoteplayback"
                 preload="auto"
                 className="w-16 h-16 rounded-lg object-cover bg-transparent"
               ></video>
@@ -122,6 +126,8 @@ const PostHeroInsights: React.FC = () => {
                 autoPlay
                 muted
                 playsInline
+                disablePictureInPicture
+                controlsList="nodownload nofullscreen noremoteplayback"
                 preload="auto"
                 className="w-16 h-16 rounded-lg object-cover bg-transparent"
               ></video>
