@@ -14,6 +14,29 @@ import {
   Bar,
 } from "recharts";
 import { FiChevronDown } from "react-icons/fi";
+import { motion } from "framer-motion";
+import {
+  AudienceInterestCloud,
+  LoyaltySegmentationChart,
+  ActivityHeatmap,
+  PersonaCard,
+  AIInsightFeed,
+  SentimentRadar,
+  ContentPerformanceMatrix,
+  AudienceOverlapGraph,
+  EngagementScoreCard,
+  AudienceJourneyFlow,
+  audienceInterests,
+  loyaltySegments,
+  generateActivityHeatmap,
+  audiencePersona,
+  aiInsights,
+  sentimentData,
+  contentPerformance,
+  audienceOverlapCreators,
+  qualityMetrics,
+  audienceJourney,
+} from "../components/audience-intelligence";
 
 // Types
 
@@ -227,6 +250,9 @@ const AudienceDemographicsPage: React.FC = () => {
   const genders = useMemo(() => genderData[platform][range], [platform, range]);
   const ages = useMemo(() => ageData[platform], [platform]);
   const heatmap = useMemo(() => buildHeatmap(platform === "instagram" ? 1.2 : platform === "youtube" ? 1.0 : 0.9), [platform, range]);
+  
+  // New data for AI Intelligence sections
+  const activityHeatmapData = useMemo(() => generateActivityHeatmap(), []);
 
   const totalAudience = 12540; // placeholder aggregate
 
@@ -235,6 +261,26 @@ const AudienceDemographicsPage: React.FC = () => {
     const current = options.indexOf(range);
     const next = current === -1 ? 0 : (current + 1) % options.length;
     setRange(options[next]);
+  };
+
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+        delayChildren: 0.2,
+      },
+    },
+  };
+
+  const sectionVariants = {
+    hidden: { opacity: 0, y: 30 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.6, ease: "easeOut" },
+    },
   };
 
   return (
@@ -614,6 +660,99 @@ const AudienceDemographicsPage: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {/* ========== ADVANCED AI INTELLIGENCE SECTIONS ========== */}
+      
+      {/* Divider with Label */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.5 }}
+        className="mt-12 mb-12 flex items-center gap-4"
+      >
+        <div className="h-px flex-1 bg-gradient-to-r from-gray-200 via-blue-300 to-gray-200" />
+        <div className="px-4 py-2 rounded-full bg-gradient-to-r from-blue-50 to-cyan-50 border border-blue-200">
+          <p className="text-sm font-semibold text-blue-900">AI-Powered Intelligence</p>
+        </div>
+        <div className="h-px flex-1 bg-gradient-to-r from-gray-200 via-blue-300 to-gray-200" />
+      </motion.div>
+
+      {/* AI Intelligence Sections */}
+      <motion.div
+        variants={containerVariants}
+        initial="hidden"
+        animate="visible"
+        className="space-y-6"
+      >
+        {/* 1. Audience Interests Cloud */}
+        <motion.div variants={sectionVariants}>
+          <div className="rounded-2xl bg-white p-6 shadow-[0_10px_25px_rgba(0,0,0,0.05)]">
+            <div className="mb-6">
+              <h2 className="text-lg font-bold text-gray-900">Audience Interests</h2>
+              <p className="mt-1 text-sm text-gray-600">
+                Topics and niches your audience is passionate about.
+              </p>
+            </div>
+            <AudienceInterestCloud interests={audienceInterests} />
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.8 }}
+              className="mt-6 rounded-lg bg-emerald-50 border border-emerald-200 p-4"
+            >
+              <p className="text-sm text-gray-800">
+                <span className="font-semibold text-emerald-900">AI Insight: </span>
+                Your audience strongly aligns with productivity and AI-focused educational content. Consider creating more content around automation tools, AI trends, and entrepreneurial insights.
+              </p>
+            </motion.div>
+          </div>
+        </motion.div>
+
+        {/* 2. Loyalty Segmentation */}
+        <motion.div variants={sectionVariants}>
+          <LoyaltySegmentationChart segments={loyaltySegments} />
+        </motion.div>
+
+        {/* 3. Activity Heatmap */}
+        <motion.div variants={sectionVariants}>
+          <ActivityHeatmap heatmapData={activityHeatmapData} />
+        </motion.div>
+
+        {/* 4. AI Audience Persona */}
+        <motion.div variants={sectionVariants}>
+          <PersonaCard persona={audiencePersona} />
+        </motion.div>
+
+        {/* 5. Sentiment Analysis */}
+        <motion.div variants={sectionVariants}>
+          <SentimentRadar sentiments={sentimentData} />
+        </motion.div>
+
+        {/* 6. Content Performance */}
+        <motion.div variants={sectionVariants}>
+          <ContentPerformanceMatrix contentTypes={contentPerformance} />
+        </motion.div>
+
+        {/* 7. Audience Overlap Intelligence */}
+        <motion.div variants={sectionVariants}>
+          <AudienceOverlapGraph creators={audienceOverlapCreators} />
+        </motion.div>
+
+        {/* 8. Engagement Quality Scores */}
+        <motion.div variants={sectionVariants}>
+          <EngagementScoreCard metrics={qualityMetrics} />
+        </motion.div>
+
+        {/* 9. Audience Journey Flow */}
+        <motion.div variants={sectionVariants}>
+          <AudienceJourneyFlow stages={audienceJourney} />
+        </motion.div>
+
+        {/* 10. AI Insights Feed */}
+        <motion.div variants={sectionVariants}>
+          <AIInsightFeed insights={aiInsights} />
+        </motion.div>
+      </motion.div>
     </div>
   );
 };
