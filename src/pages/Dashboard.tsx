@@ -1,6 +1,5 @@
 // src/pages/Dashboard.tsx
 import React, { useEffect, useMemo, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import {
   ResponsiveContainer,
   AreaChart,
@@ -11,16 +10,15 @@ import {
   CartesianGrid,
   BarChart,
   Bar,
-  LineChart,
-  Line,
 } from "recharts";
-
 import {
   FiBell,
+  FiSearch,
   FiClock,
-  FiSend,
+  FiCalendar,
   FiCheckSquare,
 } from "react-icons/fi";
+import { BsArrowRepeat } from "react-icons/bs";
 
 import profileAvatar from "../assets/profile-avatar.png";
 import youtubeLogo from "../assets/youtube.png";
@@ -30,19 +28,11 @@ import twitterLogo from "../assets/twitter.png";
 import useYouTube from "../utils/useYouTube";
 
 /**
- * Fully working Dashboard.tsx
- * - Platform selector (youtube | twitter | instagram)
- * - YouTube -> uses useYouTube hook
- * - Twitter -> fetches from local proxy (only when selected)
- * - Instagram -> static fallback
- *
- * Adjust constants YOUTUBE_CHANNEL_ID, TWITTER_USERNAME and PROXY_URL as needed.
+ * Dashboard redesign matching the screenshot layout.
  */
 
-type Platform = "youtube" | "twitter" | "instagram";
-
 const CardShell: React.FC<{ className?: string; children: React.ReactNode }> = ({ className = "", children }) => (
-  <div className={`rounded-2xl border border-slate-100 bg-white shadow-[0_8px_24px_rgba(0,0,0,0.05)] ${className}`}>
+  <div className={`rounded-[20px] border border-gray-100 bg-white shadow-sm ${className}`}>
     {children}
   </div>
 );
@@ -57,431 +47,418 @@ const SAMPLE_SERIES = [
 ];
 
 export default function Dashboard(): JSX.Element {
-  const navigate = useNavigate();
-
   // --- CONFIG ---
   const YOUTUBE_CHANNEL_ID = "UC7szDWdg32HgpIOKcsWw0yw";
   const TWITTER_USERNAME = "rudra_ingole";
   const PROXY_URL = "http://localhost:4000";
 
-  // --- platform state ---
-  const [selectedPlatform, setSelectedPlatform] = useState<Platform>("youtube");
-
   // --- YouTube (custom hook) ---
-  // useYouTube: assumed to return an object or null:
-  // { subscriberCount: string|number, viewCount: string|number, videoCount: string|number }
   const ytStats = useYouTube(YOUTUBE_CHANNEL_ID);
 
   // --- Twitter (local proxy) ---
   const [twitterData, setTwitterData] = useState<any | null>(null);
-  const [twitterError, setTwitterError] = useState<string | null>(null);
-  const [twLoading, setTwLoading] = useState<boolean>(false);
+  const [twLoading, setTwLoading] = useState<boolean>(true);
 
-  // Fetch Twitter only when platform selected (reduces requests)
-  useEffect(() => {
-    let mounted = true;
-    if (selectedPlatform !== "twitter") return;
-
+  // Fetch Twitter unconditionally now since we show all cards
+  const fetchTwitter = () => {
     setTwLoading(true);
-    setTwitterError(null);
-
     fetch(`${PROXY_URL}/twitter/${TWITTER_USERNAME}`)
-      .then(async (res) => {
-        const json = await res.json();
-        if (!mounted) return;
-        if (res.status === 429 || json?.error === "rate_limited") {
-          setTwitterError("Rate limit reached. Try again later.");
-          setTwitterData(null);
-        } else if (json?.error) {
-          setTwitterError(String(json.details ?? json.error ?? "Twitter error"));
+      .then((res) => res.json())
+      .then((json) => {
+        if (json?.error || res.status === 429) {
           setTwitterData(null);
         } else {
           setTwitterData(json);
         }
       })
       .catch((err) => {
-        if (!mounted) return;
         console.error("Twitter fetch failed:", err);
-        setTwitterError("Unable to fetch Twitter data");
         setTwitterData(null);
       })
       .finally(() => {
-        if (!mounted) return;
         setTwLoading(false);
       });
-
-    return () => {
-      mounted = false;
-    };
-  }, [selectedPlatform, PROXY_URL, TWITTER_USERNAME]);
-
-  // --- Derived metrics (active metrics depending on selectedPlatform) ---
-  // Instagram static fallback
-  const INSTAGRAM_STATIC = {
-    followers: 8481,
-    comments: 4507,
-    likes: 125458,
-    graph: SAMPLE_SERIES,
   };
 
-  const active = useMemo(() => {
-    if (selectedPlatform === "youtube") {
-      const followers = ytStats?.subscriberCount ? Number(ytStats.subscriberCount) : null;
-      const comments = ytStats?.viewCount ? Number(ytStats.viewCount) : null;
-      const likes = ytStats?.videoCount ? Number(ytStats.videoCount) : null;
-      return {
-        id: "youtube",
-        name: "YouTube",
-        logo: youtubeLogo,
-        followers,
-        comments,
-        likes,
-        loading: !ytStats,
-        badge: "LIVE",
-        graph:
-          ytStats && typeof followers === "number"
-            ? [
-                { date: "T-5", value: Math.round(followers * 0.85) },
-                { date: "T-4", value: Math.round(followers * 0.9) },
-                { date: "T-3", value: Math.round(followers * 0.94) },
-                { date: "T-2", value: Math.round(followers * 0.97) },
-                { date: "T-1", value: Math.round(followers * 0.99) },
-                { date: "Now", value: followers },
-              ]
-            : SAMPLE_SERIES,
-      };
-    }
+  useEffect(() => {
+    fetchTwitter();
+  }, []);
 
-    if (selectedPlatform === "twitter") {
-      const pm = twitterData?.data?.public_metrics ?? null;
-      const followers = pm?.followers_count ? Number(pm.followers_count) : null;
-      const comments = pm?.tweet_count ? Number(pm.tweet_count) : null;
-      const likes = pm?.like_count ? Number(pm.like_count) : null;
-      return {
-        id: "twitter",
-        name: "Twitter",
-        logo: twitterLogo,
-        followers,
-        comments,
-        likes,
-        loading: twLoading,
-        badge: twitterError ? "ERR" : "LIVE",
-        graph:
-          pm && typeof followers === "number"
-            ? [
-                { date: "T-5", value: Math.round(followers * 0.86) },
-                { date: "T-4", value: Math.round(followers * 0.9) },
-                { date: "T-3", value: Math.round(followers * 0.94) },
-                { date: "T-2", value: Math.round(followers * 0.98) },
-                { date: "T-1", value: Math.round(followers * 0.995) },
-                { date: "Now", value: followers },
-              ]
-            : SAMPLE_SERIES,
-      };
-    }
+  // --- Map Data for all 3 platforms ---
+  const INSTAGRAM_STATIC = { followers: 8481, comments: 4507, likes: 125458 };
 
-    // Instagram static
-    return {
+  const ytFollowers = ytStats?.subscriberCount ? Number(ytStats.subscriberCount) : 8481;
+  const ytComments = ytStats?.viewCount ? Number(ytStats.viewCount) : 4507;
+  const ytLikes = ytStats?.videoCount ? Number(ytStats.videoCount) : 125458;
+
+  const twFollowers = twitterData?.data?.public_metrics?.followers_count ? Number(twitterData.data.public_metrics.followers_count) : 8481;
+  const twComments = twitterData?.data?.public_metrics?.tweet_count ? Number(twitterData.data.public_metrics.tweet_count) : 4507;
+  const twLikes = twitterData?.data?.public_metrics?.like_count ? Number(twitterData.data.public_metrics.like_count) : 125458;
+
+  const platformsData = [
+    {
+      id: "youtube",
+      name: "YouTube",
+      logo: youtubeLogo,
+      followers: ytFollowers,
+      labelFollowers: "Subscribers",
+      comments: ytComments,
+      likes: ytLikes,
+    },
+    {
+      id: "twitter",
+      name: "Twitter",
+      logo: twitterLogo,
+      followers: twFollowers,
+      labelFollowers: "Followers",
+      comments: twComments,
+      likes: twLikes,
+    },
+    {
       id: "instagram",
       name: "Instagram",
       logo: instaLogo,
       followers: INSTAGRAM_STATIC.followers,
+      labelFollowers: "Followers",
       comments: INSTAGRAM_STATIC.comments,
       likes: INSTAGRAM_STATIC.likes,
-      loading: false,
-      badge: "STATIC",
-      graph: INSTAGRAM_STATIC.graph,
-    };
-  }, [selectedPlatform, ytStats, twitterData, twLoading, twitterError]);
+    },
+  ];
 
-  // Chart series for area chart (simple transform)
-  const chartSeries = useMemo(() => {
-    return active.graph.map((p: any) => ({ date: p.date, value: p.value }));
-  }, [active]);
+  const formatNumber = (v: number) => v.toLocaleString();
 
-  // Small helpers for display
-  const formatNumber = (v: number | null | undefined) =>
-    v === null || v === undefined ? "—" : Number(v).toLocaleString();
+  // Engagement chart dummy data resembling screenshot
+  const engagementData = [
+    { month: "Mar", value: 10000 },
+    { month: "Apr", value: 12000 },
+    { month: "May", value: 13500 },
+    { month: "Jun", value: 13000 },
+    { month: "Jul", value: 16487 },
+    { month: "Aug", value: 18000 },
+  ];
 
-  // Manual refresh handler (refetch twitter if selected)
-  const handleRefresh = () => {
-    if (selectedPlatform === "twitter") {
-      // re-trigger Twitter fetch by toggling the state momentarily
-      setTwitterData(null);
-      setTwitterError(null);
-      setTwLoading(true);
-      fetch(`${PROXY_URL}/twitter/${TWITTER_USERNAME}`)
-        .then((r) => r.json())
-        .then((d) => {
-          if (d?.error) {
-            setTwitterError(String(d.details ?? d.error ?? "Twitter error"));
-            setTwitterData(null);
-          } else {
-            setTwitterData(d);
-          }
-        })
-        .catch((err) => {
-          console.error("Twitter refresh failed:", err);
-          setTwitterError("Unable to fetch Twitter data");
-        })
-        .finally(() => setTwLoading(false));
-    }
-    // For YouTube, your useYouTube hook should handle refresh or you can implement a reload mechanism in the hook.
+  // Active promotion chart dummy data
+  const promotionData = Array.from({ length: 10 }).map((_, i) => ({
+    hour: (13 + i).toString().padStart(2, "0"),
+    value: Math.floor(Math.random() * 30000) + 20000,
+  }));
+
+  // Heatmap generation
+  const generateHeatmap = () => {
+    return Array.from({ length: 7 * 20 }).map((_, i) => {
+      const r = Math.random();
+      const level = r < 0.15 ? 3 : r < 0.35 ? 2 : r < 0.6 ? 1 : 0;
+      const color =
+        level === 3 ? "#3b82f6" :
+        level === 2 ? "#93c5fd" :
+        level === 1 ? "#dbeafe" : "#f1f5f9";
+      return (
+        <div
+          key={i}
+          className="w-full aspect-square rounded-[2px]"
+          style={{ backgroundColor: color }}
+        />
+      );
+    });
   };
+
+  const heatmapDots = useMemo(generateHeatmap, []);
 
   // -------------------------
   // RENDER
   // -------------------------
   return (
-    <div className="min-h-screen bg-slate-50">
-      <div className="flex flex-col min-h-screen">
-        {/* Topbar */}
-        <div className="sticky top-0 z-30 border-b border-slate-100 bg-white px-6 py-4">
-          <div className="flex items-center gap-4">
-            <div className="flex-1 max-w-2xl">
-              <div className="flex items-center gap-3 rounded-full bg-slate-100 px-4 py-2.5">
-                <span className="text-slate-400">🔍</span>
-                <input className="w-full bg-transparent outline-none text-sm placeholder:text-slate-400" placeholder="Search..." />
-              </div>
+    <div className="flex flex-col min-h-screen font-sans bg-[#F9F9FA]">
+      {/* Topbar */}
+      <div className="sticky top-0 z-30 bg-transparent px-8 py-5">
+        <div className="flex items-center gap-6">
+          <div className="flex-1 max-w-xl">
+            <div className="flex items-center gap-3 rounded-2xl border border-gray-100 bg-white px-5 py-3 shadow-sm transition-shadow focus-within:shadow-md">
+              <FiSearch className="text-gray-400 text-lg" />
+              <input
+                className="w-full bg-transparent outline-none text-[15px] placeholder:text-gray-400 font-medium"
+                placeholder="Search post, image or content"
+              />
             </div>
+          </div>
 
-            <div className="flex items-center gap-3">
-              <button className="hidden md:inline-flex items-center gap-2 rounded-full bg-sky-500 px-3.5 py-2 text-xs font-semibold text-white">AI</button>
-              <button className="relative inline-flex h-9 w-9 items-center justify-center rounded-full bg-slate-100 text-slate-500">
-                <FiBell />
-                <span className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-rose-500 text-[10px] font-bold text-white">3</span>
-              </button>
-              <div className="h-9 w-9 rounded-full overflow-hidden border border-slate-200">
-                <img src={profileAvatar} alt="profile" className="h-full w-full object-cover" />
-              </div>
+          <div className="flex items-center gap-6 ml-auto text-sm font-medium text-gray-500">
+            <button className="flex items-center gap-2 hover:text-gray-900 transition-colors">
+              <FiClock className="text-lg" /> Set Reminder
+            </button>
+            <button className="flex items-center gap-2 hover:text-gray-900 transition-colors">
+              <FiCalendar className="text-lg" /> Schedule Post
+            </button>
+            <button className="flex items-center gap-2 hover:text-gray-900 transition-colors">
+              <FiCheckSquare className="text-lg" /> To-do list
+            </button>
+            <div className="h-6 w-px bg-gray-200 mx-2" />
+            <button className="relative hover:text-gray-900 transition-colors">
+              <FiBell className="text-xl" />
+              <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white border-2 border-white">
+                12
+              </span>
+            </button>
+            <div className="h-10 w-10 rounded-full overflow-hidden border border-gray-200">
+              <img src={profileAvatar} alt="profile" className="h-full w-full object-cover" />
             </div>
           </div>
         </div>
-
-        {/* Content */}
-        <main className="flex-1 px-6 py-6">
-          <div className="grid grid-cols-12 gap-6">
-            {/* LEFT (main) */}
-            <div className="col-span-12 lg:col-span-8 space-y-6">
-              {/* Header + Platform Selector */}
-              <CardShell className="p-6">
-                <div className="flex items-start justify-between gap-4">
-                  <div>
-                    <h3 className="text-sm font-semibold text-slate-900">Overview</h3>
-                    <p className="mt-1 text-xs text-slate-500">SaaS analytics snapshot for your connected accounts</p>
-                  </div>
-
-                  <div className="flex items-center gap-3">
-                    <div className="flex gap-2">
-                      {(["youtube", "twitter", "instagram"] as Platform[]).map((p) => {
-                        const activeP = selectedPlatform === p;
-                        return (
-                          <button
-                            key={p}
-                            onClick={() => setSelectedPlatform(p)}
-                            className={`px-3 py-1.5 rounded-full text-sm font-medium ${activeP ? "bg-sky-600 text-white" : "bg-slate-200 text-slate-700"}`}
-                          >
-                            {p.charAt(0).toUpperCase() + p.slice(1)}
-                          </button>
-                        );
-                      })}
-                    </div>
-
-                    <div className="ml-4 inline-flex items-center gap-2 rounded-full bg-slate-100 px-3 py-1 text-xs text-slate-600">
-                      <button onClick={handleRefresh} className="px-2 py-1 rounded bg-white text-xs">Refresh</button>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Platform summary cards (3) */}
-                <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
-                  {[{
-                    id: "overview-card",
-                    logo: active.logo,
-                    platformName: active.name,
-                    followers: active.followers,
-                    comments: active.comments,
-                    likes: active.likes,
-                    badge: active.badge,
-                    loading: active.loading,
-                  }].map((card) => (
-                    <div key={card.id} className="rounded-2xl border border-slate-100 bg-white p-4 shadow">
-                      <div className="flex items-center gap-3">
-                        <img src={card.logo} alt={card.platformName} className="h-8 w-8 object-contain" />
-                        <div className="font-semibold">{card.platformName}</div>
-                        <div className="ml-auto text-xs text-slate-500">{card.badge}</div>
-                      </div>
-
-                      <div className="mt-4 flex items-baseline gap-2">
-                        <div className="text-2xl font-bold text-slate-900">{card.loading ? "Loading..." : formatNumber(card.followers)}</div>
-                        <span className="inline-flex items-center rounded-full bg-[#E5F2FF] px-2.5 py-0.5 text-[11px] font-semibold text-sky-600">+0</span>
-                      </div>
-                      <p className="mt-1 text-xs text-slate-500">Followers</p>
-
-                      <div className="mt-4 flex justify-between text-xs text-slate-600">
-                        <div>
-                          <p className="text-slate-500">{selectedPlatform === "twitter" ? "Tweets" : "Comments"}</p>
-                          <p className="mt-1 font-semibold text-slate-900">{card.loading ? "—" : formatNumber(card.comments)}</p>
-                        </div>
-                        <div>
-                          <p className="text-slate-500">Likes</p>
-                          <p className="mt-1 font-semibold text-slate-900">{card.loading ? "—" : formatNumber(card.likes)}</p>
-                        </div>
-                      </div>
-
-                      {selectedPlatform === "twitter" && twitterError && (
-                        <p className="mt-3 text-[11px] text-red-500">Unable to fetch Twitter data</p>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              </CardShell>
-
-              {/* Engagement chart card */}
-              <CardShell className="p-6">
-                <div className="flex items-start justify-between gap-4 mb-4">
-                  <div>
-                    <h3 className="text-sm font-semibold text-slate-900">Engagement</h3>
-                    <p className="mt-1 text-xs text-slate-500">Performance across the selected platform</p>
-                  </div>
-
-                  <div className="inline-flex items-center gap-2">
-                    <div className="inline-flex items-center gap-1 rounded-full bg-slate-100 p-1">
-                      <button className={`px-3 py-1.5 rounded-full text-xs font-medium ${selectedPlatform === "instagram" ? "bg-white text-slate-700" : "text-slate-600"}`}>Overview</button>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="h-[300px] w-full">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <AreaChart data={chartSeries} margin={{ top: 10, right: 20, left: -20, bottom: 0 }}>
-                      <defs>
-                        <linearGradient id="engGrad" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="5%" stopColor="#2D7FF9" stopOpacity={0.3} />
-                          <stop offset="95%" stopColor="#2D7FF9" stopOpacity={0} />
-                        </linearGradient>
-                      </defs>
-
-                      <CartesianGrid vertical={false} stroke="#E2E8F0" strokeDasharray="0" />
-                      <XAxis dataKey="date" axisLine={false} tickLine={false} tick={{ fill: "#94A3B8", fontSize: 12 }} />
-                      <YAxis axisLine={false} tickLine={false} tick={{ fill: "#94A3B8", fontSize: 12 }} />
-                      <Tooltip contentStyle={{ backgroundColor: "#fff", border: "1px solid #E2E8F0", borderRadius: "8px" }} />
-                      <Area type="monotone" dataKey="value" stroke="#2563EB" fill="url(#engGrad)" strokeWidth={2.5} dot={{ r: 3 }} activeDot={{ r: 5 }} />
-                    </AreaChart>
-                  </ResponsiveContainer>
-                </div>
-
-                <div className="mt-4 flex items-center justify-between text-xs text-slate-500">
-                  <div>Most recent change <span className="ml-2 inline-flex items-center rounded-full bg-emerald-50 px-2 py-0.5 text-[11px] font-semibold text-emerald-600">+{Math.round((active.followers ?? 0) * 0.02)}</span></div>
-                  <div>Refreshed just now</div>
-                </div>
-              </CardShell>
-            </div>
-
-            {/* RIGHT (sidebar) */}
-            <div className="col-span-12 lg:col-span-4 space-y-6">
-              <CardShell className="p-6">
-                <div className="flex items-start justify-between">
-                  <div>
-                    <h3 className="text-sm font-semibold text-slate-900">Active Promotion</h3>
-                    <p className="mt-1 text-xs text-slate-500">Ad performance summary</p>
-                  </div>
-
-                  <div className="text-xs text-slate-500">LIVE</div>
-                </div>
-
-                <div className="mt-4 h-[180px] w-full">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <BarChart data={active.graph}>
-                      <CartesianGrid vertical={false} stroke="#E2E8F0" strokeDasharray="0" />
-                      <XAxis dataKey="date" axisLine={false} tickLine={false} tick={{ fill: "#94A3B8", fontSize: 11 }} />
-                      <YAxis axisLine={false} tickLine={false} tick={{ fill: "#94A3B8", fontSize: 11 }} />
-                      <Tooltip contentStyle={{ backgroundColor: "#fff", border: "1px solid #E2E8F0", borderRadius: "8px" }} />
-                      <Bar dataKey="value" radius={[6, 6, 0, 0]} fill="#2563EB" barSize={18} />
-                    </BarChart>
-                  </ResponsiveContainer>
-                </div>
-
-                <div className="mt-6 grid grid-cols-3 gap-4 text-xs">
-                  <div>
-                    <p className="text-slate-500">Followers</p>
-                    <div className="mt-2 flex items-center gap-1.5">
-                      <span className="text-lg font-bold text-slate-900">{formatNumber(active.followers ?? null)}</span>
-                    </div>
-                    <p className="mt-1 text-xs text-slate-500">Since last update</p>
-                  </div>
-
-                  <div>
-                    <p className="text-slate-500">Spending</p>
-                    <p className="mt-2 text-lg font-bold text-slate-900">₹5,000</p>
-                    <span className="mt-1 inline-flex items-center rounded-full bg-rose-50 px-2 py-0.5 text-[10px] font-semibold text-rose-600">3 days left</span>
-                  </div>
-
-                  <div>
-                    <p className="text-slate-500">Reach</p>
-                    <p className="mt-2 text-lg font-bold text-slate-900">1.5L</p>
-                    <p className="mt-1 text-xs text-slate-500">account reached</p>
-                  </div>
-                </div>
-              </CardShell>
-
-              <CardShell className="p-5">
-                <div className="mb-4 flex items-start justify-between">
-                  <div>
-                    <h3 className="text-sm font-semibold text-slate-900">Most active Time</h3>
-                    <p className="mt-1 text-xs text-slate-500">Activity heatmap</p>
-                  </div>
-                  <div className="text-xs text-slate-500">LIVE</div>
-                </div>
-
-                <div className="rounded-lg bg-[#F7F9FC] p-3">
-                  <div className="grid gap-1" style={{ gridTemplateColumns: `repeat(21, minmax(0, 1fr))` }}>
-                    {Array.from({ length: 7 * 21 }).map((_, i) => {
-                      // platform-based offset so each platform gets its own scattered pattern
-                      const platformOffset =
-                        selectedPlatform === "youtube" ? 17 : selectedPlatform === "twitter" ? 53 : 91;
-
-                      const idx = i + platformOffset;
-                      const seed = (idx * 1103515245 + 12345) & 0x7fffffff;
-                      const r = seed / 0x7fffffff;
-                      const level = r < 0.15 ? 3 : r < 0.45 ? 2 : r < 0.8 ? 1 : 0;
-
-                      const color =
-                        level === 3
-                          ? "#2563EB" // strongest, dark blue
-                          : level === 2
-                          ? "#C7DFFF"
-                          : level === 1
-                          ? "#E0EDFF"
-                          : "#F3F6FA"; // background dots
-
-                      return (
-                        <div
-                          key={i}
-                          className="w-3 h-3 rounded-[2px]"
-                          style={{ backgroundColor: color }}
-                        />
-                      );
-                    })}
-                  </div>
-                </div>
-
-                <div className="mt-4 flex items-center justify-between text-xs">
-                  <div>
-                    <p className="text-slate-500">Most active time</p>
-                    <p className="mt-1 font-semibold text-slate-900">12:00 PM - 1:45 PM</p>
-                  </div>
-
-                  <div className="text-right">
-                    <p className="text-slate-500">Engagements</p>
-                    <p className="mt-1 font-semibold text-slate-900">{formatNumber(Math.round((active.followers ?? 0) * 0.15))}</p>
-                  </div>
-                </div>
-              </CardShell>
-            </div>
-          </div>
-        </main>
       </div>
+
+      {/* Content Grid */}
+      <main className="flex-1 px-8 pb-8">
+        <div className="grid grid-cols-12 gap-6">
+          
+          {/* LEFT COLUMN */}
+          <div className="col-span-12 lg:col-span-7 space-y-6 flex flex-col">
+            {/* Overview */}
+            <CardShell className="p-7">
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-base font-bold text-gray-900">Overview</h3>
+                <select className="bg-transparent text-sm font-medium text-gray-600 outline-none cursor-pointer">
+                  <option>1 Day</option>
+                  <option>7 Days</option>
+                  <option>30 Days</option>
+                </select>
+              </div>
+
+              <div className="flex items-center justify-between mb-4">
+                <span className="text-sm font-semibold text-gray-900">Connected accounts</span>
+                <div className="flex items-center gap-2 text-xs font-medium text-gray-500">
+                  <span>Refreshed 20 sec ago</span>
+                  <button onClick={fetchTwitter} className="flex items-center gap-1 hover:text-gray-900 transition-colors">
+                    <BsArrowRepeat className="text-sm" /> Refresh
+                  </button>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-3 gap-5">
+                {platformsData.map((plat) => (
+                  <div key={plat.id} className="rounded-[18px] border border-gray-100 bg-white p-5 shadow-sm hover:shadow-md transition-shadow">
+                    <div className="flex items-center gap-3 mb-6">
+                      <img src={plat.logo} alt={plat.name} className="h-5 w-5 object-contain" />
+                      <span className="font-bold text-sm text-gray-900">{plat.name}</span>
+                    </div>
+
+                    <div className="flex items-end gap-2 mb-1">
+                      <span className="text-[28px] leading-none font-bold text-gray-900">{formatNumber(plat.followers)}</span>
+                      <span className="text-xs font-bold text-blue-500 bg-blue-50 px-2 py-0.5 rounded-full mb-1">+{formatNumber(plat.followers)}</span>
+                    </div>
+                    <p className="text-xs font-medium text-gray-500">{plat.labelFollowers}</p>
+
+                    <div className="mt-8 flex items-center justify-between">
+                      <div>
+                        <p className="text-[10px] font-medium text-gray-400 mb-1">Comments</p>
+                        <p className="text-xs font-bold text-gray-900">{formatNumber(plat.comments)}</p>
+                      </div>
+                      <div>
+                        <p className="text-[10px] font-medium text-gray-400 mb-1">Likes</p>
+                        <p className="text-xs font-bold text-gray-900">{formatNumber(plat.likes)}</p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </CardShell>
+
+            {/* Engagement */}
+            <CardShell className="p-7 flex-1 flex flex-col">
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-base font-bold text-gray-900">Engagement</h3>
+                <select className="bg-transparent text-sm font-medium text-gray-600 outline-none cursor-pointer">
+                  <option>1 Day</option>
+                  <option>7 Days</option>
+                </select>
+              </div>
+
+              <div className="flex items-center justify-between mb-8">
+                <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-2 bg-blue-50 text-blue-600 px-3 py-1.5 rounded-md text-xs font-bold cursor-pointer">
+                    <div className="w-1.5 h-1.5 rounded-full bg-blue-600"></div>
+                    Instagram
+                  </div>
+                  <div className="flex items-center gap-2 text-gray-400 px-3 py-1.5 rounded-md text-xs font-semibold hover:bg-gray-50 cursor-pointer">
+                    <div className="w-1.5 h-1.5 rounded-full bg-blue-200"></div>
+                    Youtube
+                  </div>
+                  <div className="flex items-center gap-2 text-gray-400 px-3 py-1.5 rounded-md text-xs font-semibold hover:bg-gray-50 cursor-pointer">
+                    <div className="w-1.5 h-1.5 rounded-full bg-blue-200"></div>
+                    Twitter
+                  </div>
+                </div>
+                <div className="flex flex-col items-end">
+                  <button className="flex items-center gap-1 text-xs font-bold text-gray-900 hover:text-blue-600 transition-colors">
+                    <BsArrowRepeat className="text-sm" /> Refresh
+                  </button>
+                  <span className="text-[10px] font-medium text-gray-400 mt-1">Refreshed 20 sec ago</span>
+                </div>
+              </div>
+
+              <div className="flex-1 w-full min-h-[200px]">
+                <ResponsiveContainer width="100%" height="100%">
+                  <AreaChart data={engagementData} margin={{ top: 10, right: 0, left: -20, bottom: 0 }}>
+                    <defs>
+                      <linearGradient id="engGradFill" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.25} />
+                        <stop offset="95%" stopColor="#3b82f6" stopOpacity={0.02} />
+                      </linearGradient>
+                    </defs>
+                    <CartesianGrid vertical={false} stroke="#f1f5f9" strokeDasharray="0" />
+                    <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{ fill: "#94a3b8", fontSize: 11, fontWeight: 500 }} dy={10} />
+                    <YAxis axisLine={false} tickLine={false} tick={{ fill: "#94a3b8", fontSize: 11, fontWeight: 500 }} tickFormatter={(val) => val >= 1000 ? `${val / 1000}k` : val} />
+                    <Tooltip
+                      contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 15px rgba(0,0,0,0.1)', fontWeight: 600 }}
+                      cursor={{ stroke: '#cbd5e1', strokeWidth: 1, strokeDasharray: '4 4' }}
+                    />
+                    <Area
+                      type="monotone"
+                      dataKey="value"
+                      stroke="#3b82f6"
+                      strokeWidth={3}
+                      fill="url(#engGradFill)"
+                      activeDot={{ r: 6, fill: "#fff", stroke: "#3b82f6", strokeWidth: 3 }}
+                      dot={{ r: 4, fill: "#3b82f6", strokeWidth: 0 }}
+                    />
+                  </AreaChart>
+                </ResponsiveContainer>
+              </div>
+            </CardShell>
+          </div>
+
+          {/* RIGHT COLUMN */}
+          <div className="col-span-12 lg:col-span-5 space-y-6 flex flex-col">
+            {/* Active Promotion */}
+            <CardShell className="p-7">
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-base font-bold text-gray-900">Active Promotion</h3>
+                <select className="bg-transparent text-sm font-medium text-gray-600 outline-none cursor-pointer">
+                  <option>30 Days</option>
+                </select>
+              </div>
+
+              <div className="flex items-center gap-3 mb-8">
+                <div className="flex items-center gap-2 bg-blue-50 text-blue-600 px-3 py-1.5 rounded-md text-xs font-bold cursor-pointer">
+                  <div className="w-1.5 h-1.5 rounded-full bg-blue-600"></div>
+                  Instagram
+                </div>
+                <div className="flex items-center gap-2 text-gray-400 px-3 py-1.5 rounded-md text-xs font-semibold hover:bg-gray-50 cursor-pointer">
+                  <div className="w-1.5 h-1.5 rounded-full bg-blue-200"></div>
+                  Youtube
+                </div>
+                <div className="flex items-center gap-2 text-gray-400 px-3 py-1.5 rounded-md text-xs font-semibold hover:bg-gray-50 cursor-pointer">
+                  <div className="w-1.5 h-1.5 rounded-full bg-blue-200"></div>
+                  Twitter
+                </div>
+              </div>
+
+              <div className="h-[180px] w-full mb-8">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={promotionData} barGap={4}>
+                    <CartesianGrid vertical={false} stroke="#f1f5f9" />
+                    <XAxis dataKey="hour" axisLine={false} tickLine={false} tick={{ fill: "#94a3b8", fontSize: 11, fontWeight: 500 }} dy={10} />
+                    <YAxis hide />
+                    <Tooltip cursor={{ fill: "#f8fafc" }} contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 15px rgba(0,0,0,0.1)' }} />
+                    <Bar dataKey="value" fill="#dbeafe" radius={[4, 4, 0, 0]} activeBar={{ fill: "#3b82f6" }} />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+
+              <div className="grid grid-cols-3 gap-4">
+                <div>
+                  <p className="text-[11px] font-medium text-gray-400 mb-1">Followers</p>
+                  <div className="flex items-center gap-1 mb-1">
+                    <svg className="w-3 h-3 text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                    </svg>
+                    <span className="text-[17px] font-bold text-gray-900">35,543</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-[10px] font-medium">
+                    <span className="text-blue-500 bg-blue-50 px-1.5 py-0.5 rounded">+1800</span>
+                    <span className="text-gray-400">In last 2 hr</span>
+                  </div>
+                </div>
+
+                <div>
+                  <p className="text-[11px] font-medium text-gray-400 mb-1">Spending</p>
+                  <p className="text-[17px] font-bold text-gray-900 mb-1">₹5,000</p>
+                  <div className="inline-block text-rose-500 bg-rose-50 px-1.5 py-0.5 rounded text-[10px] font-semibold">
+                    3 days left
+                  </div>
+                </div>
+
+                <div>
+                  <p className="text-[11px] font-medium text-gray-400 mb-1">Reach</p>
+                  <div className="flex items-center gap-1 mb-1">
+                    <svg className="w-3 h-3 text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                    </svg>
+                    <span className="text-[17px] font-bold text-gray-900">1.5L</span>
+                  </div>
+                  <p className="text-[10px] font-medium text-gray-400">account reached</p>
+                </div>
+              </div>
+            </CardShell>
+
+            {/* Most active Time */}
+            <CardShell className="p-7 flex-1 flex flex-col">
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-base font-bold text-gray-900">Most active Time</h3>
+                <select className="bg-transparent text-sm font-medium text-gray-600 outline-none cursor-pointer">
+                  <option>1 Day</option>
+                </select>
+              </div>
+
+              <div className="flex items-center justify-between mb-8">
+                <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-2 bg-blue-50 text-blue-600 px-3 py-1.5 rounded-md text-xs font-bold cursor-pointer">
+                    Instagram
+                  </div>
+                  <div className="flex items-center gap-2 text-gray-400 px-3 py-1.5 rounded-md text-xs font-semibold hover:bg-gray-50 cursor-pointer">
+                    Youtube
+                  </div>
+                  <div className="flex items-center gap-2 text-gray-400 px-3 py-1.5 rounded-md text-xs font-semibold hover:bg-gray-50 cursor-pointer">
+                    Twitter
+                  </div>
+                </div>
+                <div className="flex flex-col items-end">
+                  <button className="flex items-center gap-1 text-xs font-bold text-gray-900 hover:text-blue-600 transition-colors">
+                    <BsArrowRepeat className="text-sm" /> Refresh
+                  </button>
+                  <span className="text-[10px] font-medium text-gray-400 mt-1">Refreshed 20 sec ago</span>
+                </div>
+              </div>
+
+              <div className="flex-1">
+                <div className="grid gap-[3px]" style={{ gridTemplateColumns: `repeat(20, minmax(0, 1fr))` }}>
+                  {heatmapDots}
+                </div>
+              </div>
+
+              <div className="mt-8 flex justify-between items-end border-t border-gray-100 pt-5">
+                <div>
+                  <p className="text-[11px] font-medium text-gray-400 mb-1">Most active time</p>
+                  <p className="text-[13px] font-bold text-gray-900">12:00 PM - 13:45 PM</p>
+                </div>
+                <div>
+                  <p className="text-[11px] font-medium text-gray-400 mb-1">Engagements</p>
+                  <p className="text-[13px] font-bold text-gray-900">14,487</p>
+                </div>
+                <div>
+                  <p className="text-[11px] font-medium text-gray-400 mb-1">Likes</p>
+                  <p className="text-[13px] font-bold text-gray-900">+1,254</p>
+                </div>
+                <div>
+                  <p className="text-[11px] font-medium text-gray-400 mb-1">Likes</p>
+                  <p className="text-[13px] font-bold text-gray-900">+1,254</p>
+                </div>
+              </div>
+            </CardShell>
+          </div>
+
+        </div>
+      </main>
     </div>
   );
 }
