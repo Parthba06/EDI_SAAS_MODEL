@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useState, useEffect } from "react";
 import {
   ResponsiveContainer,
   LineChart,
@@ -343,6 +343,76 @@ const FollowersGrowthPage: React.FC = () => {
   // ── derived primary platform (first active) for intelligence modules
   const [primaryPlatform, setPrimaryPlatform] = useState<FGPlatform>("instagram");
 
+  // ── LIVE ticking metrics state
+  const [liveMetrics, setLiveMetrics] = useState({
+    instagram: 12540,
+    youtube: 8481,
+    twitter: 4507,
+    newFollowers: 860,
+    unfollowers: 48,
+    avgGrowth: {
+      instagram: 230,
+      youtube: 180,
+      twitter: 95,
+    },
+    growthToday: {
+      instagram: 0,
+      youtube: 0,
+      twitter: 0,
+    },
+    lastUpdated: new Date()
+  });
+
+  // Ticking indicator states for flashing effect
+  const [activeTicks, setActiveTicks] = useState<Record<string, boolean>>({});
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setLiveMetrics((prev) => {
+        // Platform increments
+        const igInc = Math.random() > 0.4 ? (Math.random() > 0.85 ? 2 : 1) : 0;
+        const ytInc = Math.random() > 0.6 ? 1 : 0;
+        const twInc = Math.random() > 0.7 ? (Math.random() > 0.9 ? -1 : 1) : 0;
+
+        // New followers / unfollowers fluctuations
+        const totalNewInc = igInc + ytInc + (twInc > 0 ? twInc : 0);
+        const totalUnfInc = (twInc < 0 ? 1 : 0) + (Math.random() > 0.96 ? 1 : 0);
+
+        // Flash indicators
+        const ticks: Record<string, boolean> = {};
+        if (igInc !== 0) ticks.instagram = true;
+        if (ytInc !== 0) ticks.youtube = true;
+        if (twInc !== 0) ticks.twitter = true;
+
+        if (Object.keys(ticks).length > 0) {
+          setActiveTicks(ticks);
+          setTimeout(() => setActiveTicks({}), 850);
+        }
+
+        return {
+          instagram: prev.instagram + igInc,
+          youtube: prev.youtube + ytInc,
+          twitter: prev.twitter + twInc,
+          newFollowers: prev.newFollowers + totalNewInc,
+          unfollowers: prev.unfollowers + totalUnfInc,
+          avgGrowth: {
+            instagram: prev.avgGrowth.instagram + (Math.random() > 0.97 ? (Math.random() > 0.5 ? 1 : -1) : 0),
+            youtube: prev.avgGrowth.youtube + (Math.random() > 0.97 ? (Math.random() > 0.5 ? 1 : -1) : 0),
+            twitter: prev.avgGrowth.twitter + (Math.random() > 0.97 ? (Math.random() > 0.5 ? 1 : -1) : 0),
+          },
+          growthToday: {
+            instagram: prev.growthToday.instagram + igInc,
+            youtube: prev.growthToday.youtube + ytInc,
+            twitter: prev.growthToday.twitter + twInc,
+          },
+          lastUpdated: new Date()
+        };
+      });
+    }, 4000);
+
+    return () => clearInterval(timer);
+  }, []);
+
   const activePlatforms = useMemo(
     () => (Object.entries(selectedPlatforms).filter(([, v]) => v).map(([k]) => k) as FGPlatform[]),
     [selectedPlatforms]
@@ -361,18 +431,32 @@ const FollowersGrowthPage: React.FC = () => {
   };
 
   const chartData = useMemo(() => {
-    return baseLabels.map((label) => ({
+    const base = baseLabels.map((label) => ({
       label,
       instagram: followersSeries.instagram[range].find((p) => p.label === label)?.value ?? 0,
       youtube: followersSeries.youtube[range].find((p) => p.label === label)?.value ?? 0,
       twitter: followersSeries.twitter[range].find((p) => p.label === label)?.value ?? 0,
     }));
-  }, [range]);
 
-  const totalFollowers = 12540 + 8481 + 4507;
-  const newFollowers = 860;
+    if (base.length > 0) {
+      const lastIdx = base.length - 1;
+      base[lastIdx].instagram += liveMetrics.growthToday.instagram;
+      base[lastIdx].youtube += liveMetrics.growthToday.youtube;
+      base[lastIdx].twitter += liveMetrics.growthToday.twitter;
+    }
+    return base;
+  }, [range, liveMetrics]);
+
+  const totalFollowers = liveMetrics.instagram + liveMetrics.youtube + liveMetrics.twitter;
+  const newFollowers = liveMetrics.newFollowers;
   const highestSpikeDay = "Saturday";
-  const unfollowers = 0;
+  const unfollowers = liveMetrics.unfollowers;
+
+  const platformComparisonBase = useMemo(() => [
+    { key: "instagram" as FGPlatform, name: "Instagram", followers: liveMetrics.instagram, avgDailyGrowth: liveMetrics.avgGrowth.instagram, bestDay: "Jul 12" },
+    { key: "youtube" as FGPlatform, name: "YouTube", followers: liveMetrics.youtube, avgDailyGrowth: liveMetrics.avgGrowth.youtube, bestDay: "Sep 15" },
+    { key: "twitter" as FGPlatform, name: "Twitter", followers: liveMetrics.twitter, avgDailyGrowth: liveMetrics.avgGrowth.twitter, bestDay: "Jun 3" },
+  ], [liveMetrics]);
 
   // ── INTELLIGENCE computed ────────────────────
   const acq   = useMemo(() => acquisitionData[primaryPlatform][range], [primaryPlatform, range]);
@@ -380,7 +464,17 @@ const FollowersGrowthPage: React.FC = () => {
   const mom   = useMemo(() => momentumData[primaryPlatform][range],    [primaryPlatform, range]);
   const viral = useMemo(() => viralEvents[primaryPlatform][range],     [primaryPlatform, range]);
   const ret   = useMemo(() => retentionCurve[primaryPlatform],         [primaryPlatform]);
-  const contrib = useMemo(() => platformContrib[range],                [range]);
+  const contrib = useMemo(() => {
+    const base = platformContrib[range];
+    return base.map(p => {
+      const key = p.name.toLowerCase() as FGPlatform;
+      const extraGrowth = liveMetrics.growthToday[key] || 0;
+      return {
+        ...p,
+        growth: p.growth + extraGrowth,
+      };
+    });
+  }, [range, liveMetrics]);
   const retNote = useMemo(() => retentionNote[primaryPlatform],        [primaryPlatform]);
 
   const totalContribGrowth = contrib.reduce((a, c) => a + c.growth, 0);
@@ -468,21 +562,23 @@ const FollowersGrowthPage: React.FC = () => {
         ═══════════════════════════════════ */}
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
           {[{
-            key: "total", title: "Total Followers", value: totalFollowers.toLocaleString(), delta: "+12.4%", positive: true,
+            key: "total", title: "Total Followers", value: totalFollowers.toLocaleString(), delta: "+12.4%", positive: true, flashing: Object.values(activeTicks).some(Boolean)
           }, {
-            key: "new", title: "New Followers", value: newFollowers.toLocaleString(), delta: "+8.1%", positive: true,
+            key: "new", title: "New Followers", value: newFollowers.toLocaleString(), delta: "+8.1%", positive: true, flashing: Object.values(activeTicks).some(Boolean)
           }, {
-            key: "spike", title: "Highest Spike Day", value: highestSpikeDay, delta: "Peak", positive: true,
+            key: "spike", title: "Highest Spike Day", value: highestSpikeDay, delta: "Peak", positive: true, flashing: false
           }, {
-            key: "unfollowers", title: "Unfollowers", value: unfollowers === 0 ? "N/A" : `${unfollowers}`, delta: "Stable", positive: true,
+            key: "unfollowers", title: "Unfollowers", value: unfollowers === 0 ? "N/A" : `${unfollowers}`, delta: "+1.2%", positive: false, flashing: activeTicks.twitter && liveMetrics.growthToday.twitter < 0
           }].map((card) => (
             <div key={card.key} className="flex flex-col rounded-xl bg-white p-4 shadow-sm transition-transform hover:-translate-y-0.5">
               <div className="flex items-start justify-between">
                 <div>
                   <p className="text-xs text-slate-500">{card.title}</p>
-                  <p className="mt-2 text-lg font-bold text-slate-900">{card.value}</p>
+                  <p className={`mt-2 text-lg font-bold text-slate-900 tabular-nums transition-all duration-500 ${card.flashing ? "text-emerald-600 font-black scale-[1.03] origin-left" : ""}`}>{card.value}</p>
                 </div>
-                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-100 text-[11px] text-sky-500">●</div>
+                <div className={`flex h-8 w-8 items-center justify-center rounded-full text-[11px] transition-all duration-300 ${card.flashing ? "bg-emerald-500 text-white shadow-[0_0_10px_rgba(16,185,129,0.5)] animate-pulse" : "bg-slate-100 text-sky-500"}`}>
+                  {card.flashing ? "⚡" : "●"}
+                </div>
               </div>
               <div className="mt-2 flex items-center justify-between text-[11px] text-slate-500">
                 <span className={"inline-flex items-center rounded-full px-2 py-0.5 font-semibold " + (card.positive ? "bg-blue-50 text-blue-600" : "bg-rose-50 text-rose-600")}>
@@ -585,14 +681,16 @@ const FollowersGrowthPage: React.FC = () => {
               </thead>
               <tbody>
                 {platformComparisonBase.map((row) => (
-                  <tr key={row.key} className="border-b border-slate-50 last:border-0">
+                  <tr key={row.key} className="border-b border-slate-50 last:border-0 hover:bg-slate-50/50 transition-colors">
                     <td className="py-2 pr-4">
                       <div className="flex items-center gap-2">
                         <div className="flex h-6 w-6 items-center justify-center rounded-full bg-slate-100 text-[11px] font-semibold text-slate-700">{row.name[0]}</div>
                         <span className="text-slate-900">{row.name}</span>
                       </div>
                     </td>
-                    <td className="py-2 pr-4 text-slate-900">{row.followers.toLocaleString()}</td>
+                    <td className={`py-2 pr-4 text-slate-900 font-medium tabular-nums transition-colors duration-500 ${activeTicks[row.key] ? "text-emerald-600 font-bold" : ""}`}>
+                      {row.followers.toLocaleString()}
+                    </td>
                     <td className="py-2 pr-4"><span className="inline-flex items-center rounded-full bg-emerald-50 px-2 py-0.5 text-[11px] font-semibold text-emerald-700">+{row.avgDailyGrowth}</span></td>
                     <td className="py-2 pr-4 text-slate-900">{row.bestDay}</td>
                     <td className="py-2 pr-4 text-right">

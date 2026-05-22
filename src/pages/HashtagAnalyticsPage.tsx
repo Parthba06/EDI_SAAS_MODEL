@@ -474,7 +474,76 @@ const HashtagAnalyticsPage: React.FC = () => {
   
   const suggestionsRef = useRef<HTMLDivElement | null>(null);
 
-  // Periodic scrolling feed updates simulation
+  // Live ticking state for hashtag statistics
+  const [liveHashtagMetrics, setLiveHashtagMetrics] = useState<Record<string, {
+    reachNum: number;
+    engagementRate: number;
+    savesCount: number;
+    impressionsNum: number;
+    viralityScore: number;
+  }>>(() => {
+    const initial: Record<string, any> = {};
+    HASHTAG_DATABASE.forEach(item => {
+      initial[item.tag] = {
+        reachNum: item.reachNum,
+        engagementRate: item.engagementRate,
+        savesCount: parseInt(item.saves) || 20,
+        impressionsNum: parseInt(item.impressions) * 1000 || item.reachNum * 1.8,
+        viralityScore: item.viralityScore
+      };
+    });
+    return initial;
+  });
+
+  const [justUpdatedTag, setJustUpdatedTag] = useState<string | null>(null);
+
+  // Utility to format number to K/M
+  const formatNumber = (num: number) => {
+    if (num >= 1000000) {
+      return (num / 1000000).toFixed(2) + "M";
+    }
+    if (num >= 1000) {
+      return (num / 1000).toFixed(1) + "K";
+    }
+    return num.toString();
+  };
+
+  // Real-time ticking telemetry simulation
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const tags = HASHTAG_DATABASE.map(x => x.tag);
+      const randomTag = tags[Math.floor(Math.random() * tags.length)];
+      
+      setLiveHashtagMetrics(prev => {
+        const next = { ...prev };
+        const current = next[randomTag];
+        if (current) {
+          const reachIncrement = Math.floor(Math.random() * 35) + 5; // +5 to +40 reach
+          const newReach = current.reachNum + reachIncrement;
+          const newImpressions = current.impressionsNum + Math.floor(reachIncrement * (1.5 + Math.random()));
+          const newEngagement = Math.max(1, Math.min(25, current.engagementRate + (Math.random() * 0.4 - 0.2)));
+          const newVirality = Math.max(10, Math.min(100, current.viralityScore + (Math.random() * 2 - 1)));
+          
+          next[randomTag] = {
+            ...current,
+            reachNum: newReach,
+            impressionsNum: newImpressions,
+            engagementRate: newEngagement,
+            viralityScore: newVirality
+          };
+        }
+        return next;
+      });
+
+      setJustUpdatedTag(randomTag);
+      const timeout = setTimeout(() => setJustUpdatedTag(null), 1000);
+      return () => clearTimeout(timeout);
+    }, 3000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  // Periodic scrolling feed updates simulation - accelerated to 6s
   useEffect(() => {
     const interval = setInterval(() => {
       const randomUpdate = NEW_FEED_SIMULATOR[Math.floor(Math.random() * NEW_FEED_SIMULATOR.length)];
@@ -488,20 +557,55 @@ const HashtagAnalyticsPage: React.FC = () => {
         },
         ...prev.slice(0, 5)
       ]);
-    }, 15000);
+    }, 6000);
 
     return () => clearInterval(interval);
   }, []);
 
-  // active selected object in state
+  // active selected object in state with live ticks merged
   const activeHashtag = useMemo(() => {
-    return HASHTAG_DATABASE.find(x => x.tag === selectedTag) || HASHTAG_DATABASE[0];
-  }, [selectedTag]);
+    const staticItem = HASHTAG_DATABASE.find(x => x.tag === selectedTag) || HASHTAG_DATABASE[0];
+    const live = liveHashtagMetrics[staticItem.tag];
+    if (!live) return staticItem;
+    
+    // Create dynamically shifting engagement quality array
+    const liveQuality = staticItem.engagementQuality.map(eq => {
+      // Oscillate by ±1 to ±3 points
+      const offset = Math.floor(Math.sin(Date.now() / 1500 + eq.value) * 3);
+      return {
+        ...eq,
+        value: Math.max(10, Math.min(100, eq.value + offset))
+      };
+    });
 
-  // dynamic chart lines
+    return {
+      ...staticItem,
+      reachNum: live.reachNum,
+      reach: formatNumber(live.reachNum),
+      impressions: formatNumber(live.impressionsNum),
+      engagementRate: parseFloat(live.engagementRate.toFixed(2)),
+      viralityScore: Math.round(live.viralityScore),
+      engagementQuality: liveQuality
+    };
+  }, [selectedTag, liveHashtagMetrics]);
+
+  // dynamic chart lines - now synced with live ticking data point at end
   const chartData = useMemo(() => {
-    return generateChartData(selectedTag, chartMetric, range);
-  }, [selectedTag, chartMetric, range]);
+    const baseData = generateChartData(selectedTag, chartMetric, range);
+    if (baseData.length > 0) {
+      const lastIndex = baseData.length - 1;
+      if (chartMetric === "reach") {
+        baseData[lastIndex].value = Math.round(activeHashtag.reachNum / 5000);
+      } else if (chartMetric === "momentum") {
+        baseData[lastIndex].value = Math.max(10, activeHashtag.trendPercentage + 50);
+      } else if (chartMetric === "virality") {
+        baseData[lastIndex].value = activeHashtag.viralityScore;
+      } else if (chartMetric === "engagement") {
+        baseData[lastIndex].value = Math.round(activeHashtag.engagementRate * 10);
+      }
+    }
+    return baseData;
+  }, [selectedTag, chartMetric, range, activeHashtag]);
 
   // platform color coding
   const getPlatformIcon = (plat: string) => {
@@ -701,6 +805,8 @@ const HashtagAnalyticsPage: React.FC = () => {
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
             {HASHTAG_DATABASE.map((item) => {
               const isActive = selectedTag === item.tag;
+              const isUpdated = justUpdatedTag === item.tag;
+              const live = liveHashtagMetrics[item.tag] || item;
               return (
                 <motion.div
                   key={item.tag}
@@ -709,11 +815,15 @@ const HashtagAnalyticsPage: React.FC = () => {
                   className={`cursor-pointer rounded-xl bg-white p-4 border transition-all duration-300 shadow-[0_8px_30px_rgb(0,0,0,0.01)] ${
                     isActive
                       ? "border-blue-500 ring-2 ring-blue-500/10 bg-gradient-to-b from-white to-blue-50/5"
+                      : isUpdated
+                      ? "border-emerald-300 bg-emerald-50/15 ring-2 ring-emerald-500/10 shadow-[0_8px_30px_rgba(16,185,129,0.12)] scale-[1.02]"
                       : "border-gray-200/60 hover:border-slate-300"
                   }`}
                 >
                   <div className="flex items-start justify-between">
-                    <span className="text-xs font-bold text-slate-900 group-hover:text-blue-600 truncate max-w-[80%]">
+                    <span className={`text-xs font-bold truncate max-w-[80%] transition-colors duration-300 ${
+                      isUpdated ? "text-emerald-600 font-extrabold" : "text-slate-900"
+                    }`}>
                       {item.tag}
                     </span>
                     <span className={`inline-flex rounded-full p-0.5 ${item.trendDirection === "up" ? "bg-emerald-50 text-emerald-600" : "bg-rose-50 text-rose-500"}`}>
@@ -724,22 +834,24 @@ const HashtagAnalyticsPage: React.FC = () => {
                   <div className="mt-3.5 space-y-1">
                     <div className="flex items-center justify-between text-[10px] text-slate-400">
                       <span>Reach</span>
-                      <span className="font-bold text-slate-700">{item.reach}</span>
+                      <span className={`font-bold tabular-nums transition-colors duration-300 ${isUpdated ? "text-emerald-600 font-extrabold" : "text-slate-700"}`}>
+                        {formatNumber(live.reachNum)}
+                      </span>
                     </div>
                     <div className="flex items-center justify-between text-[10px] text-slate-400">
                       <span>Engagement</span>
-                      <span className="font-bold text-slate-700">{item.engagementRate}%</span>
+                      <span className="font-bold text-slate-700 tabular-nums">{live.engagementRate.toFixed(1)}%</span>
                     </div>
                     <div className="flex items-center justify-between text-[10px] text-slate-400">
                       <span>Virality</span>
                       <div className="flex items-center gap-1">
-                        <span className="font-bold text-slate-900">{item.viralityScore}</span>
+                        <span className="font-bold text-slate-900 tabular-nums">{Math.round(live.viralityScore)}</span>
                         <div className="h-2 w-8 rounded-full bg-slate-100 overflow-hidden">
                           <div
-                            className={`h-full rounded-full ${
-                              item.viralityScore > 80 ? "bg-emerald-500" : item.viralityScore > 60 ? "bg-blue-500" : "bg-amber-500"
+                            className={`h-full rounded-full transition-all duration-300 ${
+                              live.viralityScore > 80 ? "bg-emerald-500" : live.viralityScore > 60 ? "bg-blue-500" : "bg-amber-500"
                             }`}
-                            style={{ width: `${item.viralityScore}%` }}
+                            style={{ width: `${live.viralityScore}%` }}
                           />
                         </div>
                       </div>

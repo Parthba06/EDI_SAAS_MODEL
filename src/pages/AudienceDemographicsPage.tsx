@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useState, useEffect } from "react";
 import {
   ResponsiveContainer,
   LineChart,
@@ -247,14 +247,83 @@ const AudienceDemographicsPage: React.FC = () => {
   const [range, setRange] = useState<DemRange>("30 Days");
   const [platform, setPlatform] = useState<DemPlatform>("instagram");
 
-  const genders = useMemo(() => genderData[platform][range], [platform, range]);
-  const ages = useMemo(() => ageData[platform], [platform]);
-  const heatmap = useMemo(() => buildHeatmap(platform === "instagram" ? 1.2 : platform === "youtube" ? 1.0 : 0.9), [platform, range]);
+  // ── LIVE ticking state
+  const [liveTotalAudience, setLiveTotalAudience] = useState(12540);
+  const [liveOffsets, setLiveOffsets] = useState({
+    male: 0,
+    female: 0,
+    other: 0,
+    age: [0, 0, 0, 0, 0, 0],
+    heatmapNoise: 0
+  });
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setLiveTotalAudience((prev) => prev + Math.floor(Math.random() * 3));
+      setLiveOffsets((prev) => {
+        const genderShift = (Math.random() - 0.5) * 0.4;
+        const newMale = prev.male + genderShift;
+        const newFemale = prev.female - genderShift;
+
+        const ageShift1 = (Math.random() - 0.5) * 0.3;
+        const ageShift2 = (Math.random() - 0.5) * 0.2;
+        const newAge = [...prev.age];
+        newAge[1] += ageShift1;
+        newAge[2] -= ageShift1;
+        newAge[3] += ageShift2;
+        newAge[4] -= ageShift2;
+
+        return {
+          male: newMale,
+          female: newFemale,
+          other: prev.other,
+          age: newAge,
+          heatmapNoise: Math.random()
+        };
+      });
+    }, 4500);
+
+    return () => clearInterval(timer);
+  }, []);
+
+  const genders = useMemo(() => {
+    const base = genderData[platform][range];
+    return base.map((g) => {
+      let offset = 0;
+      if (g.key === "male") offset = liveOffsets.male;
+      if (g.key === "female") offset = liveOffsets.female;
+      if (g.key === "other") offset = liveOffsets.other;
+      const newVal = Math.round((g.value + offset) * 10) / 10;
+      return { ...g, value: newVal };
+    });
+  }, [platform, range, liveOffsets]);
+
+  const ages = useMemo(() => {
+    const base = ageData[platform];
+    return base.map((a, idx) => {
+      const offset = liveOffsets.age[idx] || 0;
+      const newVal = Math.max(1, Math.min(99, Math.round((a.value + offset) * 10) / 10));
+      return { ...a, value: newVal };
+    });
+  }, [platform, liveOffsets]);
+
+  const heatmap = useMemo(() => {
+    const base = buildHeatmap(platform === "instagram" ? 1.2 : platform === "youtube" ? 1.0 : 0.9);
+    return base.map((row) =>
+      row.map((val) => {
+        if (Math.random() > 0.8) {
+          const shift = Math.random() > 0.5 ? 1 : -1;
+          return Math.max(0, Math.min(4, val + shift));
+        }
+        return val;
+      })
+    );
+  }, [platform, range, liveOffsets.heatmapNoise]);
   
   // New data for AI Intelligence sections
   const activityHeatmapData = useMemo(() => generateActivityHeatmap(), []);
 
-  const totalAudience = 12540; // placeholder aggregate
+  const totalAudience = liveTotalAudience;
 
   const cycleRange = () => {
     const options: DemRange[] = ["7 Days", "30 Days", "90 Days", "6 Months", "1 Year"]; 
@@ -524,10 +593,20 @@ const AudienceDemographicsPage: React.FC = () => {
                         const dayLabel = days[dayIndex];
                         const interactions = 300 + value * 250; // simple scaled placeholder
                         return (
-                          <div
+                          <motion.div
                             key={`${dayIndex}-${hourIndex}`}
-                            className="h-6 w-6 rounded-[3px] transition-colors duration-150"
+                            className="h-6 w-6 rounded-[3px] cursor-pointer shadow-sm border border-black/5"
                             style={{ backgroundColor: color }}
+                            animate={level >= 3 ? {
+                              scale: [1, 1.05, 1],
+                              opacity: [0.85, 1, 0.85],
+                            } : {}}
+                            transition={level >= 3 ? {
+                              repeat: Infinity,
+                              duration: 2.5 + (dayIndex + hourIndex) % 3,
+                              ease: "easeInOut"
+                            } : {}}
+                            whileHover={{ scale: 1.25, zIndex: 10, boxShadow: "0 4px 10px rgba(0,0,0,0.15)" }}
                             title={`${dayLabel}, ${hourLabel} — Activity: ${Math.round(interactions).toLocaleString()} interactions`}
                           />
                         );

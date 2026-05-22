@@ -17,6 +17,8 @@ import {
   FiInstagram as FiInstagramIcon,
   FiYoutube as FiYoutubeIcon,
   FiHeadphones,
+  FiActivity,
+  FiAward,
 } from "react-icons/fi";
 import CreatorLogo from "../assets/WhatsApp Image 2025-12-04 at 16.13.28_3db5bc93.jpg";
 
@@ -126,45 +128,27 @@ const Sidebar: React.FC = () => {
           >
             <FiLayers size={16} /> Creator Comparison
           </button>
+        </div>
+      </div>
 
-          {/* Sponsorship */}
+      <div className="mb-8">
+        <p className="mb-4 text-xs font-semibold uppercase tracking-wider text-slate-500">Intelligence</p>
+        <div className="flex flex-col gap-1">
+          {/* Command Center */}
           <button
-            className={`flex w-full items-center justify-between gap-3 rounded-lg px-3 py-2.5 text-sm transition-colors ${
-              currentPath === "/sponsorship"
+            className={`flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition-colors ${
+              currentPath === "/command-center"
                 ? "bg-slate-100 text-slate-900 font-medium"
                 : "text-slate-600 hover:bg-slate-50"
             }`}
-            onClick={() => navigate("/sponsorship")}
+            onClick={() => navigate("/command-center")}
           >
-            <span className="flex items-center gap-3"><FiBriefcase size={16} /> Sponsorship</span>
-            <span className="rounded-full bg-sky-500 px-2 py-0.5 text-[10px] font-semibold text-white">5</span>
+            <span className="flex items-center gap-3">
+              <span className="flex h-4 w-4 items-center justify-center rounded bg-blue-100 text-[10px] text-blue-600"><FiActivity size={10}/></span> 
+              Command Center
+            </span>
           </button>
 
-          {/* Mails */}
-          <button
-            className={`flex w-full items-center justify-between gap-3 rounded-lg px-3 py-2.5 text-sm transition-colors ${
-              currentPath === "/mails"
-                ? "bg-slate-100 text-slate-900 font-medium"
-                : "text-slate-600 hover:bg-slate-50"
-            }`}
-            onClick={() => navigate("/mails")}
-          >
-            <span className="flex items-center gap-3"><FiMail size={16} /> Mails</span>
-            <span className="rounded-full bg-sky-500 px-2 py-0.5 text-[10px] font-semibold text-white">55+</span>
-          </button>
-
-          {/* Collaboration */}
-          <button
-            className={`flex w-full items-center justify-between gap-3 rounded-lg px-3 py-2.5 text-sm transition-colors ${
-              currentPath === "/collaboration"
-                ? "bg-slate-100 text-slate-900 font-medium"
-                : "text-slate-600 hover:bg-slate-50"
-            }`}
-            onClick={() => navigate("/collaboration")}
-          >
-            <span className="flex items-center gap-3"><FiShare2 size={16} /> Collaboration</span>
-            <span className="rounded-full bg-sky-500 px-2 py-0.5 text-[10px] font-semibold text-white">8+</span>
-          </button>
         </div>
       </div>
 

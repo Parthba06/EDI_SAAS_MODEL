@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useState, useEffect } from "react";
 import {
   ResponsiveContainer,
   AreaChart,
@@ -268,14 +268,101 @@ const EarningsDashboardPage: React.FC = () => {
   // Feature 2 interactive state
   const [activeBrandTier, setActiveBrandTier] = useState<BrandTier>("series_a");
 
-  // Derived sponsorship pricing metrics
+  // Live ticking state for cash flows
+  const [liveEarnings, setLiveEarnings] = useState({
+    youtube: 12540.10,
+    instagram: 8240.05,
+    sponsorships: 27460.10,
+  });
+
+  const [isEarningsFlashing, setIsEarningsFlashing] = useState(false);
+
+  // Micro-fluctuations loop for cash flows
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setLiveEarnings(prev => {
+        const ytInc = Math.random() > 0.3 ? (Math.random() * 0.45 + 0.08) : 0;
+        const igInc = Math.random() > 0.4 ? (Math.random() * 0.30 + 0.05) : 0;
+        const spInc = Math.random() > 0.5 ? (Math.random() * 0.85 + 0.15) : 0;
+        
+        if (ytInc > 0 || igInc > 0 || spInc > 0) {
+          setIsEarningsFlashing(true);
+          const t = setTimeout(() => setIsEarningsFlashing(false), 500);
+        }
+        
+        return {
+          youtube: prev.youtube + ytInc,
+          instagram: prev.instagram + igInc,
+          sponsorships: prev.sponsorships + spInc,
+        };
+      });
+    }, 1500);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  // Simulated auto-deal generator & alerts
+  const LIVE_SPONSOR_DEALS = [
+    { metric: "Sponsorship Premium", change: "+₹1,200", explanation: "Micro-deal secured from Notion affiliate trigger event.", type: "spike" },
+    { metric: "Vercel Partnership", change: "+₹8,500", explanation: "Series-A SaaS startup sponsored story bundle package.", type: "spike" },
+    { metric: "Claude API Affiliate", change: "+₹450", explanation: "Conversion spike on step-by-step developer tutorial.", type: "spike" },
+    { metric: "Supabase Integration", change: "+₹4,200", explanation: "Indie sponsor conversion trigger on database overview clip.", type: "spike" }
+  ];
+
+  useEffect(() => {
+    const alertInterval = setInterval(() => {
+      const randomDeal = LIVE_SPONSOR_DEALS[Math.floor(Math.random() * LIVE_SPONSOR_DEALS.length)];
+      setAnomalyFeed(prev => {
+        const filtered = prev.filter(x => x.id < 1000000); // clear past simulator ones to limit size
+        return [
+          {
+            id: Date.now(),
+            type: "spike",
+            metric: randomDeal.metric,
+            change: `${randomDeal.change} Credit`,
+            explanation: randomDeal.explanation,
+            time: "Just now"
+          },
+          ...filtered.slice(0, 2)
+        ];
+      });
+    }, 9000); // deal alert every 9s
+
+    return () => clearInterval(alertInterval);
+  }, []);
+
+  // Derived sponsorship pricing metrics with active computing fluctuations
   const activePricingConfig = useMemo(() => {
-    return BRAND_PRICING_CONFIGS[activeBrandTier];
-  }, [activeBrandTier]);
+    const base = BRAND_PRICING_CONFIGS[activeBrandTier];
+    const offsetPercent = Math.sin(Date.now() / 3000) * 0.005; // ±0.5%
+    const priceOffset = (price: number) => Math.round(price * (1 + offsetPercent));
+    
+    return {
+      ...base,
+      readinessScore: Math.min(100, Math.max(50, base.readinessScore + (Math.sin(Date.now() / 4000) > 0 ? 1 : 0))),
+      reelPricing: priceOffset(base.reelPricing),
+      storyPricing: priceOffset(base.storyPricing),
+      packagePricing: priceOffset(base.packagePricing)
+    };
+  }, [activeBrandTier, liveEarnings]);
 
   const correlationSeries = useMemo(() => {
     return CONTENT_CORRELATION_DATA[correlationMetric];
   }, [correlationMetric]);
+
+  // Forecast data with active confidence envelopes that calculate in real-time
+  const forecastingData = useMemo(() => {
+    return FORECASTING_SERIES.map((item, idx) => {
+      if (item.projected === undefined) return item;
+      const offset = Math.sin(Date.now() / 2000 + idx) * 80;
+      return {
+        ...item,
+        projected: Math.round(item.projected + offset),
+        lowerBound: item.lowerBound ? Math.round(item.lowerBound + offset * 0.9) : undefined,
+        upperBoundBound: item.upperBoundBound ? Math.round(item.upperBoundBound + offset * 1.1) : undefined,
+      };
+    });
+  }, [liveEarnings]);
 
   const handleDismissAlert = (id: number) => {
     setAnomalyFeed((prev) => prev.filter((item) => item.id !== id));
@@ -370,7 +457,11 @@ const EarningsDashboardPage: React.FC = () => {
             <div>
               <span className="text-[10px] uppercase font-bold text-slate-400">Total Net Income</span>
               <div className="flex items-baseline gap-2 mt-2">
-                <span className="text-3xl font-extrabold text-slate-900 tracking-tight">₹48,240</span>
+                <span className={`text-3xl font-extrabold tracking-tight tabular-nums transition-all duration-300 ${
+                  isEarningsFlashing ? "text-emerald-600 font-black scale-105" : "text-slate-900"
+                }`}>
+                  ₹{(liveEarnings.youtube + liveEarnings.instagram + liveEarnings.sponsorships).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                </span>
                 <span className="inline-flex items-center gap-0.5 rounded-full bg-emerald-50 px-2 py-0.5 text-[10px] font-bold text-emerald-600">
                   <ArrowUpRight className="h-3 w-3" />
                   <span>+14.2%</span>
@@ -382,15 +473,21 @@ const EarningsDashboardPage: React.FC = () => {
             <div className="space-y-2 mt-6 pt-4 border-t border-slate-100">
               <div className="flex items-center justify-between text-[11px] text-slate-500">
                 <span className="flex items-center gap-1.5"><span className="h-2 w-2 rounded-full bg-blue-500" />YouTube</span>
-                <span className="font-semibold text-slate-700">₹12,540</span>
+                <span className="font-semibold text-slate-700 tabular-nums">
+                  ₹{liveEarnings.youtube.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                </span>
               </div>
               <div className="flex items-center justify-between text-[11px] text-slate-500">
                 <span className="flex items-center gap-1.5"><span className="h-2 w-2 rounded-full bg-pink-500" />Instagram</span>
-                <span className="font-semibold text-slate-700">₹8,240</span>
+                <span className="font-semibold text-slate-700 tabular-nums">
+                  ₹{liveEarnings.instagram.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                </span>
               </div>
               <div className="flex items-center justify-between text-[11px] text-slate-500">
                 <span className="flex items-center gap-1.5"><span className="h-2 w-2 rounded-full bg-emerald-500" />Sponsorships</span>
-                <span className="font-semibold text-slate-700">₹27,460</span>
+                <span className="font-semibold text-slate-700 tabular-nums">
+                  ₹{liveEarnings.sponsorships.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                </span>
               </div>
             </div>
           </div>
@@ -629,7 +726,7 @@ const EarningsDashboardPage: React.FC = () => {
 
               <div className="h-56 w-full">
                 <ResponsiveContainer width="100%" height="100%">
-                  <AreaChart data={FORECASTING_SERIES} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                  <AreaChart data={forecastingData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                     <defs>
                       <linearGradient id="forecastGrad" x1="0" y1="0" x2="0" y2="1">
                         <stop offset="5%" stopColor="#38BDF8" stopOpacity={0.15} />

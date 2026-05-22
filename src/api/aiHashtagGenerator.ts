@@ -4,11 +4,11 @@ const genAI = new GoogleGenerativeAI(import.meta.env.VITE_GEMINI_API_KEY);
 
 export async function generateAIHashtags(prompt: string): Promise<string[]> {
   try {
-    console.log("Calling Gemini Flash 2.0 with:", prompt);
+    console.log("Calling Gemini Flash 2.5 with:", prompt);
 
-    // ⭐ Correct model for your API key
+    // ⭐ Use the default model supported by 2026 API keys
     const model = genAI.getGenerativeModel({
-      model: "models/gemini-2.0-flash"
+      model: "gemini-2.5-flash"
     });
 
     const result = await model.generateContent(`

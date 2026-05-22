@@ -16,6 +16,9 @@ import AudienceDemographicsPage from "./pages/AudienceDemographicsPage";
 import HashtagAnalyticsPage from "./pages/HashtagAnalyticsPage";
 import EarningsDashboardPage from "./pages/EarningsDashboardPage";
 import CreatorComparisonPage from "./pages/CreatorComparisonPage";
+import CreatorCommandCenter from "./pages/CreatorCommandCenter";
+import CreatorLeaderboard from "./pages/CreatorLeaderboard";
+import CreatorDossier from "./pages/CreatorDossier";
 
 import Layout from "./components/Layout";
 import NotFound from "./pages/NotFound";
@@ -137,6 +140,30 @@ const App = () => {
               element={
                 <ProtectedRoute>
                   <Insights />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/command-center"
+              element={
+                <ProtectedRoute>
+                  <CreatorCommandCenter />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/leaderboard"
+              element={
+                <ProtectedRoute>
+                  <CreatorLeaderboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/creator/:id"
+              element={
+                <ProtectedRoute>
+                  <CreatorDossier />
                 </ProtectedRoute>
               }
             />

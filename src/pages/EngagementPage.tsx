@@ -360,7 +360,7 @@ const EngagementPage: React.FC = () => {
   // ── existing state ──────────────────────────
   const [platform, setPlatform] = useState<Platform>("instagram");
   const [range, setRange] = useState<Range>("30 Days");
-  const [interval, setInterval] = useState<Interval>("daily");
+  const [activeInterval, setActiveInterval] = useState<Interval>("daily");
 
   // ── new state ───────────────────────────────
   const [predicting, setPredicting] = useState(false);
@@ -370,17 +370,123 @@ const EngagementPage: React.FC = () => {
   const [predHashtags, setPredHashtags] = useState(10);
   const [predResult, setPredResult] = useState<{ reach: number; engagement: number; saves: number } | null>(null);
 
+  // ── live ticking simulation states ──────────
+  const [liveMetrics, setLiveMetrics] = useState<Record<Platform, Record<string, { value: number; delta: number }>>>({
+    instagram: {
+      likes: { value: 45210, delta: 12.4 },
+      comments: { value: 2450, delta: 8.7 },
+      shares: { value: 1800, delta: 15.2 },
+      saves: { value: 980, delta: 24.1 },
+      views: { value: 120400, delta: 10.5 },
+    },
+    youtube: {
+      likes: { value: 98450, delta: 14.1 },
+      comments: { value: 1204, delta: 6.2 },
+      shares: { value: 3420, delta: 11.8 },
+      saves: { value: 680, delta: 5.4 },
+      views: { value: 245300, delta: 16.9 },
+    },
+    twitter: {
+      likes: { value: 12340, delta: 9.3 },
+      comments: { value: 890, delta: 4.8 },
+      shares: { value: 1100, delta: 7.2 },
+      saves: { value: 430, delta: 3.1 },
+      views: { value: 65400, delta: 8.5 },
+    },
+  });
+
+  const [healthOffset, setHealthOffset] = useState({ total: 0, likes: 0, comments: 0, saves: 0, consistency: 0 });
+
+  const [liveActions, setLiveActions] = useState<Array<{ id: string; user: string; action: string; time: string; details: string }>>([
+    { id: "1", user: "alex_g", action: "liked your post", time: "1s ago", details: "Behind the scenes of my latest reel" },
+    { id: "2", user: "sarah_m", action: "commented: 'Amazing workflow!'", time: "5s ago", details: "How I script & shoot in one day" },
+    { id: "3", user: "dev_k", action: "saved your thread", time: "12s ago", details: "Thread: My 10 content workflows" },
+  ]);
+
+  // Real-time metrics simulation interval
+  React.useEffect(() => {
+    const metricsTimer = window.setInterval(() => {
+      // 1. Tick metrics
+      setLiveMetrics(prev => {
+        const next = { ...prev };
+        (Object.keys(next) as Platform[]).forEach(plat => {
+          const likesAdd = Math.random() > 0.4 ? Math.floor(Math.random() * 3) + 1 : 0;
+          const commentsAdd = likesAdd && Math.random() > 0.5 ? 1 : 0;
+          const sharesAdd = likesAdd && Math.random() > 0.7 ? 1 : 0;
+          const savesAdd = likesAdd && Math.random() > 0.6 ? 1 : 0;
+          const viewsAdd = Math.floor(Math.random() * 8) + 3;
+
+          next[plat] = {
+            likes: { value: next[plat].likes.value + likesAdd, delta: next[plat].likes.delta + (likesAdd ? 0.02 : -0.01) },
+            comments: { value: next[plat].comments.value + commentsAdd, delta: next[plat].comments.delta + (commentsAdd ? 0.01 : -0.01) },
+            shares: { value: next[plat].shares.value + sharesAdd, delta: next[plat].shares.delta + (sharesAdd ? 0.03 : -0.01) },
+            saves: { value: next[plat].saves.value + savesAdd, delta: next[plat].saves.delta + (savesAdd ? 0.04 : -0.02) },
+            views: { value: next[plat].views.value + viewsAdd, delta: next[plat].views.delta + 0.01 }
+          };
+        });
+        return next;
+      });
+
+      // 2. Tick health scores slightly
+      setHealthOffset(prev => ({
+        total: Math.max(-2, Math.min(2, prev.total + (Math.random() > 0.5 ? 0.1 : -0.1))),
+        likes: Math.max(-2, Math.min(2, prev.likes + (Math.random() > 0.5 ? 0.2 : -0.2))),
+        comments: Math.max(-2, Math.min(2, prev.comments + (Math.random() > 0.5 ? 0.2 : -0.2))),
+        saves: Math.max(-2, Math.min(2, prev.saves + (Math.random() > 0.5 ? 0.2 : -0.2))),
+        consistency: Math.max(-2, Math.min(2, prev.consistency + (Math.random() > 0.5 ? 0.1 : -0.1)))
+      }));
+    }, 4000);
+
+    return () => window.clearInterval(metricsTimer);
+  }, []);
+
+  // Live activity stream simulation
+  React.useEffect(() => {
+    const actionTypes = [
+      { action: "liked your post", format: "post" },
+      { action: "commented: 'Love this content! 🔥'", format: "comment" },
+      { action: "saved your post", format: "save" },
+      { action: "shared your post", format: "share" }
+    ];
+    const users = ["rudra_i", "ashish_k", "creator_hub", "deep_learning", "pixel_magic", "super_vision", "growth_hacker", "epic_shots"];
+    const posts = [
+      "Behind the scenes of my latest reel",
+      "How I script & shoot in one day",
+      "Thread: My 10 content workflows",
+      "Day in the life of a creator"
+    ];
+
+    const actionTimer = window.setInterval(() => {
+      const newUser = users[Math.floor(Math.random() * users.length)];
+      const randomAction = actionTypes[Math.floor(Math.random() * actionTypes.length)];
+      const randomPost = posts[Math.floor(Math.random() * posts.length)];
+      const newAct = {
+        id: Math.random().toString(),
+        user: newUser,
+        action: randomAction.action,
+        time: "Just now",
+        details: randomPost
+      };
+      setLiveActions(prev => [newAct, ...prev.slice(0, 3)].map((act, index) => ({
+        ...act,
+        time: index === 0 ? "Just now" : `${index * 5 + Math.floor(Math.random() * 3)}s ago`
+      })));
+    }, 5000);
+
+    return () => window.clearInterval(actionTimer);
+  }, []);
+
   // ── existing computed ────────────────────────
-  const mainSeries = useMemo(() => lineData[platform][interval], [platform, interval]);
+  const mainSeries = useMemo(() => lineData[platform][activeInterval], [platform, activeInterval]);
   const breakdown = useMemo(() => breakdownData[platform], [platform]);
 
   // ── intelligence computed ────────────────────
-  const health = useMemo(() => healthScores[platform][interval], [platform, interval]);
-  const window_ = useMemo(() => postingWindows[platform][interval], [platform, interval]);
-  const heatmap = useMemo(() => generateHeatmap(platform, interval), [platform, interval]);
+  const health = useMemo(() => healthScores[platform][activeInterval], [platform, activeInterval]);
+  const window_ = useMemo(() => postingWindows[platform][activeInterval], [platform, activeInterval]);
+  const heatmap = useMemo(() => generateHeatmap(platform, activeInterval), [platform, activeInterval]);
   const content = useMemo(() => contentBreakdown[platform], [platform]);
-  const funnel = useMemo(() => funnelData[platform][interval], [platform, interval]);
-  const goal = useMemo(() => goalData[platform][interval], [platform, interval]);
+  const funnel = useMemo(() => funnelData[platform][activeInterval], [platform, activeInterval]);
+  const goal = useMemo(() => goalData[platform][activeInterval], [platform, activeInterval]);
 
   const funnelConversions = useMemo(() => {
     return funnel.slice(1).map((step, i) => ({
@@ -425,7 +531,7 @@ const EngagementPage: React.FC = () => {
         icon: <FiTarget />,
         color: "text-amber-500",
         bg: "bg-amber-50 border-amber-100",
-        text: `You are ${goalStatus} on your ${interval} goal. Projected to reach ${formatBig(goal.projected)} against a target of ${formatBig(goal.target)}.`,
+        text: `You are ${goalStatus} on your ${activeInterval} goal. Projected to reach ${formatBig(goal.projected)} against a target of ${formatBig(goal.target)}.`,
         tag: "Goals",
       },
       {
@@ -436,7 +542,7 @@ const EngagementPage: React.FC = () => {
         tag: "Health",
       },
     ];
-  }, [platform, interval, content, window_, goal, health]);
+  }, [platform, activeInterval, content, window_, goal, health]);
 
   // ── existing handlers ────────────────────────
   const handleRangeClick = () => {
@@ -507,8 +613,8 @@ const EngagementPage: React.FC = () => {
           </div>
           <div className="inline-flex items-center gap-1 rounded-full bg-[#f1f5f9] px-2 py-1 text-xs font-medium text-slate-600">
             {([{ id: "daily", label: "Daily" }, { id: "weekly", label: "Weekly" }, { id: "monthly", label: "Monthly" }] as const).map((f) => (
-              <button key={f.id} type="button" onClick={() => setInterval(f.id)}
-                className={"px-3 py-1 rounded-full " + (interval === f.id ? "bg-white text-slate-900 shadow-sm" : "text-slate-600 hover:text-slate-900")}>
+              <button key={f.id} type="button" onClick={() => setActiveInterval(f.id)}
+                className={"px-3 py-1 rounded-full " + (activeInterval === f.id ? "bg-white text-slate-900 shadow-sm" : "text-slate-600 hover:text-slate-900")}>
                 {f.label}
               </button>
             ))}
@@ -550,29 +656,33 @@ const EngagementPage: React.FC = () => {
             EXISTING: Metric cards
         ═══════════════════════════════════════ */}
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-5">
-          {metricsConfig.map((metric) => (
-            <div key={metric.key} className="flex flex-col rounded-2xl bg-white p-4 shadow-[0_4px_16px_rgba(0,0,0,0.06)] transition-transform hover:-translate-y-0.5">
-              <div className="flex items-start justify-between">
-                <div>
-                  <p className="text-xs text-slate-500">{metric.label}</p>
-                  <p className="mt-1 text-lg font-bold text-slate-800">{metric.key === "views" ? "120.4K" : "24.5K"}</p>
+          {metricsConfig.map((metric) => {
+            const liveData = liveMetrics[platform][metric.key];
+            const displayVal = formatBig(liveData.value);
+            return (
+              <div key={metric.key} className="flex flex-col rounded-2xl bg-white p-4 shadow-[0_4px_16px_rgba(0,0,0,0.06)] transition-all duration-300 transform hover:-translate-y-0.5">
+                <div className="flex items-start justify-between">
+                  <div>
+                    <p className="text-xs text-slate-500">{metric.label}</p>
+                    <p className="mt-1 text-lg font-bold text-slate-800 tabular-nums">{displayVal}</p>
+                  </div>
+                  <span className="inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-semibold transition-all duration-500"
+                    style={{ backgroundColor: metric.key === "shares" ? "#FEF3C7" : "#ECFDF3", color: metric.key === "shares" ? "#C2410C" : "#15803D" }}>
+                    +{liveData.delta.toFixed(1)}%
+                  </span>
                 </div>
-                <span className="inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-semibold"
-                  style={{ backgroundColor: metric.key === "shares" ? "#FEF3C7" : "#ECFDF3", color: metric.key === "shares" ? "#C2410C" : "#15803D" }}>
-                  +12.4%
-                </span>
+                <div className="mt-3 h-12 w-full">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <LineChart data={mainSeries}>
+                      <XAxis dataKey="label" hide /><YAxis hide />
+                      <Tooltip contentStyle={{ display: "none" }} />
+                      <Line type="monotone" dataKey="value" stroke={metric.color} strokeWidth={1.6} dot={false} isAnimationActive />
+                    </LineChart>
+                  </ResponsiveContainer>
+                </div>
               </div>
-              <div className="mt-3 h-12 w-full">
-                <ResponsiveContainer width="100%" height="100%">
-                  <LineChart data={mainSeries}>
-                    <XAxis dataKey="label" hide /><YAxis hide />
-                    <Tooltip contentStyle={{ display: "none" }} />
-                    <Line type="monotone" dataKey="value" stroke={metric.color} strokeWidth={1.6} dot={false} isAnimationActive />
-                  </LineChart>
-                </ResponsiveContainer>
-              </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
 
         {/* ═══════════════════════════════════════
@@ -653,51 +763,96 @@ const EngagementPage: React.FC = () => {
         {/* ═══════════════════════════════════════
             NEW SECTION 1: Engagement Health Score
         ═══════════════════════════════════════ */}
-        <CardWrap>
-          <SectionLabel icon={<FiAward />} title="Engagement Health Score" sub="Composite score calculated from your account metrics and posting behaviour" />
+        {(() => {
+          const healthTotal = Math.min(100, Math.max(0, Math.round(health.total + healthOffset.total)));
+          const healthLikes = Math.min(100, Math.max(0, Math.round(health.likes + healthOffset.likes)));
+          const healthComments = Math.min(100, Math.max(0, Math.round(health.comments + healthOffset.comments)));
+          const healthSaves = Math.min(100, Math.max(0, Math.round(health.saves + healthOffset.saves)));
+          const healthConsistency = Math.min(100, Math.max(0, Math.round(health.consistency + healthOffset.consistency)));
 
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-            {/* Score ring */}
-            <div className="flex flex-col items-center justify-center rounded-2xl bg-slate-50 p-8">
-              <div className="relative mb-4">
-                <svg width={120} height={120} className="-rotate-90">
-                  <circle cx={60} cy={60} r={50} fill="none" stroke="#f1f5f9" strokeWidth={8} />
-                  <motion.circle cx={60} cy={60} r={50} fill="none" stroke={scoreColor(health.total)}
-                    strokeWidth={8} strokeDasharray={314} strokeLinecap="round"
-                    initial={{ strokeDashoffset: 314 }}
-                    animate={{ strokeDashoffset: 314 - (health.total / 100) * 314 }}
-                    transition={{ duration: 1.2, ease: "easeOut" }} />
-                </svg>
-                <div className="absolute inset-0 flex flex-col items-center justify-center">
-                  <span className="text-3xl font-bold text-slate-900">{health.total}</span>
-                  <span className="text-[10px] text-slate-400 font-medium">/100</span>
+          return (
+            <CardWrap>
+              <SectionLabel icon={<FiAward />} title="Engagement Health Score" sub="Composite score calculated from your account metrics and posting behaviour" />
+
+              <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+                {/* Score ring */}
+                <div className="flex flex-col items-center justify-center rounded-2xl bg-slate-50 p-6 col-span-1">
+                  <div className="relative mb-4">
+                    <svg width={120} height={120} className="-rotate-90">
+                      <circle cx={60} cy={60} r={50} fill="none" stroke="#f1f5f9" strokeWidth={8} />
+                      <motion.circle cx={60} cy={60} r={50} fill="none" stroke={scoreColor(healthTotal)}
+                        strokeWidth={8} strokeDasharray={314} strokeLinecap="round"
+                        initial={{ strokeDashoffset: 314 }}
+                        animate={{ strokeDashoffset: 314 - (healthTotal / 100) * 314 }}
+                        transition={{ duration: 0.5, ease: "easeOut" }} />
+                    </svg>
+                    <div className="absolute inset-0 flex flex-col items-center justify-center">
+                      <span className="text-3xl font-bold text-slate-900 tabular-nums">{healthTotal}</span>
+                      <span className="text-[10px] text-slate-400 font-medium">/100</span>
+                    </div>
+                  </div>
+                  <ScorePill label={healthTotal >= 85 ? "Elite" : healthTotal >= 70 ? "Strong" : healthTotal >= 55 ? "Growing" : "Weak"} />
+                  <p className="mt-3 text-center text-[11px] text-slate-500 max-w-[200px] leading-relaxed">
+                    {health.aiNote}
+                  </p>
+                </div>
+
+                {/* Sub-scores */}
+                <div className="space-y-4 col-span-1 flex flex-col justify-center">
+                  {[
+                    { label: "Likes Performance", value: healthLikes, color: "#3b82f6" },
+                    { label: "Comments Engagement", value: healthComments, color: "#10b981" },
+                    { label: "Save Efficiency", value: healthSaves, color: "#6366f1" },
+                    { label: "Posting Consistency", value: healthConsistency, color: "#f59e0b" },
+                  ].map((m) => (
+                    <div key={m.label}>
+                      <div className="flex items-center justify-between mb-1.5">
+                        <span className="text-xs font-medium text-slate-600">{m.label}</span>
+                        <span className="text-xs font-bold text-slate-800 tabular-nums">{m.value}</span>
+                      </div>
+                      <MiniBar value={m.value} color={m.color} />
+                    </div>
+                  ))}
+                </div>
+
+                {/* Live Activity Feed */}
+                <div className="rounded-2xl bg-slate-50/50 border border-slate-100 p-5 flex flex-col justify-between col-span-1">
+                  <div className="mb-3 flex items-center justify-between border-b border-slate-100 pb-2">
+                    <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wide flex items-center gap-1.5">
+                      <span className="relative flex h-2 w-2">
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                        <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                      </span>
+                      Live Activity Stream
+                    </span>
+                    <span className="text-[9px] text-[#008cff] bg-[#e8f4ff] font-bold rounded px-1.5 py-0.5">Real-time</span>
+                  </div>
+                  <div className="flex-1 space-y-3 overflow-hidden min-h-[140px]">
+                    <AnimatePresence initial={false}>
+                      {liveActions.map((act) => (
+                        <motion.div
+                          key={act.id}
+                          initial={{ opacity: 0, y: -10, height: 0 }}
+                          animate={{ opacity: 1, y: 0, height: "auto" }}
+                          exit={{ opacity: 0, scale: 0.95 }}
+                          transition={{ duration: 0.3 }}
+                          className="text-[11px] border-b border-slate-100/60 pb-2 last:border-0 last:pb-0"
+                        >
+                          <div className="flex items-center justify-between gap-2">
+                            <span className="font-bold text-slate-800">@{act.user}</span>
+                            <span className="text-[9px] text-slate-400 font-mono shrink-0">{act.time}</span>
+                          </div>
+                          <p className="text-slate-600 mt-0.5">{act.action}</p>
+                          <p className="text-[9px] text-slate-400 truncate mt-0.5 italic">"{act.details}"</p>
+                        </motion.div>
+                      ))}
+                    </AnimatePresence>
+                  </div>
                 </div>
               </div>
-              <ScorePill label={health.label} />
-              <p className="mt-3 text-center text-xs text-slate-500 max-w-[200px] leading-relaxed">
-                {health.aiNote}
-              </p>
-            </div>
-
-            {/* Sub-scores */}
-            <div className="space-y-4">
-              {[
-                { label: "Likes Performance", value: health.likes, color: "#3b82f6" },
-                { label: "Comments Engagement", value: health.comments, color: "#10b981" },
-                { label: "Save Efficiency", value: health.saves, color: "#6366f1" },
-                { label: "Posting Consistency", value: health.consistency, color: "#f59e0b" },
-              ].map((m) => (
-                <div key={m.label}>
-                  <div className="flex items-center justify-between mb-1.5">
-                    <span className="text-xs font-medium text-slate-600">{m.label}</span>
-                    <span className="text-xs font-bold text-slate-800">{m.value}</span>
-                  </div>
-                  <MiniBar value={m.value} color={m.color} />
-                </div>
-              ))}
-            </div>
-          </div>
-        </CardWrap>
+            </CardWrap>
+          );
+        })()}
 
         {/* ═══════════════════════════════════════
             NEW SECTION 2 + 3: Posting Window + Heatmap (row)
@@ -712,7 +867,7 @@ const EngagementPage: React.FC = () => {
                 { label: "Peak Audience Window", value: window_.peak, icon: <FiSun size={13} className="text-amber-500" />, bg: "bg-amber-50 border-amber-100" },
                 { label: "Highest Engagement Slot", value: window_.bestSlot, icon: <BsLightningChargeFill size={12} className="text-blue-500" />, bg: "bg-blue-50 border-blue-100" },
                 { label: "Weakest Time Slot", value: window_.weakSlot, icon: <FiMoon size={13} className="text-slate-400" />, bg: "bg-slate-50 border-slate-200" },
-                { label: "Missed Opportunities", value: `${window_.missed} slots this ${interval}`, icon: <FiAlertCircle size={13} className="text-rose-400" />, bg: "bg-rose-50 border-rose-100" },
+                { label: "Missed Opportunities", value: `${window_.missed} slots this ${activeInterval}`, icon: <FiAlertCircle size={13} className="text-rose-400" />, bg: "bg-rose-50 border-rose-100" },
               ].map((item) => (
                 <div key={item.label} className={`flex items-center justify-between rounded-xl border p-3.5 ${item.bg}`}>
                   <div className="flex items-center gap-2.5">
@@ -784,7 +939,7 @@ const EngagementPage: React.FC = () => {
             NEW SECTION 4: Content Performance Breakdown
         ═══════════════════════════════════════ */}
         <CardWrap>
-          <SectionLabel icon={<FiPlay />} title="Content Performance Breakdown" sub={`Best-performing content formats on ${platform} · ${interval} view`} />
+          <SectionLabel icon={<FiPlay />} title="Content Performance Breakdown" sub={`Best-performing content formats on ${platform} · ${activeInterval} view`} />
 
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
@@ -846,7 +1001,7 @@ const EngagementPage: React.FC = () => {
             NEW SECTION 5: Engagement Funnel
         ═══════════════════════════════════════ */}
         <CardWrap>
-          <SectionLabel icon={<FiArrowDown />} title="Engagement Funnel" sub={`Conversion rates through each interaction stage · ${interval} · ${platform}`} />
+          <SectionLabel icon={<FiArrowDown />} title="Engagement Funnel" sub={`Conversion rates through each interaction stage · ${activeInterval} · ${platform}`} />
 
           <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
             {/* Funnel visualization */}
@@ -1018,7 +1173,7 @@ const EngagementPage: React.FC = () => {
             NEW SECTION 7: Goal Tracker
         ═══════════════════════════════════════ */}
         <CardWrap>
-          <SectionLabel icon={<FiTarget />} title="Engagement Goal Tracker" sub={`${interval.charAt(0).toUpperCase() + interval.slice(1)} target progress · ${platform}`} />
+          <SectionLabel icon={<FiTarget />} title="Engagement Goal Tracker" sub={`${activeInterval.charAt(0).toUpperCase() + activeInterval.slice(1)} target progress · ${platform}`} />
 
           <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
             {/* Progress ring */}
@@ -1113,7 +1268,7 @@ const EngagementPage: React.FC = () => {
               </div>
               <div>
                 <h2 className="text-sm font-semibold text-slate-800">AI Insights Panel</h2>
-                <p className="text-[11px] text-slate-500">Dynamically generated from your account analytics · {platform} · {interval}</p>
+                <p className="text-[11px] text-slate-500">Dynamically generated from your account analytics · {platform} · {activeInterval}</p>
               </div>
             </div>
             <div className="flex items-center gap-1.5 text-[10px] text-slate-400">
@@ -1126,7 +1281,7 @@ const EngagementPage: React.FC = () => {
 
           <div className="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3">
             {aiInsights.map((insight, i) => (
-              <motion.div key={`${platform}-${interval}-${i}`}
+              <motion.div key={`${platform}-${activeInterval}-${i}`}
                 initial={{ opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.08 }}
