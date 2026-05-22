@@ -40,7 +40,8 @@ import {
   Zap,
   ShieldCheck,
   ShieldAlert,
-  Globe
+  Globe,
+  Info
 } from "lucide-react";
 
 // --- Types & Data Models ---
