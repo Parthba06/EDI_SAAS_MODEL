@@ -62,7 +62,7 @@ export const PersonaCard: React.FC<Props> = ({ persona }) => {
       <motion.div
         variants={glowVariants}
         animate="animate"
-        className="absolute -inset-1 rounded-2xl bg-gradient-to-br from-emerald-400/20 to-teal-400/20 blur-xl -z-1"
+        className="absolute -inset-1 rounded-2xl bg-gradient-to-br from-emerald-400/20 to-teal-400/20 blur-xl -z-10"
       />
 
       <div className="relative rounded-2xl bg-white shadow-[0_10px_25px_rgba(0,0,0,0.05)] overflow-hidden border border-gray-100">
