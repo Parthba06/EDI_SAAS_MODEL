@@ -27,6 +27,7 @@ import {
   Line,
   Legend,
 } from "recharts";
+import { motion } from "framer-motion";
 import Dock from "../components/Dock";
 
 // --- Types ---
